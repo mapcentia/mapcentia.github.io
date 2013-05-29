@@ -1,14 +1,12 @@
-var cowi =(function(){
-	var db = "slagelse";
-	var komKode = "330";
+var init_search = function(db, komKode, bbox){
 	var cloudMap = new mygeocloud_ol.map("map",db);
 	//cloudMap.zoomToExtent();
 	//cloudMap.addOSM();
 	//cloudMap.setBaseLayer("osm");
 	var style = {
 		"color": "#ff0000",
-    "weight": 5,
-    "opacity": 0.65
+		"weight": 5,
+		"opacity": 0.65
 	};
 	var layerObj={};
 	layerObj.name = {};
@@ -18,7 +16,7 @@ var cowi =(function(){
 			layerObj.name[obj.data[i].f_table_name] = obj.data[i].f_table_title;
 			layerObj.url[obj.data[i].f_table_name] = obj.data[i].meta_url;
 		}
-		console.log(layerObj);
+		//console.log(layerObj);
 	};
 	document.write('<script src="http://beta.mygeocloud.cowi.webhouse.dk/controller/tables/' + db + '/getallrecords/settings.geometry_columns_view?jsonp_callback=cowi.callback"><\/script>');
 	var switchLayer = function(id, visible) {
@@ -49,7 +47,7 @@ var cowi =(function(){
 		var search = _.debounce(function (query, process) {
 			type = (query.match(/\d+/g) != null) ? "adresser" : "vejnavne";
 			map = {};
-			console.log(type);
+			//console.log(type);
 			switch (type) {
 				case 'vejnavne':
 					$.ajax({
@@ -256,4 +254,4 @@ var cowi =(function(){
 		callback: callback,
 		switchLayer: switchLayer
 	}
-})();
+};
