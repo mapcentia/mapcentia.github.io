@@ -8,7 +8,7 @@ var cowi = (function(){
 			layerObj.name[obj.data[i].f_table_name] = obj.data[i].f_table_title;
 			layerObj.url[obj.data[i].f_table_name] = obj.data[i].meta_url;
 		}
-		console.log(layerObj);
+		//console.log(layerObj);
 	};
 	var switchLayer = function(id, visible) {
 		(visible) ? cloudMap.map.getLayersByName(id)[0].setVisibility(true) : cloudMap.map.getLayersByName(id)[0].setVisibility(false);
@@ -16,7 +16,8 @@ var cowi = (function(){
 	};		
 	var init_search = function(db, komKode, layers, bbox, callback){
 		cloudMap = new mygeocloud_ol.map("map",db);
-		//cloudMap.zoomToExtent();
+		cloudMap.map.zoomToExtent(bbox);
+		//cloudMap.map.events.register("moveend", null, function(){console.log(cloudMap.getExtent())});
 		//cloudMap.addOSM();
 		//cloudMap.setBaseLayer("osm");
 		var style = {
@@ -61,7 +62,8 @@ var cowi = (function(){
 							success: function (response) {
 								$.each(response, function (i, hit) {
 									//console.log(response);
-									if (checkArr.indexOf(hit.navn) === -1){
+									if ($.inArray(hit.navn,checkArr) === -1){
+										
 										var str = hit.navn;
 										names.push(str);
 									}
@@ -226,6 +228,7 @@ var cowi = (function(){
 			      sql: null,
 			      onLoad : function(){
 				      cloudMap.zoomToExtentOfgeoJsonStore(store);
+				      cloudMap.map.addLayers([store.layer]);
 				      conflict(store.geoJSON.features[0].properties.wkt);
 			      }
 			});
