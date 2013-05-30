@@ -249,7 +249,10 @@ var cowi = (function(){
 							name: this.id,
 							visibility : false
 						});
-						callback();
+						try{
+							callback();
+						}
+						catch(e){};
 						$('#result-table').append("<tr><td class='checkbox'><input type='checkbox' onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'>" + layerObj.name[this.id.split('.')[1]] + "</td></tr>");
 						if (this.id.split('.')[1] === "kpplandk2_view") {
 							$.each(this.geoJSON.features,
