@@ -92,7 +92,7 @@ var init_list = function(conf) {
 		for (var i = 0; i < cloud.map.layers.length; i++) {
 			if(cloud.map.layers[i].isBaseLayer===true)
 			{
-				cloud.map.layers[i].attribution = "Copyright KMS, COWI, Odder Kommune - kort og data er kun vejledende";
+				//cloud.map.layers[i].attribution = "Copyright KMS, COWI, Odder Kommune - kort og data er kun vejledende";
 			}
 		}
 	}
