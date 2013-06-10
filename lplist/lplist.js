@@ -65,7 +65,8 @@ var init_list = function(conf) {
 	//cloud.map.setBaseLayer(b[0]);
 	cloud.addGeoJsonStore(store);
 	store.selectFeatureControl.activate();
-	store.sql = "select planid,komnr,objektkode,plantype,plannr,plannavn,anvendelsegenerel as anvgen,anvspec,datoforsl,'http://beta.mygeocloud.com/apps/custom/lokalplaner/redirect.php\?komnr='||komnr||'\&planid='||planid as doklink,planstatus,zonestatus,the_geom from planer.lokalplan_vedtaget where komnr=" + conf.komnr + " union select planid,komnr,objektkode,plantype,plannr,plannavn,anvendelsegenerel as anvgen,anvspec,datoforsl,doklink,planstatus,zonestatus,the_geom from planer.lokalplan_forslag where komnr=" + conf.komnr + " order by planid desc";
+	var doklink = "'http://beta.mygeocloud.cowi.webhouse.dk/apps/custom/lokalplanliste/redirect.php\?komnr='||komnr||'%26planid='||planid||'%26db=" + conf.db + "%26table=" + conf.table + "%26doklink='||doklink as doklink";
+	store.sql = "select planid,komnr,objektkode,plantype,plannr,plannavn,anvendelsegenerel as anvgen,anvspec,datoforsl," + doklink + ",planstatus,zonestatus,the_geom from planer.lokalplan_vedtaget where komnr=" + conf.komnr + " union select planid,komnr,objektkode,plantype,plannr,plannavn,anvendelsegenerel as anvgen,anvspec,datoforsl," + doklink + ",planstatus,zonestatus,the_geom from planer.lokalplan_forslag where komnr=" + conf.komnr + " order by planid desc";
 	store.load();
 	store.onLoad = function(){
 		cloud.zoomToExtentOfgeoJsonStore(store);
