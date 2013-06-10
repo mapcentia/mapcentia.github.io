@@ -101,7 +101,7 @@ var init_list = function(conf) {
 	cloud.map.addControl(new OpenLayers.Control.Attribution());
 }
 return {
-	init_list: init_list,
+	init_list: init_list
 }
 })();
 
