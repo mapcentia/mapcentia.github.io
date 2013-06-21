@@ -253,7 +253,12 @@ var cowi = (function(){
 							name: this.id,
 							visibility : false
 						});
-						$('#result-table').append("<tr><td class='checkbox'><input type='checkbox' onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'>" + layerObj.name[this.id.split('.')[1]] + "</td></tr>");
+						if (layerObj.url[this.id.split('.')[1]] !== null){
+						$('#result-table').append("<tr><td class='checkbox'><input type='checkbox' onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'><a href='" + layerObj.url[this.id.split('.')[1]] + "'>" + layerObj.name[this.id.split('.')[1]] + "</a></td></tr>");
+						}
+						else {
+							$('#result-table').append("<tr><td class='checkbox'><input type='checkbox' onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'>" + layerObj.name[this.id.split('.')[1]] + "</td></tr>");
+						}
 						if (this.id.split('.')[1] === "kpplandk2_view") {
 							$.each(this.geoJSON.features,
 									function(key, value) {
