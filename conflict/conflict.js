@@ -237,6 +237,10 @@ var cowi = (function(){
 		var  conflict = function(wkt) {
 			var arr = layers;
 			$("#result-table").empty();
+						try{
+							callback();
+						}
+						catch(e){};
 			var store = [];
 			for (var i=0; i<arr.length; i++){
 				store[i] = new mygeocloud_ol.geoJsonStore(db);
@@ -249,10 +253,6 @@ var cowi = (function(){
 							name: this.id,
 							visibility : false
 						});
-						try{
-							callback();
-						}
-						catch(e){};
 						$('#result-table').append("<tr><td class='checkbox'><input type='checkbox' onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'>" + layerObj.name[this.id.split('.')[1]] + "</td></tr>");
 						if (this.id.split('.')[1] === "kpplandk2_view") {
 							$.each(this.geoJSON.features,
