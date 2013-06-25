@@ -20,6 +20,7 @@ var cowi = (function(){
 		//cloudMap.map.events.register("moveend", null, function(){console.log(cloudMap.getExtent())});
 		//cloudMap.addOSM();
 		//cloudMap.setBaseLayer("osm");
+		$("#result").append("<div id='spinner' style='display:none'>Henter</div>");
 		var style = {
 			"color": "#ff0000",
 			"weight": 5,
@@ -235,6 +236,7 @@ var cowi = (function(){
 			//	cloudMap.addGeoJsonStore(store);
 		})();
 		var  conflict = function(wkt) {
+			var count=0;
 			var arr = layers;
 			$("#result-table").empty();
 						try{
@@ -242,6 +244,7 @@ var cowi = (function(){
 						}
 						catch(e){};
 			var store = [];
+			$("#spinner").show();
 			for (var i=0; i<arr.length; i++){
 				store[i] = new mygeocloud_ol.geoJsonStore(db);
 				store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))"
@@ -266,6 +269,10 @@ var cowi = (function(){
 										$('#result-table').append("<tr><td></td><td><a target='_blank' href=" + value.properties.html + ">" + value.properties.plannr + "</a></td></tr>");
 									})
 						}
+					}
+					count++;
+					if (count===arr.length){
+						$("#spinner").hide();
 					}
 				}
 			}
