@@ -20,7 +20,7 @@ var cowi = (function(){
 		//cloudMap.map.events.register("moveend", null, function(){console.log(cloudMap.getExtent())});
 		//cloudMap.addOSM();
 		//cloudMap.setBaseLayer("osm");
-		$("#result").append("<div id='spinner' style='display:none'>Henter</div>");
+		$("#result").append("<div id='spinner' style='display:none'><img src='http://mapcentia.github.io/conflict/ajax-loader.gif'></div>");
 		var style = {
 			"color": "#ff0000",
 			"weight": 5,
