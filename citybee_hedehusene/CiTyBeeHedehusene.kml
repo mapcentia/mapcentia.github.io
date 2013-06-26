@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://earth.google.com/kml/2.2">
+<Document>
+  <name>CiTyBee Hedehusene</name>
+  <description><![CDATA[Kort over historier i og om Hedehusene]]></description>
+  <Style id="style30">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style2">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style22">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style1">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style25">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style38">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style35">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style6">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style39">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style15">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style27">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style29">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style33">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style5">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style8">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style36">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style12">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style9">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style13">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style3">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style34">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style31">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style11">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style32">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style7">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style19">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style18">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style17">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style10">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style26">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style21">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style28">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style37">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style20">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style16">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style24">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style14">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style40">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style4">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style41">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Style id="style23">
+    <IconStyle>
+      <Icon>
+        <href>http://dl.dropbox.com/u/10090756/Ikon_lilleII.png</href>
+      </Icon>
+    </IconStyle>
+  </Style>
+  <Placemark>
+    <name>Spæncom Haven</name>
+    <description>42939088</description>
+    <styleUrl>#style30</styleUrl>
+    <Point>
+      <coordinates>12.198944,55.648102,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Leret og jernbanerne</name>
+    <description>41738590</description>
+    <styleUrl>#style2</styleUrl>
+    <Point>
+      <coordinates>12.187014,55.633713,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Gruset og jernbanerne</name>
+    <description>41758309</description>
+    <styleUrl>#style22</styleUrl>
+    <Point>
+      <coordinates>12.182872,55.641754,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Muligheder</name>
+    <description>42997705</description>
+    <styleUrl>#style1</styleUrl>
+    <Point>
+      <coordinates>12.197571,55.648827,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Synliggørelse</name>
+    <description>42993342</description>
+    <styleUrl>#style25</styleUrl>
+    <Point>
+      <coordinates>12.204652,55.649857,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Glostrup - Nej tak</name>
+    <description>42990988</description>
+    <styleUrl>#style38</styleUrl>
+    <Point>
+      <coordinates>12.212076,55.650776,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Byens (handels)liv</name>
+    <description>42989742</description>
+    <styleUrl>#style35</styleUrl>
+    <Point>
+      <coordinates>12.201540,55.649891,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Skolen som samlingspunkt</name>
+    <description>42959285</description>
+    <styleUrl>#style6</styleUrl>
+    <Point>
+      <coordinates>12.215509,55.647373,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Levende Historier</name>
+    <description>42988543</description>
+    <styleUrl>#style39</styleUrl>
+    <Point>
+      <coordinates>12.200274,55.648926,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Biblioteket</name>
+    <description>42961162</description>
+    <styleUrl>#style15</styleUrl>
+    <Point>
+      <coordinates>12.199802,55.648705,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Foreninger</name>
+    <description>42960413</description>
+    <styleUrl>#style27</styleUrl>
+    <Point>
+      <coordinates>12.204995,55.649094,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Hilser på hinanden</name>
+    <description>42946302</description>
+    <styleUrl>#style29</styleUrl>
+    <Point>
+      <coordinates>12.211668,55.649239,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Gode skatteborgere</name>
+    <description>42945277</description>
+    <styleUrl>#style33</styleUrl>
+    <Point>
+      <coordinates>12.215295,55.648319,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Teglproduktion</name>
+    <description>42931020</description>
+    <styleUrl>#style5</styleUrl>
+    <Point>
+      <coordinates>12.198016,55.646461,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Porten til spæncom</name>
+    <description>42938000</description>
+    <styleUrl>#style8</styleUrl>
+    <Point>
+      <coordinates>12.197195,55.646595,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Forurening og knopskydning</name>
+    <description>42933453</description>
+    <styleUrl>#style36</styleUrl>
+    <Point>
+      <coordinates>12.198021,55.644665,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Spor i landskabet</name>
+    <description>42929220</description>
+    <styleUrl>#style12</styleUrl>
+    <Point>
+      <coordinates>12.198815,55.644276,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Støv</name>
+    <description>42931742</description>
+    <styleUrl>#style9</styleUrl>
+    <Point>
+      <coordinates>12.197976,55.643578,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Gedehamse</name>
+    <description>42282330</description>
+    <styleUrl>#style13</styleUrl>
+    <Point>
+      <coordinates>12.197112,55.642822,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Tegværksboligerne</name>
+    <description>42271814</description>
+    <styleUrl>#style3</styleUrl>
+    <Point>
+      <coordinates>12.195382,55.643436,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Selvforsyning</name>
+    <description>42927140</description>
+    <styleUrl>#style34</styleUrl>
+    <Point>
+      <coordinates>12.195870,55.643970,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Husdyr</name>
+    <description>42274933</description>
+    <styleUrl>#style31</styleUrl>
+    <Point>
+      <coordinates>12.196806,55.643780,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Teglværksarbejderne</name>
+    <description>42277617</description>
+    <styleUrl>#style11</styleUrl>
+    <Point>
+      <coordinates>12.195484,55.643497,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Typehus</name>
+    <description>42273953</description>
+    <styleUrl>#style32</styleUrl>
+    <Point>
+      <coordinates>12.196002,55.643303,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Fuldt hus</name>
+    <description>42276458</description>
+    <styleUrl>#style7</styleUrl>
+    <Point>
+      <coordinates>12.196588,55.643135,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Mareridt</name>
+    <description>42280797</description>
+    <styleUrl>#style19</styleUrl>
+    <Point>
+      <coordinates>12.195275,55.642982,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Leg og udflugter</name>
+    <description>41763503</description>
+    <styleUrl>#style18</styleUrl>
+    <Point>
+      <coordinates>12.187555,55.646938,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>En menneskealder i grusgraven</name>
+    <description>41760673</description>
+    <styleUrl>#style17</styleUrl>
+    <Point>
+      <coordinates>12.184766,55.644611,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Tipvognenes tid</name>
+    <description>41759127</description>
+    <styleUrl>#style10</styleUrl>
+    <Point>
+      <coordinates>12.187529,55.639587,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Engageret Familie</name>
+    <description>42981617</description>
+    <styleUrl>#style26</styleUrl>
+    <Point>
+      <coordinates>12.199494,55.650620,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Samlingssted</name>
+    <description>42980089</description>
+    <styleUrl>#style21</styleUrl>
+    <Point>
+      <coordinates>12.195051,55.648323,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Forsvundne butikker</name>
+    <description>42978141</description>
+    <styleUrl>#style28</styleUrl>
+    <Point>
+      <coordinates>12.191624,55.648380,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Fars gummiged</name>
+    <description>42975618</description>
+    <styleUrl>#style37</styleUrl>
+    <Point>
+      <coordinates>12.191203,55.648045,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Plads til alle</name>
+    <description>42972654</description>
+    <styleUrl>#style20</styleUrl>
+    <Point>
+      <coordinates>12.190586,55.647987,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Møgknægt</name>
+    <description>42971412</description>
+    <styleUrl>#style16</styleUrl>
+    <Point>
+      <coordinates>12.190407,55.648201,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Alternativ bus</name>
+    <description>42970474</description>
+    <styleUrl>#style24</styleUrl>
+    <Point>
+      <coordinates>12.190232,55.648705,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>36 guldmedaljer</name>
+    <description>42970023</description>
+    <styleUrl>#style14</styleUrl>
+    <Point>
+      <coordinates>12.189833,55.648689,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Flere slags spor</name>
+    <description>42967712</description>
+    <styleUrl>#style40</styleUrl>
+    <Point>
+      <coordinates>12.188141,55.649250,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Øvelokaler</name>
+    <description>42966501</description>
+    <styleUrl>#style4</styleUrl>
+    <Point>
+      <coordinates>12.188156,55.649334,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Skræddersyet</name>
+    <description>42965943</description>
+    <styleUrl>#style41</styleUrl>
+    <Point>
+      <coordinates>12.188166,55.649296,0.000000</coordinates>
+    </Point>
+  </Placemark>
+  <Placemark>
+    <name>Om bygningen</name>
+    <description>42964705</description>
+    <styleUrl>#style23</styleUrl>
+    <Point>
+      <coordinates>12.188089,55.649448,0.000000</coordinates>
+    </Point>
+  </Placemark>
+</Document>
+</kml>
