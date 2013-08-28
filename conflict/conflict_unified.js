@@ -156,7 +156,7 @@ var cowi = (function () {
                         }
                     )
                     return item;
-                },
+                }
             });
 
             var conflict = function (wkt) {
