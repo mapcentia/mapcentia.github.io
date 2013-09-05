@@ -66,6 +66,7 @@ var cowi = (function () {
                 if (typeFlag === "adresse") {
                     store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
                 }
+		console.log(store.sql)
                 store.load();
                 //conflict(wkt)
             };
@@ -154,7 +155,7 @@ var cowi = (function () {
                             var regex = new RegExp('(' + s + ')', 'gi');
                             item = item.replace(regex, "<b>$1</b>");
                         }
-                    )
+                    );
                     return item;
                 }
             });
