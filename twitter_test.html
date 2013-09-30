@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>PGRounting</title>
+		<title>Tweet store test</title>
 		<meta charset="UTF-8"/>
 		<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css"type="text/css" rel="stylesheet">	
-		<link href="http://us1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" type="text/css" rel="stylesheet">
+		<link href="http://cdn.us1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" type="text/css" rel="stylesheet">
+		<link href="http://cdn.us1.mapcentia.com/js/leaflet/TwitterCluster.css" type="text/css" rel="stylesheet">
+		<style>
+			body {
+				margin: 0px;
+				padding: 0px;
+				font: normal 15px/20px Arial, sans-serif;
+				background: #fff;
+			}
+
+		</style>
 
 	</head>
 	<body>
-		<div id="map" style="width:700px;height:700px"></div>
+		<div id="map" style="position: absolute;width:100%;height:100%"></div>
 	</body>
-	<script src='http://eu1.mapcentia.com/js/leaflet/leaflet.js'></script>
-	<!--<script src='http://eu1.mapcentia.com/js/openlayers/OpenLayers.js'></script>-->
+	<script src='http://cdn.us1.mapcentia.com/js/leaflet/leaflet.js'></script>
 	<script src='http://us1.mapcentia.com/api/v3/js/geocloud.js'></script>
 	<script src="http://maps.stamen.com/js/tile.stamen.js?v1.2.0"></script>
 	<script src="http://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
@@ -21,7 +30,6 @@
 				el: "map"
 			});
 			cloudMap.bingApiKey = "AhumC8sixvNikuNE-Nhets6UzaFIE5S_ASO25bGyMUnrtypUTFnG3ZXWxxH3BwrP";
-
 			cloudMap.addBaseLayer(geocloud.OSM);
 			cloudMap.addBaseLayer(geocloud.MAPQUESTOSM);
 			cloudMap.addBaseLayer(geocloud.MAPBOXNATURALEARTH);
@@ -33,53 +41,57 @@
 			cloudMap.addBaseLayer(geocloud.BINGROAD);
 			cloudMap.addBaseLayer(geocloud.BINGAERIAL);
 			cloudMap.addBaseLayer(geocloud.BINGAERIALWITHLABELS);
-
 			cloudMap.setBaseLayer(geocloud.BINGROAD);
+			var fun = function (arr, text){
+				var m = 0, tagCloud = "", tags = [], size, labelSize, labelMaxSize=350;
+				$.each(arr, function (index, value) {
+					if (typeof value !== "object") {
+						tags[0] = value;
+						tags[1] = 1;
+					}
+					else {
+						tags = value;
+					}
+					labelSize = 70 + (tags[1] * 30);
+					labelSize = (labelSize < labelMaxSize) ? labelSize : labelMaxSize; 
+					tagCloud = tagCloud + "<span style='box-shadow: 1px 2px rgba(0, 0, 0, 0.1);border:1px solid rgba(0, 0, 0, 0.2);padding:2px;opacity:0.9;background-color:white;font-weight: bold;color: #0a76be;font-size: " + labelSize + "%'>" + tags[0] + "</span> ";
+					if (((m / 2) % 1) === 0) {
+						tagCloud = tagCloud + "<br>";
+					}
+					m++;
+				});
+				var left = -80;
+				size = (typeof text === "number") ? 40 : 20;
+				var top = (m > 3) ? 25 : 50;
+				var cssClass = (typeof text !== "number") ? "twitter-single" : "twitter-cluster";
+				return new L.DivIcon({ html: '<div><span>' + text + '</span><span style="display: inline;pointer-events:none;overflow:sd;border: 0px solid white;height:150px;top:-80px;left:' + left + 'px;position: absolute;width: 200px"><span style="position:relative; top:' + top + '%;">' + tagCloud + '</span></span></div>', className: 'marker-cluster ' + cssClass, iconSize: new L.Point(size, size) });
+			} 
 
-			//cloudMap.zoomToExtent();
-			var styleTweets = {
-				"color": "#ff00ff",
-				"weight": 5,
-				"opacity": 0.65
-			};
-
-
-			cloudMap.addTileLayers({
-				db: "mh",
-				layers: ["public.test"],
-				visibility: true
-			});
-
-			var store = new geocloud.sqlStore({
-				db: "mh",
-				sql: "SELECT * FROM test",
-				onLoad: function(){
-					cloudMap.zoomToExtentOfgeoJsonStore(store);
-				}
-			});
 			var tweetGroups = new L.MarkerClusterGroup({
 				maxClusterRadius: 60,
 				iconCreateFunction: null,
 				spiderfyOnMaxZoom: true,
 				showCoverageOnHover: false,
-				zoomToBoundsOnClick: true
+				zoomToBoundsOnClick: true,
+				vigga: fun
 			});
 
-			var tweet = new geocloud.tweetStore({
+			var tweet = new geocloud.sqlStore({
+				db: "mydb",
 				onLoad: function () {
 					cloudMap.map.addLayer(tweetGroups);
 					cloudMap.zoomToExtentOfgeoJsonStore(tweet);
 
 				},
-				q: "geocode=40.751676,-73.982184,3km&count=100",
-				onEachFeature: function (feature, layer) {
-					layer.bindPopup("<p><a target='_blank' href='https://twitter.com/" + feature.properties.user_screen_name + "'>" + feature.properties.user_name + "</a><br>" + feature.properties.text + "<br><i style='font-size;80%;color:silver'>" + feature.properties.created_at + "</i></p>");
-				},
+				sql: "SELECT * FROM ny.tweets limit 3000",
+				lifetime: 3600,
 				pointToLayer: function (feature, latlng) {
 					var f = L.marker(latlng,
-					{icon: L.AwesomeMarkers.icon(
-						{ icon: 'icon-twitter', color: 'blue' }
-						)}).bindPopup(
+					{icon: (function(){
+							n = feature.properties.text.match(/#\S*/gi) || []
+							return fun(n,"")
+							})(),
+}).bindPopup(
 					"<p><a target='_blank' href='https://twitter.com/" + feature.properties.user_screen_name + "'>" + feature.properties.user_name + "</a><br>" + feature.properties.text + "<br><i style='font-size;80%;color:silver'>" + feature.properties.created_at + "</i></p>"
 					);
 					f.martin = {id:feature.properties.id,text:feature.properties.text};
@@ -89,10 +101,8 @@
 				}
 			});
 
-			console.log(tweet);
 			cloudMap.addGeoJsonStore(tweet);
 			tweet.load();
-			//store.hide();
 		})()
 	</script>
 </html>
