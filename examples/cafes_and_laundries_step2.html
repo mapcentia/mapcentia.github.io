@@ -5,7 +5,8 @@
     <link href="http://cdn.us1.mapcentia.com/js/leaflet/leaflet.css" type="text/css" rel="stylesheet">
     <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" type="text/css"
           rel="stylesheet">
-    <link href="http://cdn.us1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" type="text/css"
+    <link href="http://cdn.us1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css"
+          type="text/css"
           rel="stylesheet">
     <title>Laundries and cafés</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -50,9 +51,11 @@
             // Use GeoCloud 'mydb'
             db: "mydb",
             // Set the SQL
-            sql: "SELECT cafes.name,cafes.address,cafes.the_geom,ST_buffer(ST_transform(ny.laundries.the_geom,900913),30) as buffer FROM ny.cafes,ny.laundries WHERE ST_transform(ny.laundries.the_geom,900913) && ST_buffer(ST_transform(ny.cafes.the_geom,900913),30)",
+            sql: "SELECT cafes.name,cafes.address,cafes.the_geom,ST_buffer(ny.laundries.the_geom,30) as buffer " +
+                    "FROM ny.cafes,ny.laundries " +
+                    "WHERE ny.laundries.the_geom && ST_buffer(ny.cafes.the_geom,30)",
             // Cache the JSON on the server
-            lifetime: 999999,
+            lifetime: 9999999,
             // Define a callback for when the SQL returns
             onLoad: function () {
                 // Zoom to vector layer
@@ -64,11 +67,10 @@
             },
             // Make markers instead of simple vector point features
             pointToLayer: function (feature, latlng) {
-                return L.marker(latlng,
-                        {
-                            zIndexOffset: 10000,
-                            icon: L.AwesomeMarkers.icon({ icon: 'icon-coffee', color: 'red'})
-                        });
+                return L.marker(latlng, {
+                    zIndexOffset: 10000,
+                    icon: L.AwesomeMarkers.icon({ icon: 'icon-coffee', color: 'red'})
+                });
             },
             // Define a style map for vector features
             styleMap: {
@@ -78,8 +80,7 @@
                 fillOpacity: 0
 
             }
-        })
-
+        });
         // Add the store as a vector overlay
         map.addGeoJsonStore(store);
         // Fire the SQL
