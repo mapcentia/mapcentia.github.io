@@ -47,8 +47,10 @@
             db: "mydb",
             // Set the SQL
             sql: "SELECT cafes.name,cafes.address,cafes.the_geom,ST_buffer(ny.laundries.the_geom,30) as buffer " +
-                    "FROM ny.cafes,ny.laundries " +
-                    "WHERE ny.laundries.the_geom && ST_buffer(ny.cafes.the_geom,30)",
+                    "FROM " +
+                    "ny.cafes,ny.laundries " +
+                    "WHERE " +
+                    "ST_intersects(ny.laundries.the_geom,ST_buffer(ny.cafes.the_geom,30))",
             // Cache the JSON on the server
             lifetime: 9999999,
             // Define a callback for when the SQL returns
