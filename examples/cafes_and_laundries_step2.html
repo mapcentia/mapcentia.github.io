@@ -41,11 +41,6 @@
         var map = new geocloud.map({el: "map"});
         map.addBaseLayer(geocloud.OSM);
         map.setBaseLayer(geocloud.OSM);
-
-        map.addTileLayers({
-            db: "mydb",
-            layers: ["ny.laundries"]
-        });
         // Create a GeoJSON store
         var store = new geocloud.sqlStore({
             // Use GeoCloud 'mydb'
