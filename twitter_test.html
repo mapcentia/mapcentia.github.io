@@ -83,7 +83,7 @@
 					cloudMap.zoomToExtentOfgeoJsonStore(tweet);
 
 				},
-				sql: "SELECT * FROM ny.tweets limit 3000",
+				sql: "SELECT * FROM ny.tweets limit 4000",
 				lifetime: 3600,
 				pointToLayer: function (feature, latlng) {
 					var f = L.marker(latlng,
