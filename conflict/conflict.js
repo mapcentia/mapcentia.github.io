@@ -8,7 +8,6 @@ var cowi = (function () {
             layerObj.name[obj.data[i].f_table_name] = obj.data[i].f_table_title;
             layerObj.url[obj.data[i].f_table_name] = obj.data[i].meta_url;
         }
-        //console.log(layerObj);
     };
     var switchLayer = function (id, visible) {
         (visible) ? cloudMap.map.getLayersByName(id)[0].setVisibility(true) : cloudMap.map.getLayersByName(id)[0].setVisibility(false);
@@ -17,9 +16,6 @@ var cowi = (function () {
     var init_search = function (db, komKode, layers, bbox, callback) {
         cloudMap = new mygeocloud_ol.map("map", db);
         cloudMap.map.zoomToExtent(bbox);
-        //cloudMap.map.events.register("moveend", null, function(){console.log(cloudMap.getExtent())});
-        //cloudMap.addOSM();
-        //cloudMap.setBaseLayer("osm");
         $("#result").append("<div id='spinner' style='display:none'><img src='http://mapcentia.github.io/conflict/ajax-loader.gif'></div>");
         var style = {
             "color": "#ff0000",
@@ -52,7 +48,6 @@ var cowi = (function () {
             var search = _.debounce(function (query, process) {
                 type = (query.match(/\d+/g) != null) ? "adresser" : "vejnavne";
                 map = {};
-                //console.log(type);
                 switch (type) {
                     case 'vejnavne':
                         $.ajax({
@@ -62,7 +57,6 @@ var cowi = (function () {
                             jsonp: 'callback',
                             success: function (response) {
                                 $.each(response, function (i, hit) {
-                                    //console.log(response);
                                     if ($.inArray(hit.navn, checkArr) === -1) {
 
                                         var str = hit.navn;
@@ -84,8 +78,6 @@ var cowi = (function () {
                             jsonp: 'callback',
                             success: function (response) {
                                 $.each(response, function (i, hit) {
-                                    //console.log(response);
-
                                     var str = hit.vejnavn.navn + ' ' + hit.husnr + ' (' + hit.postnummer.nr + ')';
                                     map[str] = hit.etrs89koordinat;
                                     names.push(str);
@@ -102,7 +94,6 @@ var cowi = (function () {
                     search(query, process);
                 },
                 updater: function (item) {
-                    //console.log(map)
                     var selected = (type === "adresser") ? map[item] : null;
                     if (selected) {
                         showOnMap(selected);
@@ -114,7 +105,6 @@ var cowi = (function () {
                     var flag = false
                     _(arr).each(
                         function (s) {
-                            //console.log(item)
                             if (item.toLowerCase().indexOf($.trim(s).toLowerCase()) === false) {
                                 flag = false;
                             }
@@ -141,7 +131,7 @@ var cowi = (function () {
                 var p = transformPoint(obj.oest, obj.nord, "EPSG:25832", "EPSG:900913")
                 cloudMap.map.setCenter(new OpenLayers.LonLat(p.x, p.y), 17);
                 var wkt = "POINT(" + obj.oest + " " + obj.nord + ")";
-                conflict(wkt)
+                conflict(wkt,type);
 
             }
             transformPoint = function (lat, lon, s, d) {
@@ -194,7 +184,6 @@ var cowi = (function () {
                     var flag = false
                     _(arr).each(
                         function (s) {
-                            //console.log(item)
                             if (item.toLowerCase().indexOf($.trim(s).toLowerCase()) === false) {
                                 flag = false;
                             }
@@ -202,7 +191,6 @@ var cowi = (function () {
                         }
                     )
                     return flag;
-
                 },
                 sorter: function (items) {
                     return items.sort();
@@ -229,12 +217,12 @@ var cowi = (function () {
                 onLoad: function () {
                     cloudMap.zoomToExtentOfgeoJsonStore(store);
                     cloudMap.map.addLayers([store.layer]);
-                    conflict(store.geoJSON.features[0].properties.wkt);
+                    conflict(store.geoJSON.features[0].properties.wkt,type);
                 }
             });
             //	cloudMap.addGeoJsonStore(store);
         })();
-        var conflict = function (wkt) {
+        var conflict = function (wkt, type) {
             var count = 0;
             var arr = layers;
             $("#result-table").empty();
@@ -243,7 +231,27 @@ var cowi = (function () {
             }
             catch (e) {
             }
-            ;
+            // Lp search
+            var storeLp = new mygeocloud_ol.geoJsonStore("dk");
+            if (type === "jordstykke") {
+                storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
+            }
+            else {
+                storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
+
+            }            storeLp.load();
+            storeLp.onLoad = function () {
+                var f = this.geoJSON.features;
+                if (typeof this.geoJSON.features === "object"){
+                    $('#result-table').append("<tr><td></td><td>Lokalplaner</td></tr>");
+
+                    for (var i = 0; i < f.length; i++) {
+                        $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + f[i].properties.doklink + ">" + f[i].properties.plannr + " " + f[i].properties.plannavn + "</a></td></tr>");
+                    }
+                }
+            };
+            // Lp search end
+
             var store = [];
             $("#spinner").show();
             for (var i = 0; i < arr.length; i++) {
@@ -266,7 +274,6 @@ var cowi = (function () {
                         if (this.id.split('.')[1] === "kpplandk2_view") {
                             $.each(this.geoJSON.features,
                                 function (key, value) {
-                                    //console.log(value);
                                     $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + value.properties.html + ">" + value.properties.plannr + "</a></td></tr>");
                                 })
                         }
