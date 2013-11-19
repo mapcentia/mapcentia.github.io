@@ -66,7 +66,6 @@ var cowi = (function () {
                 if (typeFlag === "adresse") {
                     store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
                 }
-		console.log(store.sql)
                 store.load();
                 //conflict(wkt)
             };
@@ -169,7 +168,23 @@ var cowi = (function () {
                 }
                 catch (e) {
                 }
-                ;
+
+                // Lp search
+                var storeLp = new mygeocloud_ol.geoJsonStore("dk");
+                storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
+                storeLp.load();
+                storeLp.onLoad = function () {
+                    var f = this.geoJSON.features;
+                    if (typeof this.geoJSON.features === "object"){
+                        $('#result-table').append("<tr><td></td><td>Lokalplaner</td></tr>");
+
+                        for (var i = 0; i < f.length; i++) {
+                            $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + f[i].properties.doklink + ">" + f[i].properties.plannr + " " + f[i].properties.plannavn + "</a></td></tr>");
+                        }
+                    }
+                };
+                // Lp search end
+
                 var store = [];
                 $("#spinner").show();
                 for (var i = 0; i < arr.length; i++) {
