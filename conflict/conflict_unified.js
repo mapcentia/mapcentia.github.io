@@ -52,7 +52,7 @@ var cowi = (function () {
                 onLoad: function () {
                     cloudMap.zoomToExtentOfgeoJsonStore(store);
                     cloudMap.map.addLayers([store.layer]);
-                    conflict(store.geoJSON.features[0].properties.wkt);
+                    conflict(store.geoJSON.features[0].properties.wkt, typeFlag);
                 }
             });
 
@@ -159,7 +159,7 @@ var cowi = (function () {
                 }
             });
 
-            var conflict = function (wkt) {
+            var conflict = function (wkt, type) {
                 var count = 0;
                 var arr = layers;
                 $("#result-table").empty();
@@ -171,11 +171,17 @@ var cowi = (function () {
 
                 // Lp search
                 var storeLp = new mygeocloud_ol.geoJsonStore("dk");
-                storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
+                if (type === "jordstykke") {
+                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
+                }
+                else {
+                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
+
+                }
                 storeLp.load();
                 storeLp.onLoad = function () {
                     var f = this.geoJSON.features;
-                    if (typeof this.geoJSON.features === "object"){
+                    if (typeof this.geoJSON.features === "object") {
                         $('#result-table').append("<tr><td></td><td>Lokalplaner</td></tr>");
 
                         for (var i = 0; i < f.length; i++) {
@@ -207,7 +213,6 @@ var cowi = (function () {
                             if (this.id.split('.')[1] === "kpplandk2_view") {
                                 $.each(this.geoJSON.features,
                                     function (key, value) {
-                                        //console.log(value);
                                         $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + value.properties.html + ">" + value.properties.plannr + "</a></td></tr>");
                                     });
                             }
