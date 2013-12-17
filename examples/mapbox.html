@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=utf-8/>
+    <title>A MapBox Map with GeoCloud layers</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'/>
+    <script src='http://api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.js'></script>
+    <script src='http://test.eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
+    <link href='http://api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.css' rel='stylesheet'/>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+    // Visit https://www.mapbox.com/mapbox.js/overview/ for documentation and examples
+    var map = L.mapbox.map('map', 'mhoegh.ggf4c66i').setView([37.073, 137.153], 5);
+
+    // Create and add a tile layer from GeoCloud
+    var layer = new geocloud.tileLayer({
+        db: "mhoegh",
+        layer: "public.quakes2000"
+    }).addTo(map);
+
+    // Create and add a point layer from GeoCloud
+    var vector = new geocloud.sqlStore({
+        db: "mhoegh",
+        lifetime: 9999,
+        styleMap: {
+            radius: 8,
+            fillColor: "#ff7800",
+            color: "#000",
+            weight: 1,
+            opacity: 1,
+            fillOpacity: 0.8
+        },
+        // Bind a popup to each point
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup(feature.properties['name'] + "<br>Type: " + feature.properties['type'] + "<br><a target=\"_blank\" href=\"" + feature.properties['link'] + "\">Link</a>");
+        },
+        sql: "SELECT * from public.nuclearreactors2011"
+    }).load().addTo(map);
+</script>
+</body>
+</html>
