@@ -48,7 +48,7 @@
         },
         // Bind a popup to each point
         onEachFeature: function (feature, layer) {
-            layer.bindPopup(feature.properties['name'] + "<br>Type: " + feature.properties['type'] + "<br><a target=\"_blank\" href=\"" + feature.properties['link'] + "\">Link</a>");
+            layer.bindPopup(feature.properties['name'] + "<br>" + feature.properties['type'] + "<br><a target=\"_blank\" href=\"" + feature.properties['link'] + "\">Link</a>");
         },
         sql: "SELECT * from public.nuclearreactors2011"
     }).load().addTo(map);
