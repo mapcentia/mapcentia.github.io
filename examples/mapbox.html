@@ -5,7 +5,7 @@
     <title>A MapBox Map with GeoCloud layers</title>
     <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'/>
     <script src='http://api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.js'></script>
-    <script src='http://test.eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
+    <script src='http://cdn.eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
     <link href='http://api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.css' rel='stylesheet'/>
 
     <style>
@@ -48,7 +48,11 @@
         },
         // Bind a popup to each point
         onEachFeature: function (feature, layer) {
-            layer.bindPopup(feature.properties['name'] + "<br>" + feature.properties['type'] + "<br><a target=\"_blank\" href=\"" + feature.properties['link'] + "\">Link</a>");
+            layer.bindPopup(feature.properties['name'] + "<br>"
+                    + feature.properties['type']
+                    + "<br><a target='_blank' href='"
+                    + feature.properties['link']
+                    + "'>Link</a>");
         },
         sql: "SELECT * from public.nuclearreactors2011"
     }).load().addTo(map);
