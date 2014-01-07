@@ -54,7 +54,7 @@ var cowi = (function () {
                             url: 'http://geo.oiorest.dk/vejnavne.json?',
                             data: 'maxantal=20&vejnavn=' + $.trim(query.toLowerCase()) + '*&kommunekode=' + komKode,
                             dataType: 'jsonp',
-                            ontentType: "application/json; charset=ISO-8859-1",
+                            contentType: "application/json; charset=ISO-8859-1",
                             scriptCharset: "ISO-8859-1",
                             jsonp: 'callback',
                             success: function (response) {
@@ -78,6 +78,8 @@ var cowi = (function () {
                             data: 'maxantal=20&vejnavn=' + $.trim(query.match(/\D+/)) + '&husnr=' + $.trim(query.match(/\d+(\D+)?/g)) + '*&kommunekode=' + komKode,
                             dataType: 'jsonp',
                             jsonp: 'callback',
+                            contentType: "application/json; charset=ISO-8859-1",
+                            scriptCharset: "ISO-8859-1",
                             success: function (response) {
                                 $.each(response, function (i, hit) {
                                     var str = hit.vejnavn.navn + ' ' + hit.husnr + ' (' + hit.postnummer.nr + ')';
