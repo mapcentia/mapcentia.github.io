@@ -87,7 +87,8 @@ var cowi = (function () {
                     url: 'http://54.247.102.248/api/v1/elasticsearch/search/dk/aws/' + type1,
                     //data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}}}',
                     data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"municipalitycode":"0' + komKode + '"}}}}}',
-
+                    contentType: "application/json; charset=utf-8",
+                    scriptCharset: "utf-8",
                     dataType: 'jsonp',
                     jsonp: 'jsonp_callback',
                     success: function (response) {
@@ -102,6 +103,8 @@ var cowi = (function () {
                             //data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}}}',
                             data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}},"filter":{"term":{"komkode":"' + komKode + '"}}}}}',
                             dataType: 'jsonp',
+                            contentType: "application/json; charset=utf-8",
+                            scriptCharset: "utf-8",
                             jsonp: 'jsonp_callback',
                             success: function (response) {
                                 $.each(response.hits.hits, function (i, hit) {
