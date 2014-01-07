@@ -54,6 +54,8 @@ var cowi = (function () {
                             url: 'http://geo.oiorest.dk/vejnavne.json?',
                             data: 'maxantal=20&vejnavn=' + $.trim(query.toLowerCase()) + '*&kommunekode=' + komKode,
                             dataType: 'jsonp',
+                            ontentType: "application/json; charset=utf-8",
+                            scriptCharset: "utf-8",
                             jsonp: 'callback',
                             success: function (response) {
                                 $.each(response, function (i, hit) {
