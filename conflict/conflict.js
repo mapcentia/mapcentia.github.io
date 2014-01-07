@@ -153,7 +153,7 @@ var cowi = (function () {
                 type = (query.match(/\d+/g) != null) ? "jordstykke" : "ejerlav";
                 map = {};
                 $.ajax({
-                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/matrikel/' + type,
+                    url: 'http://54.247.102.248/api/v1/elasticsearch/search/dk/matrikel/' + type,
                     data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}},"filter":{"term":{"komkode":"' + komKode + '"}}}}}',
                     dataType: 'jsonp',
                     jsonp: 'jsonp_callback',
