@@ -52,7 +52,7 @@ var cowi = (function () {
                     case 'vejnavne':
                         $.ajax({
                             url: 'http://geo.oiorest.dk/vejnavne.json?',
-                            data: encodeURIComponent('maxantal=20&vejnavn=' + $.trim(query.toLowerCase()) + '*&kommunekode=' + komKode),
+                            data: 'maxantal=20&vejnavn=' + encodeURIComponent($.trim(query.toLowerCase())) + '*&kommunekode=' + komKode,
                             dataType: 'jsonp',
                             contentType: "application/json; charset=utf-8",
                             scriptCharset: "utf-8",
@@ -75,7 +75,7 @@ var cowi = (function () {
                     case 'adresser':
                         $.ajax({
                             url: 'http://geo.oiorest.dk/adresser.json?',
-                            data: encodeURIComponent('maxantal=20&vejnavn=' + $.trim(query.match(/\D+/)) + '&husnr=' + $.trim(query.match(/\d+(\D+)?/g)) + '*&kommunekode=' + komKode),
+                            data: 'maxantal=20&vejnavn=' + encodeURIComponent($.trim(query.match(/\D+/))) + '&husnr=' + $.trim(query.match(/\d+(\D+)?/g)) + '*&kommunekode=' + komKode,
                             dataType: 'jsonp',
                             jsonp: 'callback',
                             contentType: "application/json; charset=utf-8",
