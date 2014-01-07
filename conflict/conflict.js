@@ -52,10 +52,10 @@ var cowi = (function () {
                     case 'vejnavne':
                         $.ajax({
                             url: 'http://geo.oiorest.dk/vejnavne.json?',
-                            data: 'maxantal=20&vejnavn=' + $.trim(query.toLowerCase()) + '*&kommunekode=' + komKode,
+                            data: encodeURIComponent('maxantal=20&vejnavn=' + $.trim(query.toLowerCase()) + '*&kommunekode=' + komKode),
                             dataType: 'jsonp',
-                            contentType: "application/json; charset=ISO-8859-1",
-                            scriptCharset: "ISO-8859-1",
+                            contentType: "application/json; charset=utf-8",
+                            scriptCharset: "utf-8",
                             jsonp: 'callback',
                             success: function (response) {
                                 $.each(response, function (i, hit) {
@@ -75,11 +75,11 @@ var cowi = (function () {
                     case 'adresser':
                         $.ajax({
                             url: 'http://geo.oiorest.dk/adresser.json?',
-                            data: 'maxantal=20&vejnavn=' + $.trim(query.match(/\D+/)) + '&husnr=' + $.trim(query.match(/\d+(\D+)?/g)) + '*&kommunekode=' + komKode,
+                            data: encodeURIComponent('maxantal=20&vejnavn=' + $.trim(query.match(/\D+/)) + '&husnr=' + $.trim(query.match(/\d+(\D+)?/g)) + '*&kommunekode=' + komKode),
                             dataType: 'jsonp',
                             jsonp: 'callback',
-                            contentType: "application/json; charset=ISO-8859-1",
-                            scriptCharset: "ISO-8859-1",
+                            contentType: "application/json; charset=utf-8",
+                            scriptCharset: "utf-8",
                             success: function (response) {
                                 $.each(response, function (i, hit) {
                                     var str = hit.vejnavn.navn + ' ' + hit.husnr + ' (' + hit.postnummer.nr + ')';
