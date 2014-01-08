@@ -25,7 +25,17 @@ var search = (function () {
                 "weight": 5,
                 "opacity": 0.65
             };
-            document.write('<script src="' + hostname + '/api/v1/meta/' + db + '?jsonp_callback=search.callback"><\/script>');
+            $.ajax({
+                url: hostname + '/api/v1/meta/' + db,
+                dataType: 'jsonp',
+                jsonp: 'jsonp_callback',
+                success: function (obj) {
+                    for (var i = 0; i < obj.data.length; i++) {
+                        layerObj.name[obj.data[i].f_table_name] = obj.data[i].f_table_title;
+                        layerObj.url[obj.data[i].f_table_name] = obj.data[i].meta_url;
+                    }
+                }
+            });
             addLegend = function () {
                 $.ajax({
                     url: hostname + '/api/v1/legend/html/' + db,
