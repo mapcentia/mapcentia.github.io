@@ -84,7 +84,7 @@ var cowi = (function () {
                 map = {};
                 responseType = {};
                 $.ajax({
-                    url: 'http://54.247.102.248/api/v1/elasticsearch/search/dk/aws/' + type1,
+                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws/' + type1,
                     //data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}}}',
                     data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"municipalitycode":"0' + komKode + '"}}}}}',
                     contentType: "application/json; charset=utf-8",
@@ -99,7 +99,7 @@ var cowi = (function () {
                             names.push(str);
                         });
                         $.ajax({
-                            url: 'http://54.247.102.248/api/v1/elasticsearch/search/dk/matrikel/' + type2,
+                            url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/matrikel/' + type2,
                             //data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}}}',
                             data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}},"filter":{"term":{"komkode":"' + komKode + '"}}}}}',
                             dataType: 'jsonp',
@@ -233,6 +233,7 @@ var cowi = (function () {
     return {
         callback: callback,
         switchLayer: switchLayer,
-        init_search: init_search
+        init_search: init_search,
+        cloudMap: cloudMap
     };
 })();
