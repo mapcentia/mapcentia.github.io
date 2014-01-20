@@ -143,8 +143,13 @@
         // Create a new map object in element with id 'map-div'
         var map = new geocloud.map({el: "map"}), elastic, markerMap = {};
         map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
-        map.addBaseLayer(geocloud.BINGROAD);
-        map.setBaseLayer(geocloud.BINGROAD);
+        map.addBaseLayer(geocloud.OSM);
+        map.setBaseLayer(geocloud.OSM);
+
+        map.addTileLayers({
+            db: "mydb",
+            layers:["ny.tweets"]
+        })
 
         map.map.fitBounds([
             [40.74504607583721, -73.93369674682617],
