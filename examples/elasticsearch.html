@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="http://cdn.us1.mapcentia.com/js/leaflet/leaflet.css" type="text/css" rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" type="text/css"
+          rel="stylesheet">
+    <link href="http://cdn.us1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css"
+          type="text/css"
+          rel="stylesheet">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+    <title>Spatial type-a-head med Elasticsearch</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+            font: normal 15px/20px Arial, sans-serif;
+            background: #fff;
+        }
+
+        #pane {
+            position: fixed;
+            top: 0px;
+            bottom: 0px;
+            right: 0px;
+            width: 100%;
+        }
+
+        #map {
+            position: absolute;
+            width: 100%;
+            transition: opacity 250ms;
+            -moz-transition: opacity 250ms;
+            -webkit-transition: opacity 250ms;
+            height: 100%;
+        }
+
+        i {
+            font-size: 80%;
+        }
+        .alert {
+            position: relative;
+            top: 5px;
+            left: 5px;
+            width: 300px;
+        }
+
+        #search {
+            position: relative;
+            width: 300px;
+            z-index: 1;
+            left: 5px;
+        }
+
+        #tweetContainer {
+            position: relative;
+            width: 300px;
+            z-index: 1;
+            left: 5px;
+        }
+
+        section {
+            margin-top: 5px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="pane">
+    <div id="map"></div>
+</div>
+<article/>
+</div>
+<div class="alert alert-info">Demo showing how to make a spatial type-a-head with Elasticsearch. Only features within the map viewport are loaded. After a typing a search try to pan/zoom the map, and the search will refresh.</div>
+<div id="search"><input class="form-control" id="search-input" name="search-input" type="text" placeholder="Write something"/></div>
+<div class="list-group" id="tweetContainer"></div>
+</body>
+<script src='http://cdn.us1.mapcentia.com/js/underscore/underscore-min.js'></script>
+<script src="http://cdn.us1.mapcentia.com/js/raphael/raphael-min.js"></script>
+<script src='http://cdn.us1.mapcentia.com/js/leaflet/leaflet.js'></script>
+<script src="http://cdn.us1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+<script src="http://cdn.us1.mapcentia.com/js/leaflet/rlayer.js"></script>
+<script src='http://us1.mapcentia.com/api/v3/js/geocloud.js'></script>
+<script>
+    (function () {
+        var input;
+        $("input[name=search-input]").keyup(function () {
+            if (!this.value) {
+                $('#tweetContainer').empty();
+            }
+        });
+        var search = function (value) {
+            elastic.reset();
+            if (value) {
+                elastic.q = '{ "query": { "filtered": { "query": { "query_string": { "default_field": "text", "query": "' + value + '", "default_operator": "AND" } }, "filter": { "geo_bounding_box": { "geometry.coordinates": { "top_left": { "lat": {maxY}, "lon": {minX} }, "bottom_right": { "lat": {minY}, "lon": {maxX} } } } } } } }';
+                elastic.load();
+                $('#tweetContainer').empty();
+                elastic.onLoad = function () {
+                    for (var i = 0; i < this.geoJSON.features.length; i++) {
+                        var tweet = this.geoJSON.features[i];
+                        $('#tweetContainer').append(
+                                '<section><a href="#" class="list-group-item" data-tweetid=\"' +
+                                        tweet.properties.gid +
+                                        '">' +
+                                        '<h4 class="list-group-item-heading">' +
+                                        tweet.properties.user_name +
+                                        '</h4>' +
+                                        '<p class="list-group-item-text">' +
+                                        tweet.properties.text +
+                                        '</p>' +
+                                        '</a></section>'
+                        )
+                    }
+                    $('a.list-group-item').on("click", function (e) {
+                        var tweetId = $(this).data('tweetid');
+                        var marker = markerMap[tweetId];
+                        marker.openPopup(marker.getLatLng());
+                        var x = marker.feature.geometry.coordinates[1];
+                        var y = marker.feature.geometry.coordinates[0];
+                        var p = new R.Pulse(
+                                [x, y],
+                                30,
+                                {'stroke': 'none', 'fill': 'none'},
+                                {'stroke': '#30a3ec', 'stroke-width': 3});
+
+                        map.map.addLayer(p);
+                        setTimeout(function () {
+                            map.map.removeLayer(p);
+                        }, 1000);
+                    });
+                }
+            }
+        };
+
+        $("input[name=search-input]").on('input', _.debounce(function (e) {
+            search(e.target.value)
+        }, 300));
+        // Create a new map object in element with id 'map-div'
+        var map = new geocloud.map({el: "map"}), elastic, markerMap = {};
+        map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
+        map.addBaseLayer(geocloud.BINGROAD);
+        map.setBaseLayer(geocloud.BINGROAD);
+
+        map.map.fitBounds([
+            [40.74504607583721, -73.93369674682617],
+            [40.70315539593834, -74.05549049377441]
+        ]);
+        map.on("moveend", function () {
+            search($("input[name=search-input]").val());
+        })
+        // Create a GeoJSON store
+        elastic = new geocloud.elasticStore({
+            db: "mydb",
+            index: "ny",
+            size: 20,
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(feature.properties['text']);
+            },
+            pointToLayer: function (feature, latlng) {
+                var marker = L.marker(latlng,
+                        {
+                            zIndexOffset: 10000,
+                            icon: L.AwesomeMarkers.icon(
+                                    {
+                                        icon: 'icon-twitter',
+                                        color: 'blue'}
+                            )});
+                markerMap[feature.properties.gid] = marker;
+                return marker;
+            }
+        });
+        map.addGeoJsonStore(elastic);
+    })();
+</script>
+</html>
