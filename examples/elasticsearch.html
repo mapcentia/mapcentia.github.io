@@ -39,6 +39,7 @@
         i {
             font-size: 80%;
         }
+
         .alert {
             position: relative;
             top: 5px;
@@ -61,21 +62,23 @@
         section {
             margin-top: 5px;
         }
-        article{
-            z-index: 1;
-        }
 
     </style>
 </head>
 <body>
-<article></article>
 <div id="pane">
     <div id="map"></div>
 </div>
 
-<div class="alert alert-info">Demo showing how to make a spatial type-a-head with Elasticsearch. Only features within the map viewport are loaded. After a typing a search try to pan/zoom the map, and the search will refresh.</div>
-<div id="search"><input class="form-control" id="search-input" name="search-input" type="text" placeholder="Write something"/></div>
-<div class="list-group" id="tweetContainer"></div>
+<article>
+    <div class="alert alert-info">Demo showing how to make a spatial type-a-head with Elasticsearch. Only features
+        within the map viewport are loaded. After a typing a search try to pan/zoom the map, and the search will
+        refresh.
+    </div>
+    <div id="search"><input class="form-control" id="search-input" name="search-input" type="text"
+                            placeholder="Write something"/></div>
+    <div class="list-group" id="tweetContainer"></div>
+</article>
 </body>
 <script src='http://cdn.us1.mapcentia.com/js/underscore/underscore-min.js'></script>
 <script src="http://cdn.us1.mapcentia.com/js/raphael/raphael-min.js"></script>
