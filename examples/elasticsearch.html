@@ -62,6 +62,9 @@
         section {
             margin-top: 5px;
         }
+        .highlighted{
+            color: #0044cc;
+        }
 
     </style>
 </head>
@@ -88,13 +91,13 @@
 <script src='http://us1.mapcentia.com/api/v3/js/geocloud.js'></script>
 <script>
     (function () {
-        var input;
+        var input, highlighter, search;
         $("input[name=search-input]").keyup(function () {
             if (!this.value) {
                 $('#tweetContainer').empty();
             }
         });
-        var search = function (value) {
+        search = function (value) {
             elastic.reset();
             if (value) {
                 elastic.q = '{ "query": { "filtered": { "query": { "query_string": { "default_field": "text", "query": "' + value + '", "default_operator": "AND" } }, "filter": { "geo_bounding_box": { "geometry.coordinates": { "top_left": { "lat": {maxY}, "lon": {minX} }, "bottom_right": { "lat": {minY}, "lon": {maxX} } } } } } } }';
@@ -111,7 +114,7 @@
                                         tweet.properties.user_name +
                                         '</h4>' +
                                         '<p class="list-group-item-text">' +
-                                        tweet.properties.text +
+                                        highlighter(value, tweet.properties.text) +
                                         '</p>' +
                                         '</a></section>'
                         )
@@ -136,6 +139,15 @@
                 }
             }
         };
+        highlighter = function (value, item) {
+            _($.trim(value).split(' ')).each(
+                    function (s) {
+                        var regex = new RegExp('(' + s + ')', 'gi');
+                        item = item.replace(regex, "<b class=\"highlighted\">$1</b>");
+                    }
+            );
+            return item;
+        }
 
         $("input[name=search-input]").on('input', _.debounce(function (e) {
             search(e.target.value)
