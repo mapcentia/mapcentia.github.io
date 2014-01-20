@@ -49,29 +49,30 @@
         #search {
             position: relative;
             width: 300px;
-            z-index: 1;
             left: 5px;
         }
 
         #tweetContainer {
             position: relative;
             width: 300px;
-            z-index: 1;
             left: 5px;
         }
 
         section {
             margin-top: 5px;
         }
+        article{
+            z-index: 1;
+        }
 
     </style>
 </head>
 <body>
+<article/>
 <div id="pane">
     <div id="map"></div>
 </div>
-<article/>
-</div>
+
 <div class="alert alert-info">Demo showing how to make a spatial type-a-head with Elasticsearch. Only features within the map viewport are loaded. After a typing a search try to pan/zoom the map, and the search will refresh.</div>
 <div id="search"><input class="form-control" id="search-input" name="search-input" type="text" placeholder="Write something"/></div>
 <div class="list-group" id="tweetContainer"></div>
@@ -100,7 +101,7 @@
                     for (var i = 0; i < this.geoJSON.features.length; i++) {
                         var tweet = this.geoJSON.features[i];
                         $('#tweetContainer').append(
-                                '<section><a href="#" class="list-group-item" data-tweetid=\"' +
+                                '<section><a href="javascript:void(0)" class="list-group-item" data-tweetid=\"' +
                                         tweet.properties.gid +
                                         '">' +
                                         '<h4 class="list-group-item-heading">' +
