@@ -62,7 +62,8 @@
         section {
             margin-top: 5px;
         }
-        .highlighted{
+
+        .highlighted {
             color: #0044cc;
         }
 
@@ -91,12 +92,18 @@
 <script src='http://us1.mapcentia.com/api/v3/js/geocloud.js'></script>
 <script>
     (function () {
-        var input, highlighter, search;
+        var map, input, highlighter, search, elastic, markerMap = {};
+
         $("input[name=search-input]").keyup(function () {
             if (!this.value) {
                 $('#tweetContainer').empty();
             }
         });
+
+        $("input[name=search-input]").on('input', _.debounce(function (e) {
+            search(e.target.value)
+        }, 300));
+
         search = function (value) {
             elastic.reset();
             if (value) {
@@ -149,18 +156,15 @@
             return item;
         }
 
-        $("input[name=search-input]").on('input', _.debounce(function (e) {
-            search(e.target.value)
-        }, 300));
         // Create a new map object in element with id 'map-div'
-        var map = new geocloud.map({el: "map"}), elastic, markerMap = {};
+        map = new geocloud.map({el: "map"});
         map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
         map.addBaseLayer(geocloud.OSM);
         map.setBaseLayer(geocloud.OSM);
 
         map.addTileLayers({
             db: "mydb",
-            layers:["ny.tweets"]
+            layers: ["ny.tweets"]
         })
 
         map.map.fitBounds([
