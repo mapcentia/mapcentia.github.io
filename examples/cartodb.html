@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CartoDB/GC2/Elasticsearch example</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <link rel="shortcut icon" href="http://cartodb.com/assets/favicon.ico"/>
+    <style>
+        html, body, #map {
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.css"/>
+    <!-- include font-awesome.css library -->
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" type="text/css"
+          rel="stylesheet">
+    <!-- include leaflet.awesome-markers.css library -->
+    <link href="http://cdn.us1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css"
+          type="text/css"
+          rel="stylesheet">
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/themes/css/cartodb.ie.css"/>
+    <![endif]-->
+</head>
+<body>
+<div id="map"></div>
+
+<!-- include cartodb.js library -->
+<script src="http://libs.cartocdn.com/cartodb.js/v3/cartodb.js"></script>
+<!-- include geocloud.js library -->
+<script src='http://us1.mapcentia.com/api/v3/js/geocloud.js'></script>
+<!-- include leaflet.awesome-markers.js library -->
+<script src="http://cdn.us1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+
+
+<script>
+    function main() {
+        cartodb.createVis('map', 'http://documentation.cartodb.com/api/v2/viz/8f7b575c-8cb1-11e3-8b3f-0edd25b1ac90/viz.json', {
+            shareable: true,
+            title: true,
+            description: true,
+            search: true,
+            tiles_loader: true
+        })
+                .done(function (vis, layers) {
+                    // you can get the native Leaflet map to work with
+                    var map = vis.getNativeMap();
+                    // Create and add a Elasticsearch point layer from GeoCloud
+                    new geocloud.elasticStore({
+                        db: "mydb",
+                        index: "ny",
+                        size: 100,
+                        q: '{"query":{"filtered":{"query":{"query_string":{"default_field":"text","query":"subway","default_operator":"AND"}},"filter":{"geo_bounding_box":{"geometry.coordinates":{"top_left":{"lat":40.731893030726695,"lon":-74.01675939559937},"bottom_right":{"lat":40.72085157020638,"lon":-73.99062395095825}}}}}}}',
+                        onEachFeature: function (feature, layer) {
+                            layer.bindPopup(feature.properties['text']);
+                        },
+                        pointToLayer: function (feature, latlng) {
+                            var marker = L.marker(latlng, {
+                                        zIndexOffset: 10000,
+                                        icon: L.AwesomeMarkers.icon({icon: 'icon-twitter', color: 'blue'})
+                                    }
+                            );
+                            return marker;
+                        }
+                    }).load().addTo(map);
+                    // Create and add a tile layer from GeoCloud
+                    var layer = new geocloud.tileLayer({
+                        db: "mydb",
+                        layer: "ny.tweets"
+                    }).addTo(map);
+                })
+                .error(function (err) {
+                    console.log(err);
+                });
+    }
+    window.onload = main;
+</script>
+</body>
+</html>
