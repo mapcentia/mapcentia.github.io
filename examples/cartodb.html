@@ -37,7 +37,8 @@
 
 
 <script>
-    function main() {
+    (function () {
+        // Create a map from a CartoDB visualization
         cartodb.createVis('map', 'http://documentation.cartodb.com/api/v2/viz/8f7b575c-8cb1-11e3-8b3f-0edd25b1ac90/viz.json', {
             shareable: true,
             title: true,
@@ -75,8 +76,7 @@
                 .error(function (err) {
                     console.log(err);
                 });
-    }
-    window.onload = main;
+    })();
 </script>
 </body>
 </html>
