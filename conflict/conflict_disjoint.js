@@ -44,63 +44,43 @@ var cowi = (function () {
             var names = [];
             var map = {};
             var type = "";
-            var checkArr = [];
             var search = _.debounce(function (query, process) {
-                type = (query.match(/\d+/g) != null) ? "adresser" : "vejnavne";
-                map = {};
-                switch (type) {
-                    case 'vejnavne':
-                        $.ajax({
-                            url: 'http://geo.oiorest.dk/vejnavne.json?',
-                            data: 'maxantal=20&vejnavn=' + encodeURIComponent($.trim(query.toLowerCase())) + '*&kommunekode=' + komKode,
-                            dataType: 'jsonp',
-                            contentType: "application/json; charset=utf-8",
-                            scriptCharset: "utf-8",
-                            jsonp: 'callback',
-                            success: function (response) {
-                                $.each(response, function (i, hit) {
-                                    if ($.inArray(hit.navn, checkArr) === -1) {
-
-                                        var str = hit.navn;
-                                        names.push(str);
-                                    }
-                                    checkArr.push(hit.navn);
-                                });
-                                process(names);
-                                names = [];
-                                checkArr = [];
-                            }
-                        });
-                        break;
-                    case 'adresser':
-                        $.ajax({
-                            url: 'http://geo.oiorest.dk/adresser.json?',
-                            data: 'maxantal=20&vejnavn=' + encodeURIComponent($.trim(query.match(/\D+/))) + '&husnr=' + $.trim(query.match(/\d+(\D+)?/g)) + '*&kommunekode=' + komKode,
-                            dataType: 'jsonp',
-                            jsonp: 'callback',
-                            contentType: "application/json; charset=utf-8",
-                            scriptCharset: "utf-8",
-                            success: function (response) {
-                                $.each(response, function (i, hit) {
-                                    var str = hit.vejnavn.navn + ' ' + hit.husnr + ' (' + hit.postnummer.nr + ')';
-                                    map[str] = hit.etrs89koordinat;
-                                    names.push(str);
-                                });
-                                process(names);
-                                names = [];
-                            }
-                        });
-                        break;
+                if (query.match(/\d+/g) === null && query.match(/\s+/g) === null) {
+                    type = "vejnavn,bynavn";
                 }
+                if (query.match(/\d+/g) === null && query.match(/\s+/g) !== null) {
+                    type = "vejnavn_bynavn";
+                }
+                if (query.match(/\d+/g) !== null) {
+                    type = "adresse";
+                }
+                map = {};
+                $.ajax({
+                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws/' + type,
+                    data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"municipalitycode":"0' + komKode + '"}}}}}',
+                    contentType: "application/json; charset=utf-8",
+                    scriptCharset: "utf-8",
+                    dataType: 'jsonp',
+                    jsonp: 'jsonp_callback',
+                    success: function (response) {
+                        $.each(response.hits.hits, function (i, hit) {
+                            var str = hit._source.properties.string;
+                            map[str] = hit._source.properties.gid;
+                            names.push(str);
+                        });
+                        process(names);
+                        names = [];
+                    }
+                });
             }, 200);
             $('#a_search').typeahead({
                 source: function (query, process) {
                     search(query, process);
                 },
                 updater: function (item) {
-                    var selected = (type === "adresser") ? map[item] : null;
-                    if (selected) {
-                        showOnMap(selected);
+                    var selectedGid = (type === "adresse") ? map[item] : null;
+                    if (selectedGid) {
+                        showOnMap(selectedGid);
                     }
                     return item;
                 },
@@ -131,20 +111,20 @@ var cowi = (function () {
                 },
                 items: 10
             });
-            var showOnMap = function (obj) {
-                var p = transformPoint(obj.oest, obj.nord, "EPSG:25832", "EPSG:900913")
-                cloudMap.map.setCenter(new OpenLayers.LonLat(p.x, p.y), 17);
-                var wkt = "POINT(" + obj.oest + " " + obj.nord + ")";
-                conflict(wkt,type);
-
+            var showOnMap = function (gid) {
+                store.reset();
+                store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
+                store.load();
             }
-            transformPoint = function (lat, lon, s, d) {
-                var source = new Proj4js.Proj(s);    //source coordinates will be in Longitude/Latitude
-                var dest = new Proj4js.Proj(d);
-                var p = new Proj4js.Point(lat, lon);
-                Proj4js.transform(source, dest, p);
-                return p;
-            };
+            store = new geocloud.geoJsonStore({
+                db: "dk",
+                sql: null,
+                onLoad: function () {
+                    cloudMap.zoomToExtentOfgeoJsonStore(store);
+                    cloudMap.map.addLayers([store.layer]);
+                    conflict(store.geoJSON.features[0].properties.wkt,type);
+                }
+            });
         })();
 
         (function () {
@@ -195,7 +175,7 @@ var cowi = (function () {
                             }
                             else flag = true;
                         }
-                    );
+                    )
                     return flag;
                 },
                 sorter: function (items) {
@@ -216,7 +196,7 @@ var cowi = (function () {
                 store.reset();
                 store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM matrikel.jordstykke WHERE gid=" + gid;
                 store.load();
-            }
+            };
             store = new geocloud.geoJsonStore({
                 db: "dk",
                 sql: null,
@@ -226,7 +206,6 @@ var cowi = (function () {
                     conflict(store.geoJSON.features[0].properties.wkt,type);
                 }
             });
-            //	cloudMap.addGeoJsonStore(store);
         })();
         var conflict = function (wkt, type) {
             var count = 0;
@@ -289,7 +268,7 @@ var cowi = (function () {
                         $("#spinner").hide();
                     }
                 }
-            };
+            }
             store = null;
         }
         return cloudMap;
