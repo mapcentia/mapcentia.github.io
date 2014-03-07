@@ -97,7 +97,7 @@ var cowi_lp = (function () {
                     grid.grid.getSelectionModel().each(function (rec) {
                         feature = rec.get('feature');
                     });
-                    var link = "http://mygeocloud.cowi.webhouse.dk/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/lokalplaner.lpplandk2_view/" + feature.attributes.planid;
+                    var link = "http://mygeocloud.cowi.webhouse.dk/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + feature.attributes.planid;
                     var record = grid.grid.getSelectionModel().getSelected();
                     window.open(link);
                 }
