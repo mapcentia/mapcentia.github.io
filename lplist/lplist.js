@@ -85,7 +85,8 @@ var init_list = function(conf) {
 		}
 		)
 			$("#look").on("click", function(){
-				var record=grid.grid.getSelectionModel().getSelected();window.open(record.get('doklink'));
+				var link = "http://mygeocloud.cowi.webhouse.dk/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/lokalplaner.lpplandk2_view/" + record.get('planid');
+				var record=grid.grid.getSelectionModel().getSelected();window.open(link);
 			}
 			)
 	};
