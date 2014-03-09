@@ -77,7 +77,7 @@ var cowiLpSearch = (function () {
                         onLoad: function () {
                             //cloudMap.zoomToExtentOfgeoJsonStore(store);
                             //cloudMap.map.addLayers([store.layer]);
-                            window.open("http://mygeocloud.cowi.webhouse.dk/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + store.geoJSON.features[0].properties.planid);
+                            window.location = "http://mygeocloud.cowi.webhouse.dk/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + store.geoJSON.features[0].properties.planid;
                         }
                     });
             }());
