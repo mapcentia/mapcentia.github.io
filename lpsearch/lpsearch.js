@@ -20,7 +20,7 @@ var cowiLpSearch = (function () {
                         success: function (response) {
                             $.each(response.hits.hits, function (i, hit) {
                                 var str = hit._source.properties.string;
-                                map[str] = hit._source.properties.gid;
+                                map[str] = hit._source.properties.planid;
                                 names.push(str);
                             });
                             process(names);
@@ -66,10 +66,12 @@ var cowiLpSearch = (function () {
                     },
                     items: 10
                 });
-                var showOnMap = function (gid) {
-                    store.reset();
-                    store.sql = "SELECT planid FROM planer.lokalplan_vedtaget WHERE gid=" + gid;
-                    store.load();
+                var showOnMap = function (planid) {
+                    /*store.reset();
+                    store.sql = "SELECT planid FROM planer.lokalplan_vedtaget WHERE planid=" + planid;
+                    store.load();*/
+                    window.location = "http://mygeocloud.cowi.webhouse.dk/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + planid;
+
                 };
                 store = new geocloud.geoJsonStore({
                         db: "dk",
