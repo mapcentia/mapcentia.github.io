@@ -30,6 +30,7 @@ var cowiLpSearch = (function () {
                 }, 200);
                 $('#lp').typeahead({
                     source: function (query, process) {
+                        $("#vislp").empty();
                         search(query, process);
                     },
                     updater: function (item) {
@@ -70,7 +71,8 @@ var cowiLpSearch = (function () {
                     /*store.reset();
                     store.sql = "SELECT planid FROM planer.lokalplan_vedtaget WHERE planid=" + planid;
                     store.load();*/
-                    window.location = "http://mygeocloud.cowi.webhouse.dk/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + planid;
+                    var url = "http://mygeocloud.cowi.webhouse.dk/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + planid;
+                    $("#vislp").html("<a target='_blank' href='" + url + "'>Vis</a>");
 
                 };
                 store = new geocloud.geoJsonStore({
