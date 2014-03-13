@@ -65,10 +65,13 @@ var cowi_lp = (function () {
         loadMessage.show({ msg: 'Henter lokalplaner...',
             progressText: 'Henter...', width: 300, wait: true, waitConfig: {interval: 200} });
         var store = new mygeocloud_ol.geoJsonStore("dk", {styleMap: styleMap});
-        //var b = cloud.addTileLayers(["public.kms"],{isBaseLayer:true});
-        //cloud.map.setBaseLayer(b[0]);
+        try {
+            cloud.addOSM();
+        } catch (e) {
+
+        }
+
         cloud.addGeoJsonStore(store);
-        //store.selectFeatureControl.activate();
         store.sql = "select planid,komnr,objektkode,plantype,plannr,plannavn,anvendelsegenerel as anvgen,anvspec,datoforsl,planstatus,zonestatus,the_geom from planer.lokalplan_vedtaget where komnr=" + conf.komnr + " union select planid,komnr,objektkode,plantype,plannr,plannavn,anvendelsegenerel as anvgen,anvspec,datoforsl,planstatus,zonestatus,the_geom from planer.lokalplan_forslag where komnr=" + conf.komnr + " order by planid desc";
         store.load();
         store.onLoad = function () {
@@ -89,7 +92,7 @@ var cowi_lp = (function () {
                         cloud.map.zoomToExtent(feature.geometry.getBounds());
                     });
                 }
-            )
+            );
             $("#look").on("click",
                 function () {
                     var feature;
