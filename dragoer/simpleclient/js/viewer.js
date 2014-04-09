@@ -19,7 +19,6 @@ MapCentia = (function () {
     "use strict";
     var switchLayer, arrMenu, setBaseLayer, addLegend, autocomplete, hostname, cloud, db, schema, uri, hash, osm, showInfoModal, qstore = [], share, permaLink, shareTwitter, shareFacebook, shareLinkedIn, shareGooglePlus, shareTumblr, shareStumbleupon;
     hostname = geocloud_host;
-    console.log(geocloud_host);
     uri = geocloud.pathName;
     hash = decodeURIComponent(geocloud.urlHash);
     db = "pipeh";
@@ -241,7 +240,6 @@ MapCentia = (function () {
                         if (typeof response.data.extents === "object") {
                             if (typeof response.data.extents[schema] === "object") {
                                 extent = response.data.extents[schema];
-                                console.log(extent)
                             }
                         }
                         //Set up the state from the URI
