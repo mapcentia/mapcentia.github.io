@@ -90,27 +90,27 @@ MapCentia = (function () {
         $("#share-javascript").val(javascript);
     };
     shareTwitter = function () {
-        var url = hostname + permaLink();
+        var url = permaLink();
         window.open("https://twitter.com/share?url=" + encodeURIComponent(url), '_blank', 'location=yes,height=300,width=520,scrollbars=yes,status=yes');
     };
     shareLinkedIn = function () {
-        var url = hostname + permaLink();
+        var url = permaLink();
         window.open("https://www.linkedin.com/cws/share?url=" + encodeURIComponent(url), '_blank', 'location=yes,height=300,width=520,scrollbars=yes,status=yes');
     };
     shareGooglePlus = function () {
-        var url = hostname + permaLink();
+        var url = permaLink();
         window.open("https://plus.google.com/share?url=" + encodeURIComponent(url), '_blank', 'location=yes,height=300,width=520,scrollbars=yes,status=yes');
     };
     shareFacebook = function () {
-        var url = hostname + permaLink();
+        var url = permaLink();
         window.open("https://www.facebook.com/sharer/sharer.php?u=" + encodeURIComponent(url), '_blank', 'location=yes,height=300,width=520,scrollbars=yes,status=yes');
     };
     shareTumblr = function () {
-        var url = hostname + permaLink();
+        var url = permaLink();
         window.open("http://www.tumblr.com/share?v=3&t=My%20map&u=" + encodeURIComponent(url), '_blank', 'location=yes,height=300,width=520,scrollbars=yes,status=yes');
     };
     shareStumbleupon = function () {
-        var url = hostname + permaLink();
+        var url = permaLink();
         window.open("http://www.stumbleupon.com/submit?url=" + encodeURIComponent(url), '_blank', 'location=yes,height=300,width=520,scrollbars=yes,status=yes');
     };
     permaLink = function () {
