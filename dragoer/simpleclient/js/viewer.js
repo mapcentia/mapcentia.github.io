@@ -54,7 +54,7 @@ MapCentia = (function () {
         });
     };
     share = function () {
-        var url = hostname + permaLink(), layers, arr = [], layersStr = "", i, p, javascript;
+        var url = permaLink(), layers, arr = [], layersStr = "", i, p, javascript;
         $("#modal-share").modal();
         $("#share-url").val(url);
         $("#share-iframe").val("<iframe width='100%' height='500px' frameBorder='0' src='" + url + "'></iframe>");
@@ -115,7 +115,7 @@ MapCentia = (function () {
     };
     permaLink = function () {
         var p = geocloud.transformPoint(cloud.getCenter().x, cloud.getCenter().y, "EPSG:900913", "EPSG:4326");
-        return "/dragoer/simpleclient/index.html#" + cloud.getBaseLayerName() + "/" + Math.round(cloud.getZoom()).toString() + "/" + (Math.round(p.x * 10000) / 10000).toString() + "/" + (Math.round(p.y * 10000) / 10000).toString() + "/" + cloud.getNamesOfVisibleLayers();
+        return "http://mapcentia.github.io/dragoer/simpleclient/index.html#" + cloud.getBaseLayerName() + "/" + Math.round(cloud.getZoom()).toString() + "/" + (Math.round(p.x * 10000) / 10000).toString() + "/" + (Math.round(p.y * 10000) / 10000).toString() + "/" + cloud.getNamesOfVisibleLayers();
     };
     autocomplete = new google.maps.places.Autocomplete(document.getElementById('search-input'));
     google.maps.event.addListener(autocomplete, 'place_changed', function () {
