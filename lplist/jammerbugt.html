@@ -23,11 +23,43 @@
 <div id="grid" style="width: 100%;height: 300px"></div>
 
 <script type="text/javascript" src="http://eu1.mapcentia.com/api/v1/js/api.js"></script>
-<script type="text/javascript" src="lplist.js"></script>
+<script type="text/javascript" src="lokalplaner.js"></script>
 <script>
-    var list = new cowi_lp.init_list({
+    var list = new mapcentia_lokalplaner.init({
         komnr: 849,
         table: null,
-        db: "jammerbugt"
+        db: "jammerbugt",
+        cm: [
+            {
+                "header": "Plannr",
+                "dataIndex": "plannr",
+                "type": "varchar",
+                "typeObj": null
+            },
+            {
+                "header": "Plannavn",
+                "dataIndex": "plannavn",
+                "type": "varchar",
+                "typeObj": null
+            },
+            {
+                "header": "Anvendelse",
+                "dataIndex": "anvgen",
+                "type": "varchar",
+                "typeObj": null
+            },
+            {
+                "header": "Zonestatus",
+                "dataIndex": "zonestatus",
+                "type": "varchar",
+                "typeObj": null
+            },
+            {
+                "header": "Planstatus",
+                "dataIndex": "planstatus",
+                "type": "varchar",
+                "typeObj": null
+            }
+        ]
     });
 </script>
