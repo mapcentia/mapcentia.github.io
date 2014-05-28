@@ -228,7 +228,7 @@ var cowi = (function () {
             storeLp.onLoad = function () {
                 var f = this.geoJSON.features;
                 if (typeof this.geoJSON.features === "object"){
-                    $('#result-table').append("<tr><td></td><td>Lokalplaner</td></tr>");
+                    $('#result-table').append("<tr><td></td><td class='layer-name'>Lokalplaner</td></tr>");
 
                     for (var i = 0; i < f.length; i++) {
                         $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + f[i].properties.doklink + ">" + f[i].properties.plannr + " " + f[i].properties.plannavn + "</a></td></tr>");
