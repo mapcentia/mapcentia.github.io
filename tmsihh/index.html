@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link href="http://eu1.mapcentia.com/js/leaflet/leaflet.css" type="text/css" rel="stylesheet">
+<link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
+<link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap-responsive.min.css" type="text/css"
+      rel="stylesheet">
+<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" type="text/css"
+      rel="stylesheet">
+<link href="http://eu1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" type="text/css"
+      rel="stylesheet">
+<link rel="stylesheet" href="http://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css">
+<link href="http://eu1.mapcentia.com/js/leaflet/TwitterCluster.css" type="text/css" rel="stylesheet">
+
+<title>#TMSIhh</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<style>
+body {
+    margin: 0px;
+    padding: 0px;
+    font: normal 15px/20px Arial, sans-serif;
+    background: #fff;
+}
+
+#logo {
+    width: 100px;
+    margin-bottom: 20px;
+}
+
+article {
+    float: right;
+    width: 33.3333%;
+    min-width: 320px;
+    position: relative;
+    padding-top: 40px;
+    padding-bottom: 33.3333%;
+    z-index: 1000;
+}
+
+section {
+    padding: 40px;
+    margin-right: 40px;
+    position: relative;
+    transition: background 500ms, color 500ms;
+    -moz-transition: background 500ms, color 500ms;
+    -webkit-transition: background 500ms, color 500ms;
+}
+
+section,
+section a {
+    color: #888;
+    color: rgba(128, 128, 128, 0);
+    text-decoration: none;
+    text-shadow: rgba(64, 64, 64, 1) 0px 0px 4px;
+}
+
+section {
+    background: #ffffff;
+    opacity: 0.4
+
+}
+
+section.active {
+    background: #000;
+    color: #eee;
+    background: rgba(0, 0, 0, 0.7);
+    opacity: 1;
+}
+
+section.active a {
+    color: #eee;
+}
+
+section.active small {
+    color: #aaa;
+}
+
+h1 {
+    font-size: 2em;
+    line-height: 1em;
+}
+
+h2 {
+    font-size: 1.3333em;
+}
+
+h1, h2 {
+    margin: 0px 0px 10px;
+}
+
+p {
+    margin: 0px;
+}
+
+.scroll {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    font-size: 10px;
+    text-transform: uppercase;
+    padding: 5px 10px;
+}
+
+.colophon {
+    display: block;
+    margin-top: 10px;
+}
+
+/*
+.cover:before {
+    content:'';
+    display:block;
+    width:120px; height:120px;
+    margin:0px auto 20px;
+}
+*/
+#pane {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    width: 66.6666%;
+}
+
+#map {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    width: 200%;
+    right: -50%;
+    transition: opacity 250ms;
+    -moz-transition: opacity 250ms;
+    -webkit-transition: opacity 250ms;
+}
+
+.spot {
+    width: 120px;
+    height: 120px;
+    margin: -60px 0px 0px -60px;
+    background: url(sprite.png) 120px 120px no-repeat;
+    position: absolute;
+}
+
+.leaflet-top {
+    left: 25% !important;
+    right: auto !important;
+}
+
+a, a:hover, a:focus {
+    /*color: #ff0000 !important;*/
+}
+
+section a, section a:hover, section a:focus {
+    color: #fff !important;
+}
+
+/* Distinguish the "cover page" visually other sections. */
+body.section-0 #map {
+    /*opacity: 0.5;*/
+}
+
+@media (max-width: 640px) {
+    body {
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    article {
+        width: 100%;
+        min-width: 100%;
+        padding-top: 0px;
+        padding-bottom: 200%;
+    }
+
+    section {
+        text-shadow: none;
+        margin-right: 0px;
+        padding: 30px;
+    }
+
+    section.active {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+    }
+
+    #pane {
+        width: 100%;
+    }
+
+    #map {
+        bottom: 0%;
+        right: 0%;
+        width: 100%;
+        height: 150%;
+    }
+
+    .leaflet-top {
+        display: none;
+    }
+
+}
+
+@media (min-width: 1280px) {
+    body {
+        font-size: 18px;
+        line-height: 24px;
+    }
+}
+
+#search-box {
+    position: absolute;
+    top: 20px;
+    left: 100px;
+}
+
+.typeahead .dropdown-menu li a {
+    color: #1883c6 !important;
+}
+
+#about {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
+#type {
+    display: none;
+}
+.leaflet-top {
+    left: 0px !important;
+    right: auto !important;
+    opacity: 0.8;
+}
+</style>
+</head>
+<body>
+<div id="pane">
+    <div id="map"></div>
+    <div id="search-box">
+        <input style="width:220px" id="search" autocomplete="off" type="text" placeholder="Søg">
+        <select id="type">
+            <option value="Alle">Alle</option>
+            <option value="Unge">Unge</option>
+            <option value="Landsbyboen">Landsbyboen</option>
+            <option value="Brobygger">Brobygger</option>
+            <option value="Hedehusbonde">Hedehusbonde</option>
+            <option value="Pendler">Pendler</option>
+            <option value="Gennemkørselsby">Gennemkørselsby</option>
+            <option value="Industrikulturarven">Industrikulturarven</option>
+            <option value="Ideer">Ideer</option>
+            <option value="Knopskydning">Knopskydning</option>
+            <option value="Charlottekvarteret">Charlottekvarteret</option>
+            <option value="Fløng">Fløng</option>
+            <option value="Identitet">Identitet</option>
+            <option value="Indflydelse">Indflydelse</option>
+        </select>
+    </div>
+</div>
+
+<article>
+    <section id='cover' class='cover active'>
+
+        <h1>#TMSIHH</h1>
+
+        <p>Tweets med #tmsihh. Scroll ned for at læse.</p>
+
+        <div><a id="about" href="javascript:void(0)">Om</a></div>
+        <small class='scroll'>Scroll ▼</small>
+    </section>
+</article>
+<div id="modal-video" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            ×
+        </button>
+        <h1 id="header-video"></h1>
+    </div>
+    <div class="modal-body" id="body-video">
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">
+            Luk
+        </button>
+    </div>
+</div>
+<div id="modal-about" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+            ×
+        </button>
+        <h2>Om #TMSIHH</h2>
+
+    </div>
+    <div class="modal-body">
+        <p>.....</p>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">
+            Luk
+        </button>
+    </div>
+</div>
+</body>
+<script src="http://eu1.mapcentia.com/js/raphael/raphael-min.js"></script>
+<script src='http://eu1.mapcentia.com/js/underscore/underscore-min.js'></script>
+<script src='http://eu1.mapcentia.com/js/leaflet/leaflet.js'></script>
+<script src="http://eu1.mapcentia.com/js/leaflet/leaflet.markercluster-src.js"></script>
+<script src="http://eu1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+<script src='http://eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
+<script src="http://eu1.mapcentia.com/js/jqote2/jquery.jqote2.js"></script>
+<script src="http://eu1.mapcentia.com/js/bootstrap/js/bootstrap.min.js"></script>
+<script src="http://eu1.mapcentia.com/js/raphael/dist/rlayer-src.js"></script>
+<script src="http://maps.stamen.com/js/tile.stamen.js?v1.2.0"></script>
+<script type="text/html" id="template-sections">
+    <section id='spot_<%= this.properties['gid'] %>' class='cover active'>
+    <h4><%= this.properties['text'] %></h4>
+    <p><i><a target="_blank" href="https://twitter.com/<%= this.properties['user_screen_name'] %>"><%=
+        this.properties['user_screen_name'] %></a></i></p>
+    <p><% if (typeof $.parseJSON(this.properties['entities']).media !== "undefined") { %>
+        <img src="<%= $.parseJSON(this.properties['entities']).media[0].media_url %>">
+
+        <% } %></p>
+    </section>
+</script>
+<script>
+$("#about").click(function () {
+    $("#modal-about").modal();
+})
+function showVideo(video, name) {
+    $("#body-video").html('<iframe src="http://player.vimeo.com/video/' + video + '" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> <p><a href="http://vimeo.com/42997705">Muligheder</a> from <a href="http://vimeo.com/user11620242">CiTyBee</a> on <a href="http://vimeo.com">Vimeo</a>.</p>');
+    $("#header-video").html(name);
+    $("#modal-video").modal().on('hidden', function () {
+        $("#body-video").html('');
+    })
+}
+function scrollTo(id) {
+    $('html, body').animate({
+        scrollTop: $(id).offset().top
+    }, 1000);
+}
+
+(function () {
+    var gids = [];
+
+    var map = new geocloud.map({
+        el: "map"
+    });
+    map.on("moveend", function () {
+    })
+    map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
+    map.addBaseLayer(geocloud.BINGROAD);
+    map.setBaseLayer(geocloud.BINGROAD);
+    map.map.fitBounds([
+        [55.7, 12.10],
+        [55.6, 12.20]
+    ]);
+    var fun = function (arr, text) {
+        var m = 0, tagCloud = "", tags = [], size;
+        $.each(arr, function (index, value) {
+            if (typeof value !== "object") {
+                tags[0] = value;
+                tags[1] = 1;
+            }
+            else {
+                tags = value;
+
+            }
+            tagCloud = tagCloud + "<span style='box-shadow: 1px 2px rgba(0, 0, 0, 0.1);border:1px solid rgba(0, 0, 0, 0.2);padding:2px;opacity:0.9;background-color:white;font-weight: bold;color: #0a76be;font-size: " + (70 + (tags[1] * 30)) + "%'>" + tags[0] + "</span> ";
+            if (((m / 2) % 1) === 0) {
+                tagCloud = tagCloud + "<br>";
+            }
+            m++;
+        });
+        var left = -80;
+        size = (typeof text === "number") ? 40 : 20;
+        var top = (m > 3) ? 25 : 50;
+        var cssClass = (typeof text !== "number") ? "twitter-single" : "twitter-cluster";
+        return new L.DivIcon({ html: '<div><span>' + text + '</span><span style="display: inline;pointer-events:none;overflow:sd;border: 0px solid white;height:150px;top:-80px;left:' + left + 'px;position: absolute;width: 200px"><span style="position:relative; top:' + top + '%;">' + tagCloud + '</span></span></div>', className: 'marker-cluster ' + cssClass, iconSize: new L.Point(size, size) });
+    }
+    $('#search').typeahead({
+        items: 16,
+        source: _.debounce(function (query, process) {
+            var texts = [], filter;
+            filter = $("#type").val();
+            elastic.reset();
+            if (filter !== "Alle") {
+                elastic.q = '{"query":{"filtered":{"query":{"query_string":{"default_field":"text","query":"' + query.toLowerCase() + '","default_operator":"AND"}},"filter":{"term":{"type1":["' + filter.toLowerCase() + '"]}}}}}';
+            }
+            else {
+                elastic.q = '{"query":{"query_string":{"default_field":"text","query":"' + query.toLowerCase() + '","default_operator":"AND"}}}';
+            }
+            elastic.onLoad = function () {
+                $.each(elastic.geoJSON.features, function (i, v) {
+                    texts[i] = v.properties.text;
+                    gids[v.properties.text] = v.properties.gid;
+                });
+                process(texts);
+            };
+            elastic.load();
+        }, 300),
+        updater: function (item) {
+            elastic.reset();
+            elastic.q = '{"query":{"query_string":{"default_field":"gid","query":' + gids[item] + ',"default_operator":"AND"}}}';
+            elastic.onLoad = function () {
+                map.zoomToExtentOfgeoJsonStore(elastic);
+            },
+                    elastic.load();
+            return item;
+        },
+        matcher: function (item) {
+            return true;
+        },
+        sorter: function (items) {
+            return items.sort();
+            return items;
+        },
+        highlighter: function (item) {
+            _($.trim(this.query).split(' ')).each(
+                    function (s) {
+                        var regex = new RegExp('(' + s + ')', 'gi');
+                        item = item.replace(regex, "<b>$1</b>");
+                    }
+            );
+            return item;
+        }
+    });
+
+    var tweetGroups = new L.MarkerClusterGroup({
+        maxClusterRadius: 60,
+        iconCreateFunction: null,
+        spiderfyOnMaxZoom: true,
+        showCoverageOnHover: false,
+        zoomToBoundsOnClick: true,
+        spiderfyDistanceMultiplier: 2,
+        vigga: fun
+    });
+    var tweet = new geocloud.sqlStore({
+        db: "mhoegh",
+        onLoad: function () {
+            map.map.addLayer(tweetGroups);
+        },
+        sql: "SELECT * FROM tmsihh.tweets",
+        onEachFeature: function(feature,layer){
+
+        },
+        pointToLayer: function (feature, latlng) {
+            var f = L.marker(latlng,
+                    {icon: (function () {
+                        feature.properties.text = feature.properties.text.replace("#tmsihh", "")
+                        var n = feature.properties.text.match(/#\S*/gi) || []
+                        return fun(n, "")
+
+                    })()
+                    }).on("click", function(){
+                        scrollTo("#spot_" + feature.properties.gid);
+                    }).bindPopup(feature.properties['text']);
+            f.martin = {id: feature.properties.gid, text: feature.properties.text};
+            tweetGroups.addLayer(f);
+            return tweetGroups;
+        }
+    });
+    var elastic = new geocloud.elasticStore({
+        db: "mhoegh",
+        index: "tweets",
+        q: "",
+        size: 20,
+        onEachFeature: function (feature, layer) {
+            //layer.bindPopup(feature.properties['text']);
+            layer.on("click", function(){
+                        scrollTo("#spot_" + feature.properties.gid);
+                    }
+            );
+        },
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng,
+                    {
+                        zIndexOffset: 10000,
+                        icon: L.AwesomeMarkers.icon(
+                                {
+                                    icon: 'icon-twitter',
+                                    color: 'blue'}
+                        )});
+        }
+    });
+    map.addGeoJsonStore(elastic);
+
+    var store = new geocloud.sqlStore({
+        db: "mhoegh",
+        sql: "SELECT * FROM tmsihh.tweets order by id desc",
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup("<b><a href='javascript:void(0)' onclick=\"showVideo('" + feature.properties['text'] + "','" + feature.properties['text'] + "')\">" + feature.properties.text + "</b>");
+            layer.on("click", function () {
+                        scrollTo("#spot_" + feature.properties.gid);
+                    }
+            );
+        },
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng);
+        }
+    });
+    //map.addGeoJsonStore(store);
+
+    store.onLoad = function () {
+        $('article').append($('#template-sections').jqote(store.geoJSON.features));
+        var sections = document.getElementsByTagName('section');
+        var markers = _(sections).map(function (section) {
+            return _(store.layer._layers).find(function (m) {
+                return "spot_" + m.feature.properties.gid == section.id;
+            });
+        });
+        var flag;
+        var setActive = function (index, ease) {
+            if (index !== flag) {
+                flag = index;
+                _(sections).each(function (s) {
+                    s.className = s.className.replace(' active', '')
+                });
+                sections[index].className += ' active';
+                document.body.className = 'section-' + index;
+                try {
+                    map.map.setView([markers[index].feature.geometry.coordinates[1], markers[index].feature.geometry.coordinates[0]]);
+                    markers[index].openPopup();
+                }
+                catch (e) {
+                    //map.map.fitBounds(store.layer.getBounds());
+                }
+                try {
+                    history.pushState(null, null, "#" + index);
+                }
+                catch (e) {
+                }
+            }
+            return true;
+        };
+        window.onscroll = _(function () {
+            // IE 8
+            if (window.pageYOffset === undefined) {
+                var y = document.documentElement.scrollTop;
+                var h = document.documentElement.clientHeight;
+            } else {
+                var y = window.pageYOffset;
+                var h = window.innerHeight;
+            }
+            if (y === 0) return setActive(0, true);
+            var memo = 0;
+            var buffer = (h * 0.3333333333);
+            var active = _(sections).any(function (el, index) {
+                memo += el.offsetHeight;
+                return y < (memo - buffer) ? setActive(index, true) : false;
+            });
+
+            if (!active) setActive(sections.length - 1, true);
+        }).debounce(100);
+        setActive(0, false);
+        (function () {
+            var hash, hashArr;
+            hash = geocloud.urlHash;
+            hashArr = hash.replace("#", "").split("/");
+            if (hashArr[0]) {
+                scrollTo("#spot_" + hashArr[0]);
+            }
+        })();
+    }
+    store.load();
+    tweet.load();
+}());
+</script>
+<style>
+.leaflet-top {
+    position: fixed;
+    left: 10px !important;
+    opacity: 0.8;
+    top: 0;
+}
+</style>
+</html>
+
+

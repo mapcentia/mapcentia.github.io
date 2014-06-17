@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+    html, body, #map-canvas {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+    }
+
+    #process {
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        background-color: white;
+        z-index: 100000;
+        padding: 10px;
+    }
+
+    #form {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        background-color: white;
+        z-index: 100000;
+        padding: 10px;
+        width: 250px;
+    }
+
+    #date {
+        width: 200px;
+    }
+
+    #legend {
+        position: absolute;
+        top: 30px;
+        right: 10px;
+        z-index: 100;
+        background-color: white;
+        padding: 10px;
+    }
+
+    #legend i {
+        width: 18px;
+        height: 18px;
+        float: left;
+        margin-right: 8px;
+        opacity: 0.7;
+    }
+
+    #info {
+        position: absolute;
+        top: 10px;
+        left: 100px;
+        z-index: 100;
+        background-color: white;
+        padding: 10px;
+    }
+
+    #spinner {
+        display: none;
+    }
+</style>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
+<script src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=visualization"></script>
+<script src="http://ec2-54-73-36-84.eu-west-1.compute.amazonaws.com/js/geojson.js"></script>
+<script>
+var map;
+var colors;
+var view;
+var control;
+var googleMapsVector = [];
+var field;
+var classes;
+var type;
+var heatmap;
+var serverSideHeatmap;
+var properties = [];
+var user;
+var pw;
+
+var host = "http://trackanalyzer.safetrack.dk";
+var gc2host = "http://gc2.safetrack.dk";
+
+// Local testing
+//var host = "http://trackanalyzer.mapcentia.com";
+//var gc2host = "http://local2.mapcentia.com";
+
+function initialize() {
+    var mapOptions = {
+        zoom: 7,
+        center: new google.maps.LatLng(56, 10),
+        mapTypeId: google.maps.MapTypeId.TERRAIN
+    };
+    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+}
+// 1. we import data from SafeTrack API to GC2
+function startAnalyzing(t, c) {
+    var categoryId, clientId, groupId, startDate, endDate, relation, script;
+    clearOverlay();
+    document.getElementById("process-inner").innerHTML = "";
+    document.getElementById("legend").innerHTML = "";
+    document.getElementById("spinner").style.display = "inline";
+
+
+    control = c;
+    field = document.getElementById("field").options[document.getElementById("field").selectedIndex].value;
+    classes = document.getElementById("classes").value;
+    pw = document.getElementById("pw").value;
+    type = t;
+	
+	user = document.getElementById("user").value;
+    startDate = document.getElementById("startdate").value;
+    endDate = document.getElementById("enddate").value;
+    categoryId = document.getElementById("categoryid").value;
+    clientId = document.getElementById("clientid").value;
+    groupId = document.getElementById("groupid").value;
+    
+    relation = CryptoJS.MD5(user+startDate+endDate+categoryId+clientId+groupId).toString();
+    
+    updateProcess("Started: "+relation, 0);
+    
+    script = document.createElement('script');
+    script.src = host + '/api/v1/unitsummary?' + 
+    		'DateFrom=' + startDate +
+            '&DateTo=' + endDate +
+            '&Category=' + categoryId +
+            '&Client=' + clientId +
+            '&Group=' + groupId +
+            '&schema=' + "temp" +
+            '&table=_' + relation +
+            '&jsonp_callback=unitsummary_callback&u=' + user + '&p=' + pw;
+    document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+window.unitsummary_callback = function (data) {
+    if (data.success === false) {
+        alert(data.message);
+    }
+    else {
+        updateProcess("SafeTrack data imported", data._execution_time);
+
+        // Create a view in GC2
+        if (type === "group") {
+            var script = document.createElement('script');
+            script.src = host + '/api/v1/analyze/' + control + '?l=' + data.relation + '&jsonp_callback=analyze_callback&u=' + user + '&p=' + pw;
+            document.getElementsByTagName('head')[0].appendChild(script);
+        }
+        // Get the raw point data
+        if (type === "heatmap") {
+            var script = document.createElement('script');
+            script.src = gc2host + '/api/v1/sql/trackunit?q=select * from ' + data.relation + '&srs=4326&jsonp_callback=heatmap_callback';
+            document.getElementsByTagName('head')[0].appendChild(script);
+        }
+        // Add server side heatmap
+        if (type === "serverheatmap") {
+            serverHeatmap(data);
+        }
+    }
+}
+
+// Classify the view
+window.analyze_callback = function (data) {
+    updateProcess("View created", data._execution_time)
+
+    var e = document.getElementById("ddlViewBy");
+    view = data.relation;
+    var script = document.createElement('script');
+    script.src = gc2host + '/api/v1/legend/quantile/trackunit?l=' + view + '&s=CCFFCC&e=003300&n=' + classes + '&f=' + field + '&jsonp_callback=legend_callback';
+    document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+// Get the data from the view
+window.legend_callback = function (data) {
+
+    updateProcess("Classes created", data._execution_time)
+    colors = data.values;
+    createLegend(colors);
+
+    var script = document.createElement('script');
+    script.src = gc2host + '/api/v1/sql/trackunit?q=select * from ' + view + '&srs=4326&jsonp_callback=data_callback';
+    document.getElementsByTagName('head')[0].appendChild(script);
+}
+
+// The GeoJSON is converted to GE vectors and the classes is applied.
+window.data_callback = function (data) {
+    updateProcess("Result fetched", data._execution_time);
+    document.getElementById("spinner").style.display = "none";
+
+    var vec;
+    for (var i = 0; i < data.features.length; i++) {
+        var obj = data.features[i];
+        var color = (function (n) {
+            for (var i = 0; i < colors.length; i++) {
+                if (n < colors[i][0]) {
+                    break;
+                }
+            }
+            return colors[i][1];
+        })(obj.properties[field])
+
+        googleMapsVector[i] = new GeoJSON(obj.geometry, {
+            strokeColor: '#FFF',
+            strokeWeight: 1,
+            fillOpacity: 1,
+            fillColor: color
+        });
+        properties[i] = obj.properties;
+    }
+    for (var i = 0; i < googleMapsVector.length; i++) {
+        if (googleMapsVector[i][0] === undefined) {
+            vec = googleMapsVector[i];
+            vec.setMap(map);
+        }
+        else {
+            for (var u = 0; u < googleMapsVector[i].length; u++) {
+                vec = googleMapsVector[i][u];
+                vec.setMap(map);
+            }
+        }
+        vec.properties = properties[i];
+        google.maps.event.addListener(vec, "mouseover", function () {
+            this.setOptions({strokeColor: "#000000"});
+            var div = document.createElement('div');
+            div.innerHTML = 'Run1 : ' + secondstotime(this.properties.run1) + '<br>Activity : ' + secondstotime(this.properties.activity) + '<br>Count : ' + this.properties.count + '<br>';
+            document.getElementById('info').appendChild(div);
+        });
+        google.maps.event.addListener(vec, "mouseout", function () {
+            this.setOptions({strokeColor: "#FFF"});
+            document.getElementById('info').innerHTML = "";
+        });
+    }
+
+}
+// Create a heat map
+window.heatmap_callback = function (data) {
+    updateProcess("Result fetched", data._execution_time);
+    document.getElementById("spinner").style.display = "none";
+
+    var heatmapData = [];
+    for (var i = 0; i < data.features.length; i++) {
+        var coords = data.features[i].geometry.coordinates;
+        var latLng = new google.maps.LatLng(coords[1], coords[0]);
+        var weightedLoc = {
+            location: latLng
+           // weight: data.features[i].properties.run1 + 10000
+        };
+        heatmapData.push(weightedLoc);
+    }
+    heatmap = new google.maps.visualization.HeatmapLayer({
+        data: heatmapData,
+        dissipating: false,
+        map: map,
+        radius: 0.2
+    });
+}
+// Create a server side heat map
+window.serverHeatmap = function(data){
+    //Add tile overlay
+    serverSideHeatmap = new google.maps.ImageMapType({
+        getTileUrl: function (coord, zoom) {
+            return host + '/heatmap/tile.php?x=' + coord.x + '&y=' + coord.y + '&zoom=' + zoom + '&relation=' + data.relation;
+        },
+        tileSize: new google.maps.Size(256, 256),
+        isPng: true,
+        opacity: 1.0
+    });
+    map.overlayMapTypes.setAt(0, serverSideHeatmap);
+    updateProcess("Result fetched", data._execution_time);
+    document.getElementById("spinner").style.display = "none";
+}
+
+function getColor(n) {
+    for (var i = 0; i < colors.length; i++) {
+        if (n < colors[i][0]) {
+            break;
+        }
+    }
+    return colors[i][1];
+}
+
+function updateProcess(text, time) {
+    var div = document.createElement('div');
+    div.innerHTML = text + "  (" + time + "s)";
+    document.getElementById('process-inner').appendChild(div);
+}
+
+function clearOverlay() {
+    for (var i = 0; i < googleMapsVector.length; i++) {
+        if (googleMapsVector[i][0] === undefined) {
+            googleMapsVector[i].setMap(null);
+        }
+        else {
+            for (var u = 0; u < googleMapsVector[i].length; u++) {
+                googleMapsVector[i][u].setMap(null);
+            }
+        }
+    }
+    googleMapsVector = [];
+    if (typeof heatmap === "object") {
+        heatmap.setMap(null);
+    }
+    if (typeof serverSideHeatmap === "object") {
+        map.overlayMapTypes.setAt(0, null);
+    }
+}
+
+function createLegend(c) {
+    var div = document.createElement('div');
+    for (var i = 0; i < c.length; i++) {
+        div.innerHTML += '<i style="background:' + c[i][1] + '"></i> ' + ((field !== "count") ? secondstotime(c[i][0]) : c[i][0]) + '<br>';
+    }
+    document.getElementById('legend').appendChild(div);
+}
+
+function secondstotime(secs) {
+    var t = new Date(1970, 0, 1);
+    t.setSeconds(secs);
+    var s = t.toTimeString().substr(0, 8);
+    if (secs > 86399)
+        s = Math.floor((t - Date.parse("1/1/70")) / 3600000) + s.substr(2);
+    return s;
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
+</head>
+<body>
+<div id="map-canvas"></div>
+<div id="process">
+    <div id="spinner"><img src="ajax-loader.gif"></div>
+    <div id="process-inner"></div>
+</div>
+<div id="form">
+    User <input id="user" type="text" value=""><br>
+    Pw <input id="pw" type="password" value="">
+    <hr>
+    Start Date <input id="startdate" value="2014-02-16"><br>
+    End Date <input id="enddate" value="2014-02-18">
+    <hr>
+    CategoryId  <input id="categoryid" type="text" value=""><br>
+    ClientId  <input id="clientid" type="text" value=""><br>
+    GroupId  <input id="groupid" type="text" value=""><br>
+    <hr>
+    <button onclick="startAnalyzing('heatmap', null)">Create client side 	heatmap</button>
+    <hr>
+    <button onclick="startAnalyzing('serverheatmap', null)">Create server side heatmap</button>
+    <hr>
+    <button onclick="startAnalyzing('group','avgadmin')">Analyze admin borders</button>
+    <br>
+    <button onclick="startAnalyzing('group','avgzone')">Analyze zones</button>
+    <br>
+    <select id="field">
+        <option value="run1">Avg run1</option>
+        <option value="activity">Activity</option>
+        <option value="count">Count</option>
+    </select>
+    <br>
+    # of classes <input id="classes" value="4">
+    <hr>
+    <button onclick="clearOverlay()">Clear map</button>
+
+</div>
+<div id="legend"></div>
+<div id="info"></div>
+</body>
+</html>

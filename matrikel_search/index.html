@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>Matrikel- og adressesøgning</title>
+		<meta charset="UTF-8"/>
+		<link href="http://eu1.mapcentia.com/js/leaflet/leaflet.css" type="text/css" rel="stylesheet">
+		<link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
+		<link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap-responsive.min.css" type="text/css" rel="stylesheet">
+		<link href="http://twitter.github.io/bootstrap/assets/css/bootstrap.css" rel="stylesheet">
+
+	</head>
+	<body>
+		<div class="container">
+			<div class="row" style="margin-top:40px">
+				<div class="span9">
+					<p>Søg lyn hurtigt gennem Danmarks 2.473.258 matrikelnumre og 2.376.221 adresser.<p>
+					<label for="matr">Begynd at skrive ejerlav, matrikelnr, vejnavn, husnr eller by</label><input id="matr-search" autocomplete="off" type="text" name="matr">
+					<p>Du kan søge på dele af ejerlav, vejnavn og nr. i vilkårlig række følge. Prøv fx "mar aalb 3" eller "Lærkevej 9230 1"</p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span6">
+
+					<div id="map" style="width:100%;height:350px"></div>
+				</div>
+				<div class="span4" style="height:350px; overflow:auto">
+					<div><table id="attr" class="table" ></table></div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="span9">
+					<p>I Internet Explore 7 og 8 vises matrikelafgrænsningen ikke på kortet.</p>
+					<p>Til søge-indekseringen er anvendt Elasticsearch. Dataene er gemt i en PostGreSQL database og overført til Elasticsearch i en MapCentia GeoCloud. Alt er open data og open source.</p>
+					<br/><a href="http://www.mapcentia.com/"><img style="width:100px" src="http://eu1.mapcentia.com/theme/images/logo/MapCentia_500.png"/></a>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src='http://eu1.mapcentia.com/js/leaflet/leaflet.js'></script>
+	<script src='http://eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
+	<script src="http://eu1.mapcentia.com/js/bootstrap/js/bootstrap.js"></script>
+	<script src="http://eu1.mapcentia.com/js/underscore/underscore-min.js"></script>
+	<script src="http://eu1.mapcentia.com/js/jqote2/jquery.jqote2.js"></script>
+	<script>
+		(function(){
+			var store;
+			var call_counter = 0;
+			var names = [];
+			var map = {};
+			var type1 = "";
+			var type2 = "";
+			var responseType = {};
+			var typeFlag;
+			var cloudMap;
+			var search = _.debounce(function (query, process) {
+				if (query.match(/\d+/g) === null && query.match(/\s+/g) === null) {
+					type1 = "vejnavn,bynavn";
+				}
+				if (query.match(/\d+/g) === null && query.match(/\s+/g) !== null) {
+					type1 = "vejnavn_bynavn";
+				}
+				if (query.match(/\d+/g) !== null) {
+					type1 = "adresse";
+				}
+				type2 = (query.match(/\d+/g) != null) ? "jordstykke" : "ejerlav";
+				map = {};
+				responseType = {};
+				$.ajax({
+					url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws/' + type1,
+					data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",",""))+ '","default_operator":"AND"}}}',
+					dataType: 'jsonp',
+					jsonp: 'jsonp_callback',
+					success: function (response) {
+						$.each(response.hits.hits, function (i, hit) {
+							var str = hit._source.properties.string;
+							responseType[str] = hit._type;
+							map[str] = hit._source.properties.gid;
+							names.push(str);
+						});
+						$.ajax({
+							url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/matrikel/' + type2,
+							data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase())+ '","default_operator":"AND"}}}',
+							dataType: 'jsonp',
+							jsonp: 'jsonp_callback',
+							success: function (response) {
+								$.each(response.hits.hits, function (i, hit) {
+									var str = hit._source.properties.string;
+									responseType[str] = hit._type;
+									map[str] = hit._source.properties.gid;
+									names.push(str);
+								});
+								process(names);
+								names = [];
+							}
+						});
+					}
+				});
+			},0)
+			$('#matr-search').typeahead({
+				items: 16,
+				source: function ( query, process ) {
+					search( query, process );
+				},
+				updater: function (item) {
+					selectedGid = (type1==="adresse" || type2 === "jordstykke") ? map[item] : null;
+					typeFlag = responseType[item];
+					if (selectedGid) {
+						showOnMap(selectedGid);
+					}
+					return item;
+				},
+				matcher: function (item) {
+					var arr = this.query.split(' ');
+					var flag = false
+					_(arr).each(
+					function(s){
+						if (item.toLowerCase().indexOf($.trim(s).toLowerCase()) ===false) {
+							flag = false;
+						}
+						else flag = true;
+					}
+					) 
+					return flag;
+
+				},
+				sorter: function (items) {
+					return items.sort();
+					//return items;
+				},
+				highlighter: function (item) {
+					_($.trim(this.query).split(' ')).each(
+					function(s){
+						var regex = new RegExp( '(' + s + ')', 'gi' );
+						item = item.replace( regex, "<b>$1</b>" );
+					}
+					)
+					return item;
+				},
+			});
+			var showOnMap = function(gid) {
+				store.layer.clearLayers();
+				if (typeFlag === "jordstykke") {
+					store.sql = "SELECT * FROM matrikel.jordstykke WHERE gid=" + gid;
+				}
+				if (typeFlag === "adresse") {
+					store.sql = "SELECT * FROM adresse.adgang WHERE gid=" + gid;
+				}
+				store.load();
+			}
+			cloudMap = new geocloud.map({
+				el: "map"
+			});
+			cloudMap.zoomToExtent();
+			cloudMap.addOSM();
+			cloudMap.setBaseLayer("osm");
+			var style = {
+				"color": "#ff0000",
+				"weight": 5,
+				"opacity": 0.65
+			};
+			store = new geocloud.geoJsonStore({
+				db: "dk",
+				sql: null
+			});
+			cloudMap.addGeoJsonStore(store);
+			store.onLoad = function(){
+				cloudMap.zoomToExtentOfgeoJsonStore(store);
+				$("#attr").empty();
+				$.each(store.geoJSON.features[0].properties, function(key, value){
+					$("#attr").append("<tr><td>" + key  + "</td><td>" + value + "</td></tr>")
+					})
+					//$("#geom").html(JSON.stringify(store.geoJSON));
+				}
+				})()
+
+			</script>
+		</html>
