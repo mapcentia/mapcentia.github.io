@@ -5,6 +5,7 @@ mapcentia_districtmap = (function () {
     document.write("<script src='" + mygeocloud_host + "/api/v1/js/api.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/js/hogan/hogan-2.0.0.js'><\/script>");
     document.write("<script src='http://mapcentia.github.io/ODEUM/districtmap/js/templates.js'><\/script>");
+    //document.write("<script src='js/templates.js'><\/script>");
     var selectControl = {
             onSelect: function (feature) {
                 $("#start").show();
@@ -19,6 +20,8 @@ mapcentia_districtmap = (function () {
             var defaults = {
                     db: null,
                     where: null,
+                    width: "500px",
+                    height: "500px",
                     table: "kommuneplan.kpplandk2_view",
                     rules: {
                         rules: [
@@ -172,7 +175,7 @@ mapcentia_districtmap = (function () {
                     defaults[prop] = config[prop];
                 }
             }
-            $("div:last").html(templates.body.render());
+            $("div:last").html(templates.body.render(defaults));
             map = new mygeocloud_ol.map("map", defaults.db)
             store = new mygeocloud_ol.geoJsonStore(defaults.db, {styleMap: new OpenLayers.StyleMap(
                 {
