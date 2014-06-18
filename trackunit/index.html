@@ -243,17 +243,17 @@ window.heatmap_callback = function (data) {
         var coords = data.features[i].geometry.coordinates;
         var latLng = new google.maps.LatLng(coords[1], coords[0]);
         var weightedLoc = {
-            location: latLng
-           // weight: data.features[i].properties.run1 + 10000
+            location: latLng,
+            weight: data.features[i].properties.run1 + 10000
         };
         heatmapData.push(weightedLoc);
     }
     heatmap = new google.maps.visualization.HeatmapLayer({
         data: heatmapData,
-        dissipating: false,
+        dissipating: true,
         map: map,
-        radius: 0.2
-    });
+        radius: 30
+      });
 }
 // Create a server side heat map
 window.serverHeatmap = function(data){
@@ -337,7 +337,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
     Pw <input id="pw" type="password" value="">
     <hr>
     Start Date <input id="startdate" value="2014-02-16"><br>
-    End Date <input id="enddate" value="2014-02-18">
+    End Date <input id="enddate" value="2014-02-17">
     <hr>
     CategoryId  <input id="categoryid" type="text" value=""><br>
     ClientId  <input id="clientid" type="text" value=""><br>
