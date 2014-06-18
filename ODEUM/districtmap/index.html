@@ -2,7 +2,8 @@
 <div/>
 <script>
     mapcentia_districtmap.init({
-        db: "jammerbugt",
-        district: "Aabybro"
+        db: "nyborg",
+        table: "kommuneplan13.kpplandk2_view",
+        where: "substring(plannr from 1 for 2) = '1.'"
     });
 </script>
