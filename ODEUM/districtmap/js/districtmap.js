@@ -18,6 +18,7 @@ mapcentia_districtmap = (function () {
             $('<link/>').attr({ rel: 'stylesheet', type: 'text/css', href: 'http://cowi.mapcentia.com/js/ext/resources/css/ext-all.css' }).appendTo('head');
             var defaults = {
                     db: null,
+                    district: null,
                     table: "kommuneplan.kpplandk2_view",
                     rules: {
                         rules: [
@@ -198,7 +199,7 @@ mapcentia_districtmap = (function () {
             ), lifetime: 0});
             map.addOSM();
             map.addGeoJsonStore(store);
-            store.sql = "SELECT anvgen,plannr,plannavn,html,textvalue as anv,ST_simplify(the_geom,4) FROM " + defaults.table + ",ANVGEN_PLANDK2 WHERE distrikt='" + encodeURIComponent("Aabybro") + "' AND langid=1 AND ANVGEN_PLANDK2.fieldkey=" + defaults.table + ".anvgen order by substring(plannr from '[A-Z]|[a-z]+')::text,substring(split_part(plannr, '.', 2) from '[0-9]+')::int";
+            store.sql = "SELECT anvgen,plannr,plannavn,html,textvalue as anv,ST_simplify(the_geom,4) FROM " + defaults.table + ",ANVGEN_PLANDK2 WHERE distrikt='" + encodeURIComponent(defaults.district) + "' AND langid=1 AND ANVGEN_PLANDK2.fieldkey=" + defaults.table + ".anvgen order by substring(plannr from '[A-Z]|[a-z]+')::text,substring(split_part(plannr, '.', 2) from '[0-9]+')::int";
             store.load();
             store.onLoad = function () {
                 map.zoomToExtentOfgeoJsonStore(store);
