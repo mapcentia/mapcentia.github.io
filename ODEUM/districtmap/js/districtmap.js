@@ -1,7 +1,7 @@
 var mapcentia_districtmap;
 mapcentia_districtmap = (function () {
     "use strict";
-    var mygeocloud_host = "http://eu1.mapcentia.com";
+    var mygeocloud_host = "http://cowi.mapcentia.com";
     document.write("<script src='" + mygeocloud_host + "/api/v1/js/api.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/js/hogan/hogan-2.0.0.js'><\/script>");
     document.write("<script src='http://mapcentia.github.io/ODEUM/districtmap/js/templates.js'><\/script>");
