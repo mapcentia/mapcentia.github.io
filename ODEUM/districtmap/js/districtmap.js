@@ -17,6 +17,7 @@ mapcentia_districtmap = (function () {
         },
         init = function (config) {
             $('<link/>').attr({ rel: 'stylesheet', type: 'text/css', href: 'http://cowi.mapcentia.com/js/ext/resources/css/ext-all.css' }).appendTo('head');
+            $('<link/>').attr({ rel: 'stylesheet', type: 'text/css', href: 'http://mapcentia.github.io/ODEUM/districtmap/css/bootstrap-buttons.css' }).appendTo('head');
             var defaults = {
                     db: null,
                     where: null,

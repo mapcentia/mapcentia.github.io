@@ -1,9 +1,13 @@
 <div id="map" style="width: {{width}}; height: {{height}}; position:relative">
     <div id="start" style="display:none;position:absolute;left:0px;bottom:0px;z-index:1000">
-        <div style="margin-left:15px">
+        <div style="margin-left:5px; margin-bottom: 5px">
             <form>
-                <input class="btn btn-small" type="button" id="zoom" value="Zoom til ramme">
-                <input class="btn btn-small" type="button" id="look" value="Vis ramme">
+                <button type="button" class="btn btn-default btn-small" id="zoom">
+                    <span class="glyphicon glyphicon-zoom-in"></span> Zoom til ramme
+                </button>
+                <button type="button" class="btn btn-default btn-small" id="look">
+                    <span class="glyphicon glyphicon-eye-open"></span> Se ramme
+                </button>
             </form>
         </div>
     </div>
