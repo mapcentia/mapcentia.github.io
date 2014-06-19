@@ -6,8 +6,8 @@ mapcentia_rammemap = (function () {
     //document.write("<script src='" + mygeocloud_host + "/js/leaflet/OpenLayers.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/api/v3/js/geocloud.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/js/hogan/hogan-2.0.0.js'><\/script>");
-    //document.write("<script src='http://mapcentia.github.io/ODEUM/templates/templates.js'><\/script>");
-    document.write("<script src='../templates/templates.js'><\/script>");
+    document.write("<script src='http://mapcentia.github.io/ODEUM/templates/templates.js'><\/script>");
+    //document.write("<script src='../templates/templates.js'><\/script>");
     var i, init = function (config) {
         $('<link/>').attr({ rel: 'stylesheet', type: 'text/css', href: 'http://mapcentia.github.io/ODEUM/districtmap/css/bootstrap-buttons.css' }).appendTo('head');
         var defaults = {
