@@ -157,6 +157,7 @@ mapcentia_rammemap = (function () {
         store = new geocloud.geoJsonStore(
             {
                 db: defaults.db,
+                host: mygeocloud_host,
                 styleMap: new OpenLayers.StyleMap(
                     {
                         "default": new OpenLayers.Style(
