@@ -4,7 +4,7 @@ mapcentia_districtmap = (function () {
     var mygeocloud_host = "http://cowi.mapcentia.com";
     document.write("<script src='" + mygeocloud_host + "/api/v1/js/api.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/js/hogan/hogan-2.0.0.js'><\/script>");
-    document.write("<script src='http://mapcentia.github.io/ODEUM/districtmap/js/templates.js'><\/script>");
+    document.write("<script src='http://mapcentia.github.io/ODEUM/templates/templates.js'><\/script>");
     //document.write("<script src='js/templates.js'><\/script>");
     var selectControl = {
             onSelect: function (feature) {
