@@ -2,6 +2,7 @@ var mapcentia_districtmap;
 mapcentia_districtmap = (function () {
     "use strict";
     var mygeocloud_host = "http://cowi.mapcentia.com";
+    window.mygeocloud_host = mygeocloud_host;
     document.write("<script src='" + mygeocloud_host + "/api/v1/js/api.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/js/hogan/hogan-2.0.0.js'><\/script>");
     document.write("<script src='http://mapcentia.github.io/ODEUM/templates/templates.js'><\/script>");
@@ -185,7 +186,7 @@ mapcentia_districtmap = (function () {
                 }
             }
             $("div:last").html(templates.districtmap1.render(defaults));
-            map = new mygeocloud_ol.map("map", defaults.db)
+            map = new mygeocloud_ol.map("map", defaults.db);
             store = new mygeocloud_ol.geoJsonStore(defaults.db, {styleMap: new OpenLayers.StyleMap(
                 {
                     "default": new OpenLayers.Style(
