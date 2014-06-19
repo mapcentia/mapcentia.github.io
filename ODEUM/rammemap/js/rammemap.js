@@ -2,6 +2,7 @@ var mapcentia_rammemap;
 mapcentia_rammemap = (function () {
     "use strict";
     var mygeocloud_host = "http://cowi.mapcentia.com";
+    document.write("<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/js/openlayers/OpenLayers.js'><\/script>");
     //document.write("<script src='" + mygeocloud_host + "/js/leaflet/OpenLayers.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/api/v3/js/geocloud.js'><\/script>");

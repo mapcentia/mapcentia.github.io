@@ -2,6 +2,7 @@ var mapcentia_districtmap;
 mapcentia_districtmap = (function () {
     "use strict";
     var mygeocloud_host = "http://cowi.mapcentia.com";
+    // We've to set global var for f*****K IE9
     window.mygeocloud_host = mygeocloud_host;
     document.write("<script src='" + mygeocloud_host + "/api/v1/js/api.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/js/hogan/hogan-2.0.0.js'><\/script>");
