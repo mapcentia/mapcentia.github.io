@@ -184,7 +184,7 @@ mapcentia_districtmap = (function () {
                     defaults[prop] = config[prop];
                 }
             }
-            $("div:last").html(templates.body.render(defaults));
+            $("div:last").html(templates.districtmap1.render(defaults));
             map = new mygeocloud_ol.map("map", defaults.db)
             store = new mygeocloud_ol.geoJsonStore(defaults.db, {styleMap: new OpenLayers.StyleMap(
                 {
