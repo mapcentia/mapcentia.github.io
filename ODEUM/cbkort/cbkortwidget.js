@@ -69,10 +69,10 @@ $("#zoomout").click(function () {
 });
 $("#lag-knap").click(function (e) {
     ($("#legend").css('display') !== 'none') ? $("#legend").fadeOut(100) : $("#legend").fadeIn(100);
-})
+});
 
-//var url = window.mapUrl;
-var url = "http://webgis.esbkomm.dk/cbkort?selectorgroups=themecontainer%20grundkort%20kp_bindinger%20kommuneplan_gaeldende&mapext=427703.6%206113233.2%20532407.6%206167505.2&layers=theme-cowi-arialphoto-none%20theme-v3_kommune_esbjerg%20theme-kms-dtkskaerm-sh%20theme-v1_kp14_bi_kystnaerebyzoner%20theme-v1_kp14_bi_kystnaerhedszone%20theme-v1_kp14_bi_havdige&mapheight=1065&mapwidth=2050&profile=tmkommuneplan_klima";
+var url = window.mapUrl;
+//var url = "http://webgis.esbkomm.dk/cbkort?selectorgroups=themecontainer%20grundkort%20kp_bindinger%20kommuneplan_gaeldende&mapext=427703.6%206113233.2%20532407.6%206167505.2&layers=theme-cowi-arialphoto-none%20theme-v3_kommune_esbjerg%20theme-kms-dtkskaerm-sh%20theme-v1_kp14_bi_kystnaerebyzoner%20theme-v1_kp14_bi_kystnaerhedszone%20theme-v1_kp14_bi_havdige&mapheight=1065&mapwidth=2050&profile=tmkommuneplan_klima";
 var mapComp;
 var base1 = "dtk_skaermkort_daempet";
 var base2 = "dtk_skaermkort";
