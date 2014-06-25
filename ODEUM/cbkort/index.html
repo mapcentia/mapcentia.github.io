@@ -1,0 +1,103 @@
+<script type="text/javascript"
+        src="http://webkort.esbjergkommune.dk/js/standard/spatialmap/1.3.0/api/SpatialMap.js?modules=map"></script>
+
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+
+<script type="text/javascript" src="http://code.jquery.com/ui/1.8.23/jquery-ui.min.js"></script>
+
+<!-- spatialfind jquery plugin -->
+<script type="text/javascript" src="http://demo-find.spatialsuite.com/js/jquery.spatialfind.js"></script>
+
+<script type="text/javascript" src="http://beta.mygeocloud.cowi.webhouse.dk/js/jqote2/jquery.jqote2.js"></script>
+
+<script type="text/javascript" src="http://beta.mygeocloud.cowi.webhouse.dk/js/jqote2/jquery.jqote2.js"></script>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.23/themes/base/jquery-ui.css" type="text/css" media="all"/>
+
+<link rel="stylesheet" href="http://beta.mygeocloud.cowi.webhouse.dk/js/bootstrap/css/bootstrap_buttoniconsforms.css"
+      type="text/css" media="all"/>
+
+<style>
+    .standard {
+        width: 100%;
+    }
+
+    .kort {
+        width: 100%;
+    }
+
+    .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
+        font-family: Verdana, Arial, sans-serif /*{ffDefault}*/;
+        font-size: 11px;
+    }
+
+    #legend {
+        background-color: white;
+        position: absolute;
+        z-index: 10000;
+        border-radius: 6px;
+        border: 1px solid black;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        padding: 10px;
+    }
+</style>
+<script type="text/html" id="template">
+    <table border=0>
+        <tr>
+            <td><input name="baggrundskort" id="baggrundskort" type="radio" onclick="switchBaseLayer(base1)"
+                       checked /></td>
+            <td></td>
+            <td>Grundkort, dæmpet</td>
+        </tr>
+        <tr>
+            <td><input name="baggrundskort" id="baggrundskort" type="radio" onclick="switchBaseLayer(base2)" />
+            </td>
+            <td></td>
+            <td>Grundkort</td>
+        </tr>
+        <% for (var i = 0; i < this.layers.length; i++){
+        if (!this.layers[i].basemap) {%>
+        <tr class="layer">
+            <td valign="top"><input id="checkbox_<%= this.layers[i].layername %>" type="checkbox"
+                                    onclick="switchLayer('<%= this.layers[i].layername %>')"
+                <% if (this.layers[i].visible){%> checked <%}%>>
+            </td>
+            <td valign="top">
+            </td>
+            <td>
+                <div id="legend_<%= this.layers[i].layername %>"></div>
+            </td>
+        </tr>
+        <% }} %>
+    </table>
+</script>
+<div class="standard kort">
+    <a name="mapAnchor"></a>
+
+    <div id="mapContainer" style="width:342px;height:300px;position:relative">
+        <div id="mapLayers" style="width:100%;height:100%;position:relative">
+            <div id="map" style="float:left;width:100%;height:100%;border:1px solid #000000;position:relative">
+                <div style="display:inline;z-index:2000;position:absolute;right:3px;top:3px;padding:3px;opacity:0.8;width:auto">
+                    <input type="text" id="search" class="input-medium" name="search" placeholder="Søg på en adresse"
+                           size="40"/>
+                </div>
+                <div style="display:inline;z-index:1000;position:absolute;right:6px;top:38px;">
+                    <button class="btn btn-small" data-toggle="button" id="lag-knap">Lag</button>
+                </div>
+                <div style="display:none;position:absolute;right:6px;top:72px;width:250px" id="legend">
+
+                </div>
+                <div style="display:inline;z-index:1000;position:absolute;right:155px;bottom:8px;padding:3px;width:auto">
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div style="clear:both">
+        <button id="knapstortkort" class="btn btn-mini" type="button">Vis stort kort</button>
+        <button id="zoomout" class="btn btn-mini" type="button">Zoom til start</button>
+    </div>
+</div>
+<div id="mapDialog" style="display:none;"></div>
