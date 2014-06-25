@@ -1,3 +1,12 @@
+jQuery.browser = {};
+(function () {
+    jQuery.browser.msie = false;
+    jQuery.browser.version = 0;
+    if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+        jQuery.browser.msie = true;
+        jQuery.browser.version = RegExp.$1;
+    }
+}());
 (function () {
     var options = {
         'apikey': '52EC9D0D-998A-4815-A0AC-978339CF9743',
