@@ -10,7 +10,7 @@
 
 <script type="text/javascript" src="http://beta.mygeocloud.cowi.webhouse.dk/js/jqote2/jquery.jqote2.js"></script>
 
-<script type="text/javascript" src="http://beta.mygeocloud.cowi.webhouse.dk/js/jqote2/jquery.jqote2.js"></script>
+<script type="text/javascript" src="http://mapcentia.github.io/ODEUM/cbkort/cbkortwidget.js"></script>
 
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.23/themes/base/jquery-ui.css" type="text/css" media="all"/>
 
@@ -46,12 +46,12 @@
     <table border=0>
         <tr>
             <td><input name="baggrundskort" id="baggrundskort" type="radio" onclick="switchBaseLayer(base1)"
-                       checked /></td>
+                       checked/></td>
             <td></td>
             <td>Grundkort, dæmpet</td>
         </tr>
         <tr>
-            <td><input name="baggrundskort" id="baggrundskort" type="radio" onclick="switchBaseLayer(base2)" />
+            <td><input name="baggrundskort" id="baggrundskort" type="radio" onclick="switchBaseLayer(base2)"/>
             </td>
             <td></td>
             <td>Grundkort</td>
@@ -71,6 +71,9 @@
         </tr>
         <% }} %>
     </table>
+</script>
+<script>
+    windows.mapUrl = "@LAYERS@";
 </script>
 <div class="standard kort">
     <a name="mapAnchor"></a>
