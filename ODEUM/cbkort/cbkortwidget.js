@@ -81,13 +81,13 @@ $("#lag-knap").click(function (e) {
 });
 
 var url = window.mapUrl;
-//var url = "http://webgis.esbkomm.dk/cbkort?selectorgroups=themecontainer%20grundkort%20kp_bindinger%20kommuneplan_gaeldende&mapext=427703.6%206113233.2%20532407.6%206167505.2&layers=theme-cowi-arialphoto-none%20theme-v3_kommune_esbjerg%20theme-kms-dtkskaerm-sh%20theme-v1_kp14_bi_kystnaerebyzoner%20theme-v1_kp14_bi_kystnaerhedszone%20theme-v1_kp14_bi_havdige&mapheight=1065&mapwidth=2050&profile=tmkommuneplan_klima";
 var mapComp;
 var base1 = "dtk_skaermkort_daempet";
 var base2 = "dtk_skaermkort";
 var base3 = "theme-gst-dtkskaerm";
 var base4 = "theme-cowi-arialphoto-none";
 var base5 = "theme-kms-dtkskaerm-sh";
+var base6 = "theme-v3_kommune_esbjerg";
 
 url = decodeURIComponent(url);
 url = url.replace(base1 + " ", "");
@@ -95,11 +95,13 @@ url = url.replace(base2 + " ", "");
 url = url.replace(base3 + " ", "");
 url = url.replace(base4 + " ", "");
 url = url.replace(base5 + " ", "");
+url = url.replace(base6 + " ", "");
 url = url.replace(base1 + "", "");
 url = url.replace(base2 + "", "");
 url = url.replace(base3 + "", "");
 url = url.replace(base4 + "", "");
 url = url.replace(base5 + "", "");
+url = url.replace(base6 + "", "");
 var mapvars = {};
 var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
     mapvars[key] = value;
