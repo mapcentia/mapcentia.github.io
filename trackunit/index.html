@@ -64,6 +64,7 @@
 <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
 <script src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=visualization"></script>
 <script src="http://ec2-54-73-36-84.eu-west-1.compute.amazonaws.com/js/geojson.js"></script>
+<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js' type='text/javascript'></script>
 <script>
 var map;
 var colors;
@@ -86,51 +87,116 @@ var gc2host = "http://gc2.safetrack.dk";
 //var host = "http://trackanalyzer.mapcentia.com";
 //var gc2host = "http://local2.mapcentia.com";
 
-function initialize() {
+window.apiUrl = host;
+window.initialize = function () {
     var mapOptions = {
         zoom: 7,
         center: new google.maps.LatLng(56, 10),
         mapTypeId: google.maps.MapTypeId.TERRAIN
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    $("#login").on("click", function(){
+        $.ajax({
+            url: apiUrl + '/api/v1/resource/token',
+            data: 'u=' + $("#user").val() + '&p=' + $("#pw").val(),
+            dataType: 'jsonp',
+            jsonp: 'jsonp_callback',
+            success: function (data) {
+                $.ajax({
+					url: apiUrl + '/api/v1/resource/category',
+					data: 'token=' + data.token,
+					dataType: 'jsonp',
+					jsonp: 'jsonp_callback',
+					success: function (data) {
+					    $('#categoryid').empty();
+                        $('#categoryid')
+                        	.append($("<option>- Select -</option>")
+                        	.attr("value",""));
+						$.each(data.categories.list, function(key, value) {   
+							 $('#categoryid')
+								 .append($("<option></option>")
+								 .attr("value",value.id)
+								 .text(value.name)); 
+						});
+					}
+				});
+				$.ajax({
+					url: apiUrl + '/api/v1/resource/group',
+					data: 'token=' + data.token,
+					dataType: 'jsonp',
+					jsonp: 'jsonp_callback',
+					success: function (data) {
+						$('#groupid').empty();
+                        $('#groupid')
+                        	.append($("<option>- Select -</option>")
+                        	.attr("value",""));
+						$.each(data.groups.list, function(key, value) {   
+							 $('#groupid')
+								 .append($("<option></option>")
+								 .attr("value",value.id)
+								 .text(value.name)); 
+						});
+					}
+				});
+				$.ajax({
+					url: apiUrl + '/api/v1/resource/client',
+					data: 'token=' + data.token,
+					dataType: 'jsonp',
+					jsonp: 'jsonp_callback',
+					success: function (data) {
+					    $('#clientid').empty();
+                        $('#clientid')
+                        	.append($("<option>- Select -</option>")
+                        	.attr("value",""));
+						$.each(data.clients.list, function(key, value) {   
+							 $('#clientid')
+								 .append($("<option></option>")
+								 .attr("value",value.id)
+								 .text(value.name)); 
+						});
+					}
+				});
+            }
+        });
+    })
 
 }
 // 1. we import data from SafeTrack API to GC2
-function startAnalyzing(t, c) {
+window.startAnalyzing = function (t, c) {
     var categoryId, clientId, groupId, startDate, endDate, relation, script;
     clearOverlay();
     document.getElementById("process-inner").innerHTML = "";
     document.getElementById("legend").innerHTML = "";
     document.getElementById("spinner").style.display = "inline";
 
-
     control = c;
     field = document.getElementById("field").options[document.getElementById("field").selectedIndex].value;
     classes = document.getElementById("classes").value;
     pw = document.getElementById("pw").value;
     type = t;
-	
-	user = document.getElementById("user").value;
+
+    user = document.getElementById("user").value;
     startDate = document.getElementById("startdate").value;
     endDate = document.getElementById("enddate").value;
     categoryId = document.getElementById("categoryid").value;
     clientId = document.getElementById("clientid").value;
     groupId = document.getElementById("groupid").value;
-    
-    relation = CryptoJS.MD5(user+startDate+endDate+categoryId+clientId+groupId).toString();
-    
-    updateProcess("Started: "+relation, 0);
-    
+
+    relation = CryptoJS.MD5(user + startDate + endDate + categoryId + clientId + groupId).toString();
+
+    updateProcess("Started: " + relation, 0);
+
     script = document.createElement('script');
-    script.src = host + '/api/v1/unitsummary?' + 
-    		'DateFrom=' + startDate +
+    script.src = host + '/api/v1/unitsummary?' +
+            'DateFrom=' + startDate +
             '&DateTo=' + endDate +
             '&Category=' + categoryId +
             '&Client=' + clientId +
             '&Group=' + groupId +
             '&schema=' + "temp" +
             '&table=_' + relation +
-            '&jsonp_callback=unitsummary_callback&u=' + user + '&p=' + pw;
+            '&jsonp_callback=unitsummary_callback&u=' + user + '&p=' + pw +
+            '&datasource=datasources.' + user;
     document.getElementsByTagName('head')[0].appendChild(script);
 }
 
@@ -253,10 +319,10 @@ window.heatmap_callback = function (data) {
         dissipating: true,
         map: map,
         radius: 30
-      });
+    });
 }
 // Create a server side heat map
-window.serverHeatmap = function(data){
+window.serverHeatmap = function (data) {
     //Add tile overlay
     serverSideHeatmap = new google.maps.ImageMapType({
         getTileUrl: function (coord, zoom) {
@@ -271,7 +337,7 @@ window.serverHeatmap = function(data){
     document.getElementById("spinner").style.display = "none";
 }
 
-function getColor(n) {
+window.getColor = function (n) {
     for (var i = 0; i < colors.length; i++) {
         if (n < colors[i][0]) {
             break;
@@ -280,13 +346,13 @@ function getColor(n) {
     return colors[i][1];
 }
 
-function updateProcess(text, time) {
+window.updateProcess = function (text, time) {
     var div = document.createElement('div');
     div.innerHTML = text + "  (" + time + "s)";
     document.getElementById('process-inner').appendChild(div);
 }
 
-function clearOverlay() {
+window.clearOverlay = function () {
     for (var i = 0; i < googleMapsVector.length; i++) {
         if (googleMapsVector[i][0] === undefined) {
             googleMapsVector[i].setMap(null);
@@ -306,7 +372,7 @@ function clearOverlay() {
     }
 }
 
-function createLegend(c) {
+window.createLegend = function (c) {
     var div = document.createElement('div');
     for (var i = 0; i < c.length; i++) {
         div.innerHTML += '<i style="background:' + c[i][1] + '"></i> ' + ((field !== "count") ? secondstotime(c[i][0]) : c[i][0]) + '<br>';
@@ -314,7 +380,7 @@ function createLegend(c) {
     document.getElementById('legend').appendChild(div);
 }
 
-function secondstotime(secs) {
+window.secondstotime = function (secs) {
     var t = new Date(1970, 0, 1);
     t.setSeconds(secs);
     var s = t.toTimeString().substr(0, 8);
@@ -334,19 +400,22 @@ google.maps.event.addDomListener(window, 'load', initialize);
 </div>
 <div id="form">
     User <input id="user" type="text" value=""><br>
-    Pw <input id="pw" type="password" value="">
+    Pw <input id="pw" type="password" value=""><br>
+    <button id="login">Login</button>
     <hr>
     Start Date <input id="startdate" value="2014-02-16"><br>
     End Date <input id="enddate" value="2014-02-17">
     <hr>
-    CategoryId  <input id="categoryid" type="text" value=""><br>
-    ClientId  <input id="clientid" type="text" value=""><br>
-    GroupId  <input id="groupid" type="text" value=""><br>
+    Category<br><select id="categoryid"></select><br>
+    Client<br><select id="clientid"></select><br>
+    Group<br><select id="groupid"></select><br>
     <hr>
-    <button onclick="startAnalyzing('heatmap', null)">Create client side 	heatmap</button>
+    <button onclick="startAnalyzing('heatmap', null)">Create client side heatmap</button>
     <hr>
+    <!--
     <button onclick="startAnalyzing('serverheatmap', null)">Create server side heatmap</button>
     <hr>
+    -->
     <button onclick="startAnalyzing('group','avgadmin')">Analyze admin borders</button>
     <br>
     <button onclick="startAnalyzing('group','avgzone')">Analyze zones</button>
@@ -366,3 +435,4 @@ google.maps.event.addDomListener(window, 'load', initialize);
 <div id="info"></div>
 </body>
 </html>
+
