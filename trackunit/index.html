@@ -196,7 +196,7 @@ window.startAnalyzing = function (t, c) {
             '&schema=' + "temp" +
             '&table=_' + relation +
             '&jsonp_callback=unitsummary_callback&u=' + user + '&p=' + pw +
-            '&datasource=datasources.' + user;
+            '&datasource=' + user;
     document.getElementsByTagName('head')[0].appendChild(script);
 }
 
@@ -308,9 +308,11 @@ window.heatmap_callback = function (data) {
     for (var i = 0; i < data.features.length; i++) {
         var coords = data.features[i].geometry.coordinates;
         var latLng = new google.maps.LatLng(coords[1], coords[0]);
+        var weight = data.features[i].properties.run1;
+        if (weight < 0) weight = 0;
         var weightedLoc = {
             location: latLng,
-            weight: data.features[i].properties.run1 + 10000
+            weight: weight
         };
         heatmapData.push(weightedLoc);
     }
@@ -403,8 +405,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
     Pw <input id="pw" type="password" value=""><br>
     <button id="login">Login</button>
     <hr>
-    Start Date <input id="startdate" value="2014-02-16"><br>
-    End Date <input id="enddate" value="2014-02-17">
+    Start Date <input id="startdate" value="2014-01-10"><br>
+    End Date <input id="enddate" value="2014-01-10">
     <hr>
     Category<br><select id="categoryid"></select><br>
     Client<br><select id="clientid"></select><br>
