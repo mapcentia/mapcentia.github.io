@@ -139,7 +139,8 @@ $(window).load(function () {
         matrixSet: "View1",
         format: "image/jpeg",
         params: {
-            ticket: "71d15474ef6739443a59a5a9db077640"
+            login: "mh1",
+            password: "sajas"
         },
         matrixIds: [
             {identifier: "L00", scaleDenominator: 1638.4 / 0.00028},
@@ -170,7 +171,8 @@ $(window).load(function () {
         matrixSet: "View1",
         format: "image/jpeg",
         params: {
-            ticket: "71d15474ef6739443a59a5a9db077640"
+            login: "mh1",
+            password: "sajas"
         },
         matrixIds: [
             {identifier: "L00", scaleDenominator: 1638.4 / 0.00028},
