@@ -88,6 +88,7 @@ var base3 = "theme-gst-dtkskaerm";
 var base4 = "theme-cowi-arialphoto-none";
 var base5 = "theme-kms-dtkskaerm-sh";
 var base6 = "theme-v3_kommune_esbjerg";
+var base7 = "theme-kms-dtkskaerm";
 
 url = decodeURIComponent(url);
 url = url.replace(base1 + " ", "");
@@ -96,12 +97,14 @@ url = url.replace(base3 + " ", "");
 url = url.replace(base4 + " ", "");
 url = url.replace(base5 + " ", "");
 url = url.replace(base6 + " ", "");
+url = url.replace(base7 + " ", "");
 url = url.replace(base1 + "", "");
 url = url.replace(base2 + "", "");
 url = url.replace(base3 + "", "");
 url = url.replace(base4 + "", "");
 url = url.replace(base5 + "", "");
 url = url.replace(base6 + "", "");
+url = url.replace(base7 + "", "");
 var mapvars = {};
 var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
     mapvars[key] = value;
