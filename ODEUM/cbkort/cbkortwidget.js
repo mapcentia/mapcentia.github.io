@@ -81,6 +81,10 @@ $("#lag-knap").click(function (e) {
 });
 
 var url = window.mapUrl;
+var ckKortUrl = url.replace("http://", "");
+var ckKortUrlArr = ckKortUrl.split("/");
+ckKortUrlArr.shift();
+ckKortUrl = "http://webkort.esbjergkommune.dk/" + ckKortUrlArr[0] + "&profile=borger_kommuneplan";
 var mapComp;
 var base1 = "dtk_skaermkort_daempet";
 var base2 = "dtk_skaermkort";
@@ -200,7 +204,7 @@ $(window).load(function () {
     wmtsSkaermkort.setZIndex(1);
     mapComp.map.addLayer(wmtsSkaermkortDaempet);
     wmtsSkaermkortDaempet.setZIndex(1);
-
+    $("#cbkorturl").html("<a target='_blank' href='" + ckKortUrl +"'>Link til web GIS</a>");
     $('#legend').append($('#template').jqote(options))
     for (var i = 0; i < options.layers.length; i++) {
         if (!layerArr[i].basemap) {
@@ -219,7 +223,7 @@ $(window).load(function () {
                         }
                         for (var u = 0; u < arr.length; u++) {
                             legendHtml += '<tr><td><img src="http://webkort.esbjergkommune.dk' + arr[u].col[3]._content + '"/></td><td>' + arr[u].col[0]._content + '</td></tr>';
-                            if (u == arr.length - 1) {
+                            if (u === arr.length - 1) {
                                 legendHtml += "</table>";
                                 $('#legend_' + layer).append(legendHtml);
                                 legendHtml = "";
