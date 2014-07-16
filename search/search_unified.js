@@ -108,7 +108,7 @@ var search = (function () {
                             names.push(str);
                         });
                         $.ajax({
-                            url: 'http://54.247.102.248/api/v1/elasticsearch/search/dk/matrikel/' + type2,
+                            url: hostname + '/api/v1/elasticsearch/search/dk/matrikel/' + type2,
                             data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}},"filter":{"term":{"komkode":"' + komKode + '"}}}}}',
                             dataType: 'jsonp',
                             contentType: "application/json; charset=utf-8",
