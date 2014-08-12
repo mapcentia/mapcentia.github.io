@@ -135,7 +135,7 @@ var cowi = (function () {
                 var p = transformPoint(obj.oest, obj.nord, "EPSG:25832", "EPSG:900913")
                 cloudMap.map.setCenter(new OpenLayers.LonLat(p.x, p.y), 17);
                 var wkt = "POINT(" + obj.oest + " " + obj.nord + ")";
-                conflict(wkt,type);
+                conflict(wkt, type);
 
             }
             transformPoint = function (lat, lon, s, d) {
@@ -223,7 +223,7 @@ var cowi = (function () {
                 onLoad: function () {
                     cloudMap.zoomToExtentOfgeoJsonStore(store);
                     cloudMap.map.addLayers([store.layer]);
-                    conflict(store.geoJSON.features[0].properties.wkt,type);
+                    conflict(store.geoJSON.features[0].properties.wkt, type);
                 }
             });
             //	cloudMap.addGeoJsonStore(store);
@@ -245,10 +245,11 @@ var cowi = (function () {
             else {
                 storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
 
-            }            storeLp.load();
+            }
+            storeLp.load();
             storeLp.onLoad = function () {
                 var f = this.geoJSON.features;
-                if (typeof this.geoJSON.features === "object"){
+                if (typeof this.geoJSON.features === "object") {
                     $('#result-table').append("<tr><td></td><td>Lokalplaner</td></tr>");
 
                     for (var i = 0; i < f.length; i++) {
@@ -262,7 +263,8 @@ var cowi = (function () {
             $("#spinner").show();
             for (var i = 0; i < arr.length; i++) {
                 store[i] = new mygeocloud_ol.geoJsonStore(db);
-                store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))"
+                store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
+                store[i].sql += (this.id.split('.')[1] === "kpplandk2_view") ? " AND (status = 'forslag' OR status = 'vedtaget')" : "";
                 store[i].id = arr[i];
                 store[i].load();
                 store[i].onLoad = function () {
@@ -281,7 +283,7 @@ var cowi = (function () {
                             $.each(this.geoJSON.features,
                                 function (key, value) {
                                     $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + value.properties.html + ">" + value.properties.plannr + "</a></td></tr>");
-                                })
+                                });
                         }
                     }
                     count++;
@@ -289,7 +291,8 @@ var cowi = (function () {
                         $("#spinner").hide();
                     }
                 }
-            };
+            }
+            ;
             store = null;
         }
         return cloudMap;
