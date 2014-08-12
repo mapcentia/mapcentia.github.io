@@ -264,7 +264,7 @@ var cowi = (function () {
             for (var i = 0; i < arr.length; i++) {
                 store[i] = new mygeocloud_ol.geoJsonStore(db);
                 store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
-                store[i].sql += (this.id.split('.')[1] === "kpplandk2_view") ? " AND (status = 'forslag' OR status = 'vedtaget')" : "";
+                store[i].sql += (arr[i].split('.')[1] === "kpplandk2_view") ? " AND (status = 'forslag' OR status = 'vedtaget')" : "";
                 store[i].id = arr[i];
                 store[i].load();
                 store[i].onLoad = function () {
