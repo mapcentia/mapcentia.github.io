@@ -198,7 +198,9 @@ var cowi = (function () {
                 }
 
                 // Lp search
-                var storeLp = new mygeocloud_ol.geoJsonStore("dk");
+                var storeLp = new mygeocloud_ol.geoJsonStore("dk", {
+                    jsonp: false
+                });
                 if (type !== "adresse") {
                     storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
                 }
@@ -220,7 +222,9 @@ var cowi = (function () {
                 var store = [];
                 $("#spinner").show();
                 for (var i = 0; i < arr.length; i++) {
-                    store[i] = new mygeocloud_ol.geoJsonStore(db);
+                    store[i] = new mygeocloud_ol.geoJsonStore(db,{
+                        jsonp: false
+                    });
                     if (type === "kpplandk2") {
                         store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
                     } else {
