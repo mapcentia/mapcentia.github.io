@@ -62,9 +62,11 @@ var cowi = (function () {
                 //store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM matrikel.jordstykke WHERE gid=" + gid;
 
                 if (typeFlag === "jordstykke") {
+                    store.db = "dk";
                     store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM matrikel.jordstykke WHERE gid=" + gid;
                 }
                 else if (typeFlag === "adresse") {
+                    store.db = "dk";
                     store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
                 }
                 else {
