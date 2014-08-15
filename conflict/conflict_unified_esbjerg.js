@@ -201,7 +201,7 @@ var cowi = (function () {
 
                 // Lp search
                 var storeLp = new mygeocloud_ol.geoJsonStore("dk", {
-                    jsonp: false,
+                    jsonp: true,
                     method: "GET"
                 });
                 if (type !== "adresse") {
@@ -226,7 +226,7 @@ var cowi = (function () {
                 $("#spinner").show();
                 for (var i = 0; i < arr.length; i++) {
                     store[i] = new mygeocloud_ol.geoJsonStore(db,{
-                        jsonp: false,
+                        jsonp: true,
                         method: "GET"
                     });
                     if (type === "kpplandk2") {
