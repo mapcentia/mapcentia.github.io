@@ -64,11 +64,14 @@ var cowi = (function () {
                 if (typeFlag === "jordstykke") {
                     store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM matrikel.jordstykke WHERE gid=" + gid;
                 }
-                if (typeFlag === "adresse") {
+                else if (typeFlag === "adresse") {
                     store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
                 }
+                else {
+                    store.db = "esbjerg";
+                    store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM kommuneplan14.kpplandk2 WHERE gid=" + gid;
+                }
                 store.load();
-                //conflict(wkt)
             };
 
             var search = _.debounce(function (query, process) {
@@ -86,7 +89,6 @@ var cowi = (function () {
                 responseType = {};
                 $.ajax({
                     url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws/' + type1,
-                    //data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}}}',
                     data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"municipalitycode":"0' + komKode + '"}}}}}',
                     contentType: "application/json; charset=utf-8",
                     scriptCharset: "utf-8",
@@ -101,7 +103,6 @@ var cowi = (function () {
                         });
                         $.ajax({
                             url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/matrikel/' + type2,
-                            //data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}}}',
                             data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}},"filter":{"term":{"komkode":"' + komKode + '"}}}}}',
                             dataType: 'jsonp',
                             contentType: "application/json; charset=utf-8",
@@ -114,8 +115,30 @@ var cowi = (function () {
                                     map[str] = hit._source.properties.gid;
                                     names.push(str);
                                 });
-                                process(names);
-                                names = [];
+                                if (query.match(/\s+/g) === null) {
+                                    $.ajax({
+                                        url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/esbjerg/kommuneplan14/kpplandk2',
+                                        data: '&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '"}}}',
+                                        dataType: 'jsonp',
+                                        contentType: "application/json; charset=utf-8",
+                                        scriptCharset: "utf-8",
+                                        jsonp: 'jsonp_callback',
+                                        success: function (response) {
+                                            $.each(response.hits.hits, function (i, hit) {
+                                                var str = hit._source.properties.string;
+                                                responseType[str] = hit._type;
+                                                map[str] = hit._source.properties.gid;
+                                                names.push(str);
+                                            });
+                                            process(names);
+                                            names = [];
+                                        }
+                                    });
+                                }
+                                else {
+                                    process(names);
+                                    names = [];
+                                }
                             }
                         });
                     }
@@ -127,24 +150,25 @@ var cowi = (function () {
                     search(query, process);
                 },
                 updater: function (item) {
-                    var selectedGid = (type1 === "adresse" || type2 === "jordstykke") ? map[item] : null;
                     typeFlag = responseType[item];
-                    if (selectedGid) {
-                        showOnMap(selectedGid);
+                    if (map[item]) {
+                        showOnMap(map[item]);
                     }
                     return item;
                 },
                 matcher: function (item) {
                     var arr = this.query.split(' ');
-                    var flag = false
+                    var flag = false;
                     _(arr).each(
                         function (s) {
                             if (item.toLowerCase().indexOf($.trim(s).toLowerCase()) === false) {
                                 flag = false;
                             }
-                            else flag = true;
+                            else {
+                                flag = true;
+                            }
                         }
-                    )
+                    );
                     return flag;
 
                 },
@@ -175,19 +199,17 @@ var cowi = (function () {
 
                 // Lp search
                 var storeLp = new mygeocloud_ol.geoJsonStore("dk");
-                if (type === "jordstykke") {
+                if (type !== "adresse") {
                     storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
                 }
                 else {
                     storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
-
                 }
                 storeLp.load();
                 storeLp.onLoad = function () {
                     var f = this.geoJSON.features;
                     if (typeof this.geoJSON.features === "object") {
                         $('#result-table').append("<tr><td></td><td>Lokalplaner</td></tr>");
-
                         for (var i = 0; i < f.length; i++) {
                             $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + f[i].properties.doklink + ">" + f[i].properties.plannr + " " + f[i].properties.plannavn + "</a></td></tr>");
                         }
@@ -199,7 +221,11 @@ var cowi = (function () {
                 $("#spinner").show();
                 for (var i = 0; i < arr.length; i++) {
                     store[i] = new mygeocloud_ol.geoJsonStore(db);
-                    store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))"
+                    if (type === "kpplandk2") {
+                        store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
+                    } else {
+                        store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
+                    }
                     store[i].id = arr[i];
                     store[i].load();
                     store[i].onLoad = function () {

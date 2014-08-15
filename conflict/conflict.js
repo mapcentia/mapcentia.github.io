@@ -216,7 +216,7 @@ var cowi = (function () {
                 store.reset();
                 store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM matrikel.jordstykke WHERE gid=" + gid;
                 store.load();
-            }
+            };
             store = new geocloud.geoJsonStore({
                 db: "dk",
                 sql: null,
@@ -237,6 +237,7 @@ var cowi = (function () {
             }
             catch (e) {
             }
+
             // Lp search
             var storeLp = new mygeocloud_ol.geoJsonStore("dk");
             if (type === "jordstykke") {
