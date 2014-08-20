@@ -71,7 +71,7 @@ var cowiLpSearch = (function () {
                     /*store.reset();
                     store.sql = "SELECT planid FROM planer.lokalplan_vedtaget WHERE planid=" + planid;
                     store.load();*/
-                    var url = "http://mygeocloud.cowi.webhouse.dk/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + planid;
+                    var url = "http://plandk2.mapcentia.com/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + planid;
                     $("#vislp").html("<a target='_blank' href='" + url + "'>Vis</a>");
 
                 };
@@ -81,7 +81,7 @@ var cowiLpSearch = (function () {
                         onLoad: function () {
                             //cloudMap.zoomToExtentOfgeoJsonStore(store);
                             //cloudMap.map.addLayers([store.layer]);
-                            window.location = "http://mygeocloud.cowi.webhouse.dk/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + store.geoJSON.features[0].properties.planid;
+                            window.location = "http://plandk2.mapcentia.com/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + store.geoJSON.features[0].properties.planid;
                         }
                     });
             }());
