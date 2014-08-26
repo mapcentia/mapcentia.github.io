@@ -240,15 +240,29 @@ var cowi = (function () {
 
             // Lp search
             var storeLp = new mygeocloud_ol.geoJsonStore("dk");
+            var storeLpFor = new mygeocloud_ol.geoJsonStore("dk");
             if (type === "jordstykke") {
                 storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
+                storeLpFor.sql = "SELECT * FROM planer.lokalplan_forslag WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
             }
             else {
                 storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
+                storeLpFor.sql = "SELECT * FROM planer.lokalplan_forslag WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
 
             }
             storeLp.load();
+            storeLpFor.load();
             storeLp.onLoad = function () {
+                var f = this.geoJSON.features;
+                if (typeof this.geoJSON.features === "object") {
+                    $('#result-table').append("<tr><td></td><td>Lokalplaner</td></tr>");
+
+                    for (var i = 0; i < f.length; i++) {
+                        $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + f[i].properties.doklink + ">" + f[i].properties.plannr + " " + f[i].properties.plannavn + "</a></td></tr>");
+                    }
+                }
+            };
+            storeLpFor.onLoad = function () {
                 var f = this.geoJSON.features;
                 if (typeof this.geoJSON.features === "object") {
                     $('#result-table').append("<tr><td></td><td>Lokalplaner</td></tr>");
