@@ -127,7 +127,6 @@
                     });
                     var showOnMap = function (gid) {
                         storeDk.reset();
-                        storeDk.host ="http://eu1.mapcentia.com";
                         storeDk.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
                         storeDk.load();
                     }
