@@ -53,7 +53,7 @@
                 var cloud = obj.maps[this.key].cloud, komKode = 155;
                 //map.fitWorld();
                 (function () {
-                    var store;
+                    var storeDk;
                     var call_counter = 0;
                     var names = [];
                     var map = {};
@@ -126,16 +126,17 @@
                         items: 10
                     });
                     var showOnMap = function (gid) {
-                        store.reset();
-                        store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
-                        store.load();
+                        storeDk.reset();
+                        storeDk.host ="http://eu1.mapcentia.com";
+                        storeDk.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
+                        storeDk.load();
                     }
-                    store = new geocloud.geoJsonStore({
+                    storeDk = new geocloud.geoJsonStore({
                         host: "http://eu1.mapcentia.com",
                         db: "dk",
                         sql: null,
                         onLoad: function () {
-                            cloud.zoomToExtentOfgeoJsonStore(store);
+                            cloud.zoomToExtentOfgeoJsonStore(storeDk);
                         }
                     });
                 })();
