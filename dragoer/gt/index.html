@@ -22,6 +22,7 @@
             font-weight: normal;
             background: #fff;
         }
+
         #a_search {
             width: 100%;
             padding: 5px;
@@ -30,13 +31,15 @@
             font-size: 18px;
             box-sizing: border-box;
         }
-        .top{
+
+        .top {
             padding: 5px;
         }
     </style>
 </head>
 <body>
-<div class="top"><input id="a_search" autocomplete="off" type="text" name="addr" class="type-a-head" placeholder="Adresse"></div>
+<div class="top"><input id="a_search" autocomplete="off" type="text" name="addr" class="type-a-head"
+                        placeholder="Adresse"></div>
 <div></div>
 <script>
     (function () {
@@ -46,27 +49,33 @@
             zoom: [12.64500617980957, 55.58586428389589, 13],
             setBaseLayer: 'dtkSkaermkortDaempet',
             width: '100%',
-            height:  $(window).height()-46 + "px",
+            height: $(window).height() - 46 + "px",
             schema: 'gt',
             key: '1',
             callBack: function () {
                 var cloud = obj.maps[this.key].cloud, komKode = 155;
                 //map.fitWorld();
                 (function () {
+                    var p;
                     var storeDk;
                     var call_counter = 0;
                     var names = [];
                     var map = {};
                     var type = "";
-                    var search = _.debounce(function (query, process) {
-                        if (query.match(/\d+/g) === null && query.match(/\s+/g) === null) {
-                            type = "vejnavn,bynavn";
+                    var search = _.debounce(function (query, process, fixedType) {
+                        if (fixedType === undefined) {
+                            if (query.match(/\d+/g) === null && query.match(/\s+/g) === null) {
+                                type = "vejnavn";
+                            }
+                            if (query.match(/\d+/g) === null && query.match(/\s+/g) !== null) {
+                                type = "adresse";
+                            }
+                            if (query.match(/\d+/g) !== null) {
+                                type = "adresse";
+                            }
                         }
-                        if (query.match(/\d+/g) === null && query.match(/\s+/g) !== null) {
-                            type = "vejnavn_bynavn";
-                        }
-                        if (query.match(/\d+/g) !== null) {
-                            type = "adresse";
+                        else {
+                            type = fixedType;
                         }
                         map = {};
                         $.ajax({
@@ -77,6 +86,11 @@
                             dataType: 'jsonp',
                             jsonp: 'jsonp_callback',
                             success: function (response) {
+                                console.log(type);
+                                console.log(response.hits.hits);
+                                if ((type === "vejnavn,bynavn" || type === "vejnavn_bynavn") && response.hits.hits.length === 1) {
+                                    console.log("Bingo");
+                                }
                                 $.each(response.hits.hits, function (i, hit) {
                                     var str = hit._source.properties.string;
                                     map[str] = hit._source.properties.gid;
@@ -88,10 +102,15 @@
                         });
                     }, 200);
                     $('#a_search').typeahead({
+                        autoselect: false,
                         source: function (query, process) {
+                            p = process;
                             search(query, process);
                         },
                         updater: function (item) {
+                            if (type !== "adresse") {
+                                search(item, p, "adresse");
+                            }
                             var selectedGid = (type === "adresse") ? map[item] : null;
                             if (selectedGid) {
                                 showOnMap(selectedGid);
