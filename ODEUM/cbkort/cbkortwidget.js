@@ -115,6 +115,7 @@ var parts = url.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
 });
 var layerArr = [];
 var layers = mapvars['layers'].split(" ");
+ckKortUrl = "http://webkort.esbjergkommune.dk/"
 for (var u = 0; u < layers.length; u++) {
     if (layers[u].substring(0, 1) === "1") {
         layerArr.push({id: layers[u].substring(1), layername: layers[u].substring(1), format: "image/png", basemap: false, singleTile: true, visible: false, host: "http://webkort.esbjergkommune.dk/wms?SERVICE=WMS&SERVICENAME=borger_kommuneplan"});
@@ -204,7 +205,7 @@ $(window).load(function () {
     wmtsSkaermkort.setZIndex(1);
     mapComp.map.addLayer(wmtsSkaermkortDaempet);
     wmtsSkaermkortDaempet.setZIndex(1);
-    $("#cbkorturl").html("<a target='_blank' href='" + ckKortUrl +"'>Link til web GIS</a>");
+    $("#cbkorturl").html("<a target='_blank' href='" + ckKortUrl + "'>Link til WebKort</a>");
     $('#legend').append($('#template').jqote(options))
     for (var i = 0; i < options.layers.length; i++) {
         if (!layerArr[i].basemap) {
