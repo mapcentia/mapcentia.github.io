@@ -16,6 +16,10 @@ var cowi = (function () {
             cloudMap = new mygeocloud_ol.map("map", db);
             cloudMap.addBaseLayer("dtkSkaermkortDaempet");
             cloudMap.zoomToExtent(bbox);
+            cloudMap.addTileLayers(["admin.maske_esbjerg"], {
+                    db: "dk"
+                }
+            );
             var storeDraw = new mygeocloud_ol.geoJsonStore("dk", {
                 styleMap: new OpenLayers.StyleMap({
                     "default": new OpenLayers.Style(null, {
