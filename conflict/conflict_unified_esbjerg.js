@@ -13,7 +13,22 @@ var cowi = (function () {
             addLegend();
         },
         init_search = function (db, komKode, layers, bbox, callback) {
-            cloudMap = new mygeocloud_ol.map("map", db);
+            cloudMap = new mygeocloud_ol.map("map", db, {
+                //minResolution:  4.77731426782,
+                maxResolution:   305.748113141,
+                numZoomLevels:10,
+                controls: [
+                    new OpenLayers.Control.Navigation(),
+                    new OpenLayers.Control.PanZoomBar(),
+                    //new OpenLayers.Control.LayerSwitcher(),
+                    //new OpenLayers.Control.PanZoom(),
+                    new OpenLayers.Control.Attribution(),
+                    //new OpenLayers.Control.Zoom(),
+                    new OpenLayers.Control.TouchNavigation({
+                        dragPanOptions: {enableKinetic: true}
+                    })]
+            });
+
             cloudMap.addBaseLayer("dtkSkaermkortDaempet");
             cloudMap.zoomToExtent(bbox);
             cloudMap.addTileLayers(["admin.maske_esbjerg"], {
@@ -200,7 +215,7 @@ var cowi = (function () {
                 if (query.match(/\d+/g) !== null) {
                     type1 = "adresse";
                 }
-                type2 = (query.match(/\d+/g) != null) ? "jordstykke" : "ejerlav";
+                type2 = (query.match(/\d+/g) !== null) ? "jordstykke" : "ejerlav";
                 map = {};
                 responseType = {};
                 $.ajax({
