@@ -314,17 +314,33 @@ var cowi = (function () {
                     jsonp: true,
                     method: "GET"
                 });
+                var storeLpFor = new mygeocloud_ol.geoJsonStore("dk", {
+                    jsonp: true,
+                    method: "GET"
+                });
                 if (type !== "adresse" && type !== "draw") {
-                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects((ST_transform(the_geom,900913)),ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913),-5))";
+                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects((ST_transform(the_geom,900913)),ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913),-5)) AND komnr=" + komKode;
+                    storeLpFor.sql = "SELECT * FROM planer.lokalplan_forslag WHERE ST_intersects((ST_transform(the_geom,900913)),ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913),-5)) AND komnr=" + komKode;
                 }
                 else {
-                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects((ST_transform(the_geom,900913)),ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913))";
+                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects((ST_transform(the_geom,900913)),ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913)) AND komnr=" + komKode;
+                    storeLpFor.sql = "SELECT * FROM planer.lokalplan_forslag WHERE ST_intersects((ST_transform(the_geom,900913)),ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913)) AND komnr=" + komKode;
                 }
                 storeLp.load();
+                storeLpFor.load();
                 storeLp.onLoad = function () {
                     var f = this.geoJSON.features;
                     if (typeof this.geoJSON.features === "object") {
                         $('#result-table').append("<tr><td></td><td>Lokalplaner</td></tr>");
+                        for (var i = 0; i < f.length; i++) {
+                            $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + f[i].properties.doklink + ">" + f[i].properties.plannr + " " + f[i].properties.plannavn + "</a></td></tr>");
+                        }
+                    }
+                };
+                storeLpFor.onLoad = function () {
+                    var f = this.geoJSON.features;
+                    if (typeof this.geoJSON.features === "object") {
+                        $('#result-table').append("<tr><td></td><td>Lokalplanforslag</td></tr>");
                         for (var i = 0; i < f.length; i++) {
                             $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + f[i].properties.doklink + ">" + f[i].properties.plannr + " " + f[i].properties.plannavn + "</a></td></tr>");
                         }
