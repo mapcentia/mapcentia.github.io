@@ -357,7 +357,8 @@ var cowi = (function () {
                 for (var i = 0; i < arr.length; i++) {
                     store[i] = new mygeocloud_ol.geoJsonStore(db, {
                         jsonp: true,
-                        method: "GET"
+                        method: "GET",
+                        clientEncoding: "LATIN1"
                     });
                     if (type === "kpplandk2") {
                         store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects((ST_transform(the_geom,900913)),ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913),-5))";
