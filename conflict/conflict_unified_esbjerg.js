@@ -381,7 +381,7 @@ var cowi = (function () {
                             if (this.id.split('.')[1] === "kpplandk2_view") {
                                 $.each(this.geoJSON.features,
                                     function (key, value) {
-                                        $('#result-table').append("<tr><td></td><td><a target='_blank' href='/dk/mit_lokalomraade/ramme.htm?enrid=" + value.properties.enrid + "'>" + value.properties.enrid + "</a></td></tr>");
+                                        $('#result-table').append("<tr><td></td><td><a target='_blank' href='/dk/mit_lokalomraade/ramme.htm?enrid=" + value.properties.enrid + "'>" + value.properties.enrid + " " + value.properties.enavn + "</a></td></tr>");
                                     });
                             }
                         }
