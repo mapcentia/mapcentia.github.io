@@ -95,7 +95,7 @@ window.initialize = function () {
         mapTypeId: google.maps.MapTypeId.TERRAIN
     };
     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    $("#login").on("click", function(){
+    $("#login").on("click", function () {
         $.ajax({
             url: apiUrl + '/api/v1/resource/token',
             data: 'u=' + $("#user").val() + '&p=' + $("#pw").val(),
@@ -103,59 +103,59 @@ window.initialize = function () {
             jsonp: 'jsonp_callback',
             success: function (data) {
                 $.ajax({
-					url: apiUrl + '/api/v1/resource/category',
-					data: 'token=' + data.token,
-					dataType: 'jsonp',
-					jsonp: 'jsonp_callback',
-					success: function (data) {
-					    $('#categoryid').empty();
+                    url: apiUrl + '/api/v1/resource/category',
+                    data: 'token=' + data.token,
+                    dataType: 'jsonp',
+                    jsonp: 'jsonp_callback',
+                    success: function (data) {
+                        $('#categoryid').empty();
                         $('#categoryid')
-                        	.append($("<option>- Select -</option>")
-                        	.attr("value",""));
-						$.each(data.categories.list, function(key, value) {   
-							 $('#categoryid')
-								 .append($("<option></option>")
-								 .attr("value",value.id)
-								 .text(value.name)); 
-						});
-					}
-				});
-				$.ajax({
-					url: apiUrl + '/api/v1/resource/group',
-					data: 'token=' + data.token,
-					dataType: 'jsonp',
-					jsonp: 'jsonp_callback',
-					success: function (data) {
-						$('#groupid').empty();
+                                .append($("<option>- Select -</option>")
+                                        .attr("value", ""));
+                        $.each(data.categories.list, function (key, value) {
+                            $('#categoryid')
+                                    .append($("<option></option>")
+                                            .attr("value", value.id)
+                                            .text(value.name));
+                        });
+                    }
+                });
+                $.ajax({
+                    url: apiUrl + '/api/v1/resource/group',
+                    data: 'token=' + data.token,
+                    dataType: 'jsonp',
+                    jsonp: 'jsonp_callback',
+                    success: function (data) {
+                        $('#groupid').empty();
                         $('#groupid')
-                        	.append($("<option>- Select -</option>")
-                        	.attr("value",""));
-						$.each(data.groups.list, function(key, value) {   
-							 $('#groupid')
-								 .append($("<option></option>")
-								 .attr("value",value.id)
-								 .text(value.name)); 
-						});
-					}
-				});
-				$.ajax({
-					url: apiUrl + '/api/v1/resource/client',
-					data: 'token=' + data.token,
-					dataType: 'jsonp',
-					jsonp: 'jsonp_callback',
-					success: function (data) {
-					    $('#clientid').empty();
+                                .append($("<option>- Select -</option>")
+                                        .attr("value", ""));
+                        $.each(data.groups.list, function (key, value) {
+                            $('#groupid')
+                                    .append($("<option></option>")
+                                            .attr("value", value.id)
+                                            .text(value.name));
+                        });
+                    }
+                });
+                $.ajax({
+                    url: apiUrl + '/api/v1/resource/client',
+                    data: 'token=' + data.token,
+                    dataType: 'jsonp',
+                    jsonp: 'jsonp_callback',
+                    success: function (data) {
+                        $('#clientid').empty();
                         $('#clientid')
-                        	.append($("<option>- Select -</option>")
-                        	.attr("value",""));
-						$.each(data.clients.list, function(key, value) {   
-							 $('#clientid')
-								 .append($("<option></option>")
-								 .attr("value",value.id)
-								 .text(value.name)); 
-						});
-					}
-				});
+                                .append($("<option>- Select -</option>")
+                                        .attr("value", ""));
+                        $.each(data.clients.list, function (key, value) {
+                            $('#clientid')
+                                    .append($("<option></option>")
+                                            .attr("value", value.id)
+                                            .text(value.name));
+                        });
+                    }
+                });
             }
         });
     })
@@ -311,8 +311,8 @@ window.heatmap_callback = function (data) {
         var weight = data.features[i].properties.run1;
         if (weight < 0) weight = 0;
         var weightedLoc = {
-            location: latLng,
-            weight: weight
+            location: latLng
+            //weight: weight
         };
         heatmapData.push(weightedLoc);
     }
