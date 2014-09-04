@@ -7,7 +7,7 @@ jQuery.browser = {};
         jQuery.browser.version = RegExp.$1;
     }
 }());
-(function () {
+/*(function () {
     var options = {
         'apikey': '52EC9D0D-998A-4815-A0AC-978339CF9743',
         'select': handleSelect,
@@ -18,7 +18,7 @@ jQuery.browser = {};
         'area': 'muncode0706'
     };
     $("#search").spatialfind(options);
-}());
+}());*/
 var extent;
 var handleSelect = function (data) {
     mapComp.map.setCenter(new OpenLayers.LonLat(data.x, data.y), 8)
