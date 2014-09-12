@@ -290,7 +290,6 @@ body.section-0 #map {
 <script src="https://eu1.mapcentia.com/js/jqote2/jquery.jqote2.js"></script>
 <script src="https://eu1.mapcentia.com/js/bootstrap/js/bootstrap.min.js"></script>
 <script src="https://eu1.mapcentia.com/js/raphael/dist/rlayer-src.js"></script>
-<script src="http://maps.stamen.com/js/tile.stamen.js?v1.2.0"></script>
 <script type="text/html" id="template-sections">
     <section id='spot_<%= this.properties.gid %>' class='cover active'>
         <h4><%= this.properties.text %></h4>
@@ -330,8 +329,8 @@ function scrollTo(id) {
     map.on("moveend", function () {
     })
     map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
-    map.addBaseLayer(geocloud.BINGROAD);
-    map.setBaseLayer(geocloud.BINGROAD);
+    map.addBaseLayer(geocloud.STAMENTONERLITE);
+    map.setBaseLayer(geocloud.STAMENTONERLITE);
     map.map.fitBounds([
         [55.6629600978884, 12.2269678098819],
         [55.617891383609, 12.1600413305519]
