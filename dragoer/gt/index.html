@@ -51,10 +51,9 @@
             width: '100%',
             height: $(window).height() - 46 + "px",
             schema: 'gt',
-            key: '1',
             clickDistance: 20,
-            callBack: function () {
-                var cloud = obj.maps[this.key].cloud, komKode = 155;
+            callBack: function (e) {
+                var cloud = e, komKode = 155;
                 //map.fitWorld();
                 (function () {
                     var p;
@@ -87,8 +86,6 @@
                             dataType: 'jsonp',
                             jsonp: 'jsonp_callback',
                             success: function (response) {
-                                console.log(type);
-                                console.log(response.hits.hits);
                                 if ((type === "vejnavn,bynavn" || type === "vejnavn_bynavn") && response.hits.hits.length === 1) {
                                     console.log("Bingo");
                                 }
@@ -159,7 +156,7 @@
                         }
                     });
                 })();
-            }
+            }	
         });
     }())
 </script>
