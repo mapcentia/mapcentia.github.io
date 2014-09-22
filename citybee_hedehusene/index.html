@@ -2,16 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<link href="https://eu1.mapcentia.com/js/leaflet/leaflet.css" type="text/css" rel="stylesheet">
-<link href="https://eu1.mapcentia.com/js/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
-<link href="https://eu1.mapcentia.com/js/bootstrap/css/bootstrap-responsive.min.css" type="text/css"
+<link href="http://eu1.mapcentia.com/js/leaflet/leaflet.css" type="text/css" rel="stylesheet">
+<link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
+<link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap-responsive.min.css" type="text/css"
       rel="stylesheet">
-<link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" type="text/css"
+<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" type="text/css"
       rel="stylesheet">
-<link href="https://eu1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" type="text/css"
+<link href="http://eu1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" type="text/css"
       rel="stylesheet">
-<link rel="stylesheet" href="https://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css">
-<link href="https://eu1.mapcentia.com/js/leaflet/TwitterCluster.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" href="http://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css">
+<link href="http://eu1.mapcentia.com/js/leaflet/TwitterCluster.css" type="text/css" rel="stylesheet">
 
 <title>#Hedehusene</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -231,7 +231,7 @@ body.section-0 #map {
 <body>
 <div id="pane">
     <div id="search-box">
-        <input style="width:220px" id="search" autocomplete="off" type="text" placeholder="Søg">
+        <input style="width:220px" id="search" name="search" autocomplete="off" type="text" placeholder="Filter">
     </div>
     <div id="map"></div>
 </div>
@@ -240,9 +240,9 @@ body.section-0 #map {
 
         <h1>#Hedehusene</h1>
 
-        <p>Tweets fra Hedehusene. Scroll ned for at læse.</p>
+        <p>Tweets from Hedehusene. Scroll down to read.</p>
 
-        <div><a id="about" href="javascript:void(0)">Om</a></div>
+        <div><a id="about" href="javascript:void(0)">About</a></div>
         <small class='scroll'>Scroll ▼</small>
     </section>
 </article>
@@ -258,7 +258,7 @@ body.section-0 #map {
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">
-            Luk
+            Close
         </button>
     </div>
 </div>
@@ -268,7 +268,7 @@ body.section-0 #map {
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
             ×
         </button>
-        <h2>Om #Hedehuse</h2>
+        <h2>About #Hedehusene</h2>
 
     </div>
     <div class="modal-body">
@@ -282,24 +282,24 @@ body.section-0 #map {
 </div>
 </body>
 <script src='//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'></script>
-<script src="https://eu1.mapcentia.com/js/raphael/raphael-min.js"></script>
-<script src='https://eu1.mapcentia.com/js/underscore/underscore-min.js'></script>
-<script src='https://eu1.mapcentia.com/js/leaflet/leaflet.js'></script>
-<script src="https://eu1.mapcentia.com/js/leaflet/leaflet.markercluster-src.js"></script>
-<script src="https://eu1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
-<script src='https://eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
-<script src="https://eu1.mapcentia.com/js/jqote2/jquery.jqote2.js"></script>
-<script src="https://eu1.mapcentia.com/js/bootstrap/js/bootstrap.min.js"></script>
-<script src="https://eu1.mapcentia.com/js/raphael/dist/rlayer-src.js"></script>
+<script src="http://eu1.mapcentia.com/js/raphael/raphael-min.js"></script>
+<script src='http://eu1.mapcentia.com/js/underscore/underscore-min.js'></script>
+<script src='http://eu1.mapcentia.com/js/leaflet/leaflet.js'></script>
+<script src="http://eu1.mapcentia.com/js/leaflet/leaflet.markercluster-src.js"></script>
+<script src="http://eu1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.js"></script>
+<script src='http://eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
+<script src="http://eu1.mapcentia.com/js/jqote2/jquery.jqote2.js"></script>
+<script src="http://eu1.mapcentia.com/js/bootstrap/js/bootstrap.min.js"></script>
+<script src="http://eu1.mapcentia.com/js/raphael/dist/rlayer-src.js"></script>
 <script type="text/html" id="template-sections">
     <section id='spot_<%= this.properties.gid %>' class='cover active'>
         <h4><%= this.properties.text %></h4>
 
-        <p><% if (this.properties.foto !== null) { %>
+        <p><% if (this.properties.foto !== null && this.properties.foto !== undefined) { %>
             <img src="<%= this.properties.foto %>">
             <% } %></p>
 
-        <p><% if (this.properties.video !== null) {; %>
+        <p><% if (this.properties.video !== null && this.properties.video !== undefined) {; %>
             <a href="javascript:void(0)"
                onclick="showVideo('<%= this.properties.video.split('/')[6] %>','<%= this.properties.text %>')">Se
                 video</a>
@@ -311,7 +311,7 @@ $("#about").click(function () {
     $("#modal-about").modal();
 })
 function showVideo(video, name) {
-    $("#body-video").html('<iframe src="https://player.vimeo.com/video/' + video + '" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> <p><a href="https://vimeo.com/42997705">Muligheder</a> from <a href="https://vimeo.com/user11620242">CiTyBee</a> on <a href="https://vimeo.com">Vimeo</a>.</p>');
+    $("#body-video").html('<iframe src="http://player.vimeo.com/video/' + video + '" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> <p><a href="http://vimeo.com/42997705">Muligheder</a> from <a href="http://vimeo.com/user11620242">CiTyBee</a> on <a href="http://vimeo.com">Vimeo</a>.</p>');
     $("#header-video").html(name);
     $("#modal-video").modal().on('hidden', function () {
         $("#body-video").html('');
@@ -358,71 +358,35 @@ function scrollTo(id) {
         var top = (m > 3) ? 25 : 50;
         var cssClass = (typeof text !== "number") ? "twitter-single" : "twitter-cluster";
         return new L.DivIcon({ html: '<div><span>' + text + '</span><span style="display: inline;pointer-events:none;overflow:sd;border: 0px solid white;height:150px;top:-80px;left:' + left + 'px;position: absolute;width: 200px"><span style="position:relative; top:' + top + '%;">' + tagCloud + '</span></span></div>', className: 'marker-cluster ' + cssClass, iconSize: new L.Point(size, size) });
-    }
-    $('#search').typeahead({
-        //items: 16,
-        source: _.debounce(function (query, process) {
-            var texts = [], filter;
-            filter = $("#type").val();
-            elastic.reset();
-
-            elastic.q = '{"query":{"query_string":{"default_field":"text","query":"' + query.toLowerCase() + '","default_operator":"AND"}}}';
-
-            elastic.onLoad = function () {
-                $.each(elastic.geoJSON.features, function (i, v) {
-                    texts.push(v.properties.text);
-                });
-                process(texts);
-            };
-            elastic.load();
-        }, 300),
-        updater: function (item) {
-            elastic.reset();
-            elastic.q = '{"query":{"query_string":{"default_field":"text","query":"' + item.toLowerCase() + '","default_operator":"AND"}}}';
-            elastic.onLoad = function () {
-                map.zoomToExtentOfgeoJsonStore(elastic);
-            },
-                    elastic.load();
-            return item;
-        },
-        matcher: function (item) {
-            return true;
-        },
-        sorter: function (items) {
-            return items.sort();
-            return items;
-        },
-        highlighter: function (item) {
-            _($.trim(this.query).split(' ')).each(
-                    function (s) {
-                        var regex = new RegExp('(' + s + ')', 'gi');
-                        item = item.replace(regex, "<b>$1</b>");
-                    }
-            );
-            return item;
+    };
+    $("input[name=search]").keyup(function (e) {
+        if (!this.value) {
+            search(e.target.value);
         }
     });
-    var elastic = new geocloud.elasticStore({
-        db: "citybee2",
-        index: "tweets",
-        q: "",
-        onEachFeature: function (feature, layer) {
-            layer.bindPopup(feature.properties['text']);
-        },
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng,
-                    {
-                        zIndexOffset: 10000,
-                        icon: L.AwesomeMarkers.icon(
-                                {
-                                    icon: 'icon-twitter',
-                                    color: 'blue'}
-                        )});
+
+    $("input[name=search]").on('input', _.debounce(function (e) {
+        search(e.target.value);
+    }, 300));
+
+    var search = function (query) {
+        tweetGroups.clearLayers()
+        var layers = map.map._layers;
+        for (var key in layers) {
+            if (layers.hasOwnProperty(key)) {
+                if (typeof layers[key]._tiles !== "object") {
+                    map.map.removeLayer(layers[key]);
+                }
+            }
         }
+        tweet.q = query === "" ? "" : '{"query":{"query_string":{"default_field":"text","query":"' + query.toLowerCase() + '","default_operator":"AND"}}}';
+        tweet.onLoad = function () {
+            map.map.addLayer(tweetGroups);
+            feed();
+        };
+        tweet.load();
+    };
 
-
-    });
-    map.addGeoJsonStore(elastic);
     var tweetGroups = new L.MarkerClusterGroup({
         maxClusterRadius: 60,
         iconCreateFunction: null,
@@ -432,12 +396,16 @@ function scrollTo(id) {
         spiderfyDistanceMultiplier: 2,
         vigga: fun
     });
-    var tweet = new geocloud.sqlStore({
+    var tweet = new geocloud.elasticStore({
         db: "citybee2",
+        index: "tweets",
+        q: "",
+        size: 1000,
         onLoad: function () {
             map.map.addLayer(tweetGroups);
+            feed();
         },
-        sql: "SELECT * FROM tweets.tweets",
+        sql: "",
         onEachFeature: function (feature, layer) {
             layer.on("click", function () {
                         //scrollTo("#spot_" + feature.properties.gid);
@@ -456,29 +424,20 @@ function scrollTo(id) {
 
                     })()
                     }).bindPopup(
-                            "<p><!--<a target='_blank' href='https://twitter.com/" + feature.properties.user_screen_name + "'>" + feature.properties.user_name + "</a><br>-->" + feature.properties.text + "<!--<br><i style='font-size;80%;color:silver'>" + feature.properties.created_at + "</i>--></p>"
+                            "<p><!--<a target='_blank' href='http://twitter.com/" + feature.properties.user_screen_name + "'>" + feature.properties.user_name + "</a><br>-->" + feature.properties.text + "<!--<br><i style='font-size;80%;color:silver'>" + feature.properties.created_at + "</i>--></p>"
                     );
             f.martin = {id: feature.properties.gid, text: feature.properties.text};
             tweetGroups.addLayer(f);
             return tweetGroups;
         }
-    })
-
-    var store = new geocloud.sqlStore({
-        db: "citybee2",
-        sql: "SELECT * FROM tweets.tweets",
-
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng);
-        }
     });
-    //map.addGeoJsonStore(store);
 
-    store.onLoad = function () {
-        $('article').append($('#template-sections').jqote(store.geoJSON.features));
+    var feed = function () {
+        $("[id^=spot]").remove();
+        $('article').append($('#template-sections').jqote(tweet.geoJSON.features));
         var sections = document.getElementsByTagName('section');
         var markers = _(sections).map(function (section) {
-            return _(store.layer._layers).find(function (m) {
+            return _(tweet.layer._layers).find(function (m) {
                 return "spot_" + m.feature.properties.gid == section.id;
             });
         });
@@ -489,9 +448,9 @@ function scrollTo(id) {
                 _(sections).each(function (s) {
                     s.className = s.className.replace(' active', '')
                 });
-                sections[index].className += ' active';
-                document.body.className = 'section-' + index;
                 try {
+                    sections[index].className += ' active';
+                    document.body.className = 'section-' + index;
                     /*L.marker([markers[index].feature.geometry.coordinates[1],markers[index].feature.geometry.coordinates[0]],{icon: L.AwesomeMarkers.icon(
                      {
                      icon: 'icon-twitter',
@@ -555,7 +514,6 @@ function scrollTo(id) {
             }
         })();
     }
-    store.load();
     tweet.load();
 })();
 </script>
