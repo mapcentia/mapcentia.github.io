@@ -45,12 +45,12 @@
     (function () {
         var obj = gc2map.init({
             db: 'pipeh',
-            layers: ['kortportal.jordstykke','kortportal.adgang','gt.kb_gt_1407'],
+            layers: ['kortportal.jordstykke','kortportal.adgang','gravetilladelser.kb_gt_1407'],
             zoom: [12.64500617980957, 55.58586428389589, 13],
             setBaseLayer: 'dtkSkaermkortDaempet',
             width: '100%',
             height: $(window).height() - 46 + "px",
-            schema: 'gt',
+            schema: 'gravetilladelser',
             clickDistance: 20,
             callBack: function (e) {
                 var cloud = e, komKode = 155;
