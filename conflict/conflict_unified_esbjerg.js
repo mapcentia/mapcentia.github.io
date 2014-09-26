@@ -249,14 +249,14 @@ var cowi = (function () {
                                 if (query.match(/\s+/g) === null) {
                                     $.ajax({
                                         url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/esbjerg/kommuneplan14/kpplandk2',
-                                        data: '&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '"}}}',
+                                        data: '&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()).replace(/-/g,"_") + '"}}}',
                                         dataType: 'jsonp',
                                         contentType: "application/json; charset=utf-8",
                                         scriptCharset: "utf-8",
                                         jsonp: 'jsonp_callback',
                                         success: function (response) {
                                             $.each(response.hits.hits, function (i, hit) {
-                                                var str = hit._source.properties.string;
+                                                var str = hit._source.properties.string.replace(/_/g,"-");
                                                 responseType[str] = hit._type;
                                                 map[str] = hit._source.properties.gid;
                                                 names.push(str);
