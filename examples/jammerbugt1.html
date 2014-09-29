@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN">
+<html>
+<head>
+    <title>test3</title>
+    <script src='http://eu1.mapcentia.com/api/v3/js/geocloud.php'></script>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+    <link href="http://eu1.mapcentia.com/js/leaflet/plugins/awesome-markers/leaflet.awesome-markers.css" type="text/css" rel="stylesheet">
+<style>
+    .d {
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+<div class="d" id="map-div1" style="width:600px;height:400px"></div>
+<script>
+    (function () {
+        // Create a new map object in element with id 'map-div'
+        var map = new geocloud.map({
+            el: "map-div1"
+        });
+        // Add a base layer
+        map.addBaseLayer(geocloud.DTKSKAERMKORTDAEMPET);
+        map.setBaseLayer(geocloud.DTKSKAERMKORTDAEMPET);
+        map.map.setView([57.14518072479997, 9.465923309326172], 12);
+        map.addTileLayers({
+            db: "jammerbugt",
+            layers: ["kommuneplan.skovrejsning", "kommuneplan.jordbrugsomr"],
+            visibility: true
+        });
+    })();
+</script>
+
+
+<div class="d" id="map-div2" style="width:600px;height:400px"></div>
+<script>
+    (function () {
+        // Create a new map object in element with id 'map-div'
+        var map = new geocloud.map({
+            el: "map-div2"
+        });
+        // Add a base layer
+        map.addBaseLayer(geocloud.GOOGLESTREETS);
+        map.setBaseLayer(geocloud.GOOGLESTREETS);
+        var store = new geocloud.sqlStore({
+            db: "jammerbugt",
+            sql: "SELECT * FROM kommuneplan.camping",
+            onLoad: function () {
+                // Zoom to vector layer
+                map.zoomToExtentOfgeoJsonStore(store);
+            },
+            // Bind a popup to each point
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(feature.properties['navne1']);
+            },
+            // Make markers instead of simple vector point features
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {
+                    zIndexOffset: 10000,
+                    icon: L.AwesomeMarkers.icon({
+                        icon: 'home',
+                        markerColor: 'blue',
+                        prefix: 'fa'}
+                    )
+                });
+            }
+        });
+        map.addGeoJsonStore(store);
+        store.load();
+    })();
+
+</script>
+</body>
+</html>

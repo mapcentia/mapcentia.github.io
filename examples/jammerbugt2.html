@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Strict//EN">
+<html>
+<head>
+
+</head>
+<body>
+<script src='http://eu1.mapcentia.com/apps/widgets/gc2map/js/gc2map.js'></script>
+<div></div>
+<script>
+    (function () {
+        gc2map.init({
+            db: 'jammerbugt',
+            layers: ['kommuneplan.beskzone','kommuneplan.detailhandel'],
+            zoom: [9.748306274414062,57.152257805606894,13],
+            setBaseLayer: 'stamenToner',
+            width: '600px',
+            height: '500px',
+            schema: 'kommuneplan'
+        });
+    }())
+</script>
+</body>
+</html>
