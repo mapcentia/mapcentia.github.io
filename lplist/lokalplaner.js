@@ -62,7 +62,8 @@ mapcentia_lokalplaner = (function () {
                 progressText: 'Henter...', width: 300, wait: true, waitConfig: {interval: 200} });
             store = new mygeocloud_ol.geoJsonStore("dk", {styleMap: styleMap});
             try {
-                cloud.addOSM();
+                cloud.addBaseLayer("dtkSkaermkortDaempet");
+                cloud.setBaseLayer("dtkSkaermkortDaempet");
             } catch (e) {
 
             }
