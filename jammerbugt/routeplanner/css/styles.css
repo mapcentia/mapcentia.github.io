@@ -1,0 +1,68 @@
+html, body, #map-canvas {
+    height: 100%;
+    margin: 0px;
+    padding: 0px
+}
+#pane {
+    position: fixed;
+    top: 0px;
+    bottom: 0px;
+    left: 0px;
+    width: 66.6666%;
+}
+article {
+    float: right;
+    width: 33.3333%;
+    min-width: 100px;
+    position: relative;
+    padding: 5px;
+    z-index: 1000;
+}
+
+.alert {
+    position: relative;
+    width: 100%;
+    margin-bottom: 5px !important;
+}
+
+#search {
+    position: relative;
+    width: 100%;
+}
+
+#tweetContainer {
+    position: relative;
+    width: 100%;
+}
+
+section {
+    margin-top: 10px;
+}
+
+.highlighted {
+    color: #0044cc;
+}
+.progress-bar.animate {
+    width: 100%;
+}
+.form-control{
+    margin-bottom: 5px;
+}
+.selected{
+    box-shadow: 0 0 10px 3px #9ecaed;
+}
+.unselected{
+    box-shadow: none;
+}
+.red{
+    background-color: #fd8181;
+}
+.green{
+    background-color: #aee993;
+}
+a.list-group-item.red:hover {
+    background-color: #fd5757 !important;
+}
+a.list-group-item.green:hover {
+    background-color: #79d261 !important;
+}
