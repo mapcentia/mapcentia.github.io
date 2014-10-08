@@ -24,11 +24,12 @@
                     speciale: arr[i].properties.speciale
                 };
             directionsService.route(request, function (response, status) {
-                if (status === google.maps.DirectionsStatus.ZERO_RESULTS) {
+                if (response === null || status === google.maps.DirectionsStatus.ZERO_RESULTS) {
                     $('#tweetContainer').empty();
                     $("#search-progress").empty();
                     bar.removeClass('animate');
                     modal.modal('hide');
+                    alert("En eller flere rutevejledninger mislykkedes. Prøv at lave søgningen igen");
                     return;
                 }
                 if (status === google.maps.DirectionsStatus.OK) {
