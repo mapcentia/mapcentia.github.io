@@ -120,7 +120,7 @@ code2map.dict = {
     "m_hg": "theme-v1_KP14_BI_LUFTHGRAENSEPLAN",
     "b_int": "theme-v1_KP14_BI_NATURA2000",
     "t_gas": "theme-v1_KP14_BI_NATURGAS_LINE",
-    "b_P3besk": "theme-v1_KP14_BI_P3_BESKYTTELSE",
+    "b_p3besk": "theme-v1_KP14_BI_P3_BESKYTTELSE",
     "b_pzrivi": "theme-v1_KP14_BI_PLANZONE_RISIKOVIRKSOMHED",
     "b_pona": "theme-v1_KP14_BI_POTENTIEL_NATUR",
     "t_vej": "theme-v1_KP14_BI_PRIMAERVEJE",
