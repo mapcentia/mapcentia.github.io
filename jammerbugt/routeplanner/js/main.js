@@ -5,7 +5,7 @@
     function search(origin) {
         var i = 0, l, cclass, arr = [];
         $.each(gc2dest.features, function (index, value) {
-            if ($("#speciel-input").val() === value.properties.speciale) {
+            if ($("#speciel-input").val() === value.properties.forenkletspeciale) {
                 arr.push(value);
             }
         });
@@ -141,9 +141,9 @@
             show: false
         });
         $.each(gc2dest.features, function (index, value) {
-            if (specArr.indexOf(value.properties.speciale) === -1) {
-                specArr.push(value.properties.speciale);
-                $("#speciel-input").append("<option value='" + value.properties.speciale + "'>" + value.properties.speciale + "</option>")
+            if (specArr.indexOf(value.properties.forenkletspeciale) === -1) {
+                specArr.push(value.properties.forenkletspeciale);
+                $("#speciel-input").append("<option value='" + value.properties.forenkletspeciale + "'>" + value.properties.forenkletspeciale + "</option>")
             }
         });
     }
