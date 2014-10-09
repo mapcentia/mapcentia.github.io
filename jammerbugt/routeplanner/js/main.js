@@ -1,17 +1,56 @@
 (function () {
     "use strict";
-    var map, directionsDisplay, directionsService, list = [], autocomplete, bar, modal, specArr = [];
+    var map, directionsDisplay, directionsService, list = [], autocomplete, bar, modal, specArr = [], markers = [], homeMarker, geoCoder, bounds;
 
     function search(origin) {
-        var i = 0, l, cclass, arr = [];
+        var i = 0, l, cclass, arr = [], marker, infowindow, ll;
+        bounds = new google.maps.LatLngBounds();
+
+        // Filter and sort the destinations
         $.each(gc2dest.features, function (index, value) {
             if ($("#speciel-input").val() === value.properties.forenkletspeciale) {
                 arr.push(value);
             }
         });
         l = arr.length;
+
+        // Clean up the map
+        $.each(markers, function (index, value) {
+            value.setMap(null);
+        });
+        markers = [];
+        if (directionsDisplay !== undefined) {
+            directionsDisplay.setMap(null);
+        }
+        if (homeMarker !== undefined) {
+            homeMarker.setMap(null);
+        }
+
+        // Set home marker from address
+        geoCoder = new google.maps.Geocoder();
+        geoCoder.geocode({ 'address': origin}, function (results, status) {
+            if (status === google.maps.GeocoderStatus.OK) {
+                homeMarker = new google.maps.Marker({
+                    map: map,
+                    position: results[0].geometry.location
+                });
+                bounds.extend(results[0].geometry.location);
+            } else {
+                alert('Kunne ikke finde adresse: ' + status);
+            }
+        });
+
+        // Setup direction service
+        directionsService = new google.maps.DirectionsService();
+        directionsDisplay = new google.maps.DirectionsRenderer();
+        directionsDisplay.setMap(map);
+        directionsDisplay.setOptions({ suppressMarkers: true });
+
+        // Clean up the list
         $('#tweetContainer').empty();
         $("#search-progress").empty();
+
+        // Start iterations
         (function iterator() {
             var request = {
                     origin: origin,
@@ -61,17 +100,16 @@
                 $.each(list, function (index, value) {
                     if (index === 0) {
                         cclass = "green";
-                    }
-                    else if (value.leg.distance.value > 50000) {
+                    } else if (value.leg.distance.value > 50000) {
                         cclass = "red";
-                    }
-                    else {
+                    } else {
                         cclass = "";
                     }
                     $('#tweetContainer').append(
                         '<section><a href="javascript:void(0)" class="list-group-item ' + cclass + '" data-id=\"' +
                             value.custom.gid +
                             '">' +
+                            '<div class="number">' + (index + 1) + '</div>' +
                             '<h4 class="list-group-item-heading">' +
                             value.leg.distance.text +
                             '</h4>' +
@@ -87,7 +125,31 @@
                             '</p>' +
                             '</a></section>'
                     );
+                    // Add markers
+                    ll = new google.maps.LatLng(value.leg.end_location.k, value.leg.end_location.B);
+                    marker = new google.maps.Marker({
+                        position: ll,
+                        map: map,
+                        icon: "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=" + (index + 1) + "|FF0000|000000"
+                    });
+                    infowindow = new google.maps.InfoWindow({
+                        content: "<div>" +
+                            value.leg.distance.text + "<br>" +
+                            value.custom.speciale + "<br>" +
+                            value.custom.navn + "<br>" +
+                            value.request.destination + "<br>" +
+                            "</div>"
+                    });
+
+                    google.maps.event.addListener(marker, 'click', (function (marker, infowindow) {
+                        return function () {
+                            infowindow.open(map, marker);
+                        };
+                    }(marker, infowindow)));
+                    bounds.extend(ll);
+                    markers.push(marker);
                 });
+                map.fitBounds(bounds);
                 $('a.list-group-item').on("click", function (e) {
                     var id = $(this).data('id');
                     $(".list-group-item").addClass("unselected");
@@ -95,6 +157,7 @@
                     $(this).addClass("selected");
                     showRoute(id, origin)
                 });
+
                 list = [];
             } else {
                 setTimeout(pollForIterator, 10);
@@ -125,9 +188,6 @@
             center: new google.maps.LatLng(57, 9)
         };
         map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-        directionsService = new google.maps.DirectionsService();
-        directionsDisplay = new google.maps.DirectionsRenderer();
-        directionsDisplay.setMap(map);
         autocomplete = new google.maps.places.Autocomplete(document.getElementById('search-input'));
         google.maps.event.addListener(autocomplete, 'place_changed', function () {
             var place = autocomplete.getPlace();
@@ -140,6 +200,17 @@
         $('.js-loading-bar').modal({
             backdrop: 'static',
             show: false
+        });
+        // Sort the destinations
+        gc2dest.features.sort(function (a, b) {
+            var nameA = a.properties.forenkletspeciale.toLowerCase(), nameB = b.properties.forenkletspeciale.toLowerCase();
+            if (nameA < nameB) {
+                return -1;
+            }
+            if (nameA > nameB) {
+                return 1;
+            }
+            return 0;
         });
         $.each(gc2dest.features, function (index, value) {
             if (specArr.indexOf(value.properties.forenkletspeciale) === -1) {

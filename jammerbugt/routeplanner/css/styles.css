@@ -3,15 +3,17 @@ html, body, #map-canvas {
     margin: 0px;
     padding: 0px
 }
+
 #pane {
     position: fixed;
     top: 0px;
     bottom: 0px;
-    left: 0px;
+    right: 0px;
     width: 66.6666%;
 }
+
 article {
-    float: right;
+    float: left;
     width: 33.3333%;
     min-width: 100px;
     position: relative;
@@ -42,27 +44,42 @@ section {
 .highlighted {
     color: #0044cc;
 }
+
 .progress-bar.animate {
     width: 100%;
 }
-.form-control{
+
+.form-control {
     margin-bottom: 5px;
 }
-.selected{
+
+.selected {
     box-shadow: 0 0 10px 3px #9ecaed;
 }
-.unselected{
+
+.unselected {
     box-shadow: none;
 }
-.red{
+
+.red {
     background-color: #fd8181;
 }
-.green{
+
+.green {
     background-color: #aee993;
 }
+
 a.list-group-item.red:hover {
     background-color: #fd5757 !important;
 }
+
 a.list-group-item.green:hover {
     background-color: #79d261 !important;
+}
+
+.number {
+    position: absolute;
+    right: 10px;
+    font-size: 18px;
+    font-weight: bold;
 }
