@@ -156,6 +156,10 @@
 
         // Create a new map object in element with id 'map-div'
         map = new geocloud.map({el: "map"});
+        zoomControl = L.control.zoom({
+            position: 'bottomright'
+        });
+        map.map.addControl(zoomControl);
         map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
         map.addBaseLayer(geocloud.HERENORMALNIGHTGREY);
         map.setBaseLayer(geocloud.HERENORMALNIGHTGREY);
