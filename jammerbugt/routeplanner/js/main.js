@@ -114,9 +114,9 @@
                             value.leg.distance.text +
                             '</h4>' +
                             '<p class="list-group-item-text">' +
-                            value.custom.navn +
-                            '<br>' +
                             value.custom.speciale +
+                            '<br>' +
+                            value.custom.navn +
                             '<br>' +
                             value.request.destination +
                             '</p>' +
