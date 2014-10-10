@@ -24,9 +24,8 @@ var cowi = (function () {
             "opacity": 0.65
         };
         document.write('<script src="http://beta.mygeocloud.cowi.webhouse.dk/controller/tables/' + db + '/getallrecords/settings.geometry_columns_view?jsonp_callback=cowi.callback"><\/script>');
-        document.write('<script src="' + window.mygeocloud_host + '/api/v1/meta/' + db + '?jsonp_callback=cowi.callback"><\/script>');
         addLegend = function () {
-            var hostname = window.mygeocloud_host;
+            var hostname = "http://alpha.mygeocloud.cowi.webhouse.dk";
             var layers = cloudMap.getVisibleLayers();
             var param = 'layers=' + layers + '&type=text&lan=';
             $.ajax({
