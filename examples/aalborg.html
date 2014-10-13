@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src='http://eu1.mapcentia.com/apps/widgets/gc2map/js/gc2map.js'></script>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.min.css" type="text/css"
+          rel="stylesheet">
+    <link href="http://eu1.mapcentia.com/js/leaflet/plugins/awesome-markers/leaflet.awesome-markers.css" type="text/css"
+          rel="stylesheet">
+    <link rel="stylesheet" type='text/css' href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+        }
+        #pane {
+            position: fixed;
+            top: 0px;
+            bottom: 0px;
+            right: 0px;
+            width: 66.6666%;
+        }
+
+        article {
+            float: left;
+            width: 33.3333%;
+            min-width: 100px;
+            position: relative;
+            padding: 5px;
+            z-index: 1000;
+        }
+
+        .alert {
+            position: relative;
+            width: 100%;
+            margin-bottom: 5px !important;
+        }
+        #open-win-li-map {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="pane">
+    <div></div>
+    <script>
+        (function () {
+            gc2map.init({
+                db: 'mydb_eu',
+                layers: ['aalborg.parknatur_skiltebesigtigelsehaervejsruten'],
+                zoom: [9.909324644616078, 57.010271850298416, 12],
+                setBaseLayer: 'stamenToner',
+                width: '100%',
+                height: '100%',
+                schema: 'aalborg',
+                key: 'map',
+                callBack: function (e) {
+                    var store = new geocloud.sqlStore({
+                        db: "mydb_eu",
+                        sql: "SELECT * FROM aalborg.parknatur_naturture",
+                        onLoad: function () {
+                            // Zoom to vector layer
+                            e.zoomToExtentOfgeoJsonStore(store);
+                        },
+                        // Bind a popup to each point
+                        onEachFeature: function (feature, layer) {
+                            layer.bindPopup(feature.properties['navn']);
+                            layer.on('click', function(evt) {
+                                var c = $("#content");
+                                c.empty();
+                                c.append("<h3  class='well'>" + feature.properties['navn'] + "</h3>")
+                                c.append("<h4>Arrangør</h4><p>" + feature.properties['arrangoer'] + "</p>")
+                                c.append("<h4>Mødested</h4><p>" + feature.properties['moedested'] + "</p>")
+                                c.append("<h4>Varighed</h4><p>" + feature.properties['varighed'] + "</p>")
+                                c.append("<h4>Beskrivelse</h4><p>" + feature.properties['broedtekst'] + "</p>")
+
+                            });
+                        },
+                        // Make markers instead of simple vector point features
+                        pointToLayer: function (feature, latlng) {
+                            return L.marker(latlng, {
+                                zIndexOffset: 10000,
+                                icon: L.AwesomeMarkers.icon({
+                                            icon: 'star',
+                                            markerColor: 'blue',
+                                            prefix: 'fa'
+                                        }
+                                )
+                            });
+                        }
+                    });
+                    e.addGeoJsonStore(store);
+                    store.load();
+                }
+            });
+        }())
+    </script>
+</div>
+<article>
+    <div class="alert alert-info">Demo med natureture i Aalborg kommune. Klik på markørene i kortet for at se information.
+    </div>
+    <div id="content">
+
+    </div>
+</article>
+<div></div>
+</body>
+</html>
