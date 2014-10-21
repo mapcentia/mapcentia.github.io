@@ -6,9 +6,9 @@
 <link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
 <link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap-responsive.min.css" type="text/css"
       rel="stylesheet">
-<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" type="text/css"
+<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.1/css/font-awesome.min.css" type="text/css"
       rel="stylesheet">
-<link href="http://eu1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" type="text/css"
+<link href="http://eu1.mapcentia.com/js/leaflet/plugins/awesome-markers/leaflet.awesome-markers.css" type="text/css"
       rel="stylesheet">
 <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css">
 <link href="http://eu1.mapcentia.com/js/leaflet/TwitterCluster.css" type="text/css" rel="stylesheet">
@@ -225,9 +225,11 @@ body.section-0 #map {
     top: 10px;
     right: 10px;
 }
+
 #type {
     display: none;
 }
+
 .leaflet-top {
     left: 0px !important;
     right: auto !important;
@@ -439,12 +441,13 @@ function scrollTo(id) {
         vigga: fun
     });
     var tweet = new geocloud.sqlStore({
+        host: "http://54.75.3.196",
         db: "mhoegh",
         onLoad: function () {
             map.map.addLayer(tweetGroups);
         },
         sql: "SELECT * FROM tmsihh.tweets",
-        onEachFeature: function(feature,layer){
+        onEachFeature: function (feature, layer) {
 
         },
         pointToLayer: function (feature, latlng) {
@@ -455,7 +458,7 @@ function scrollTo(id) {
                         return fun(n, "")
 
                     })()
-                    }).on("click", function(){
+                    }).on("click",function () {
                         scrollTo("#spot_" + feature.properties.gid);
                     }).bindPopup(feature.properties['text']);
             f.martin = {id: feature.properties.gid, text: feature.properties.text};
@@ -464,13 +467,14 @@ function scrollTo(id) {
         }
     });
     var elastic = new geocloud.elasticStore({
+        host: "http://54.75.3.196",
         db: "mhoegh",
         index: "tweets",
         q: "",
         size: 20,
         onEachFeature: function (feature, layer) {
             //layer.bindPopup(feature.properties['text']);
-            layer.on("click", function(){
+            layer.on("click", function () {
                         scrollTo("#spot_" + feature.properties.gid);
                     }
             );
@@ -481,8 +485,10 @@ function scrollTo(id) {
                         zIndexOffset: 10000,
                         icon: L.AwesomeMarkers.icon(
                                 {
-                                    icon: 'icon-twitter',
-                                    color: 'blue'}
+                                    icon: 'twitter',
+                                    markerColor: 'blue',
+                                    prefix: 'fa'
+                                }
                         )});
         }
     });
@@ -570,12 +576,12 @@ function scrollTo(id) {
 }());
 </script>
 <style>
-.leaflet-top {
-    position: fixed;
-    left: 10px !important;
-    opacity: 0.8;
-    top: 0;
-}
+    .leaflet-top {
+        position: fixed;
+        left: 10px !important;
+        opacity: 0.8;
+        top: 0;
+    }
 </style>
 </html>
 
