@@ -530,6 +530,16 @@ function scrollTo(id) {
                 try {
                     map.map.setView([markers[index].feature.geometry.coordinates[1], markers[index].feature.geometry.coordinates[0]]);
                     markers[index].openPopup();
+                    var p = new R.Pulse(
+                            [markers[index].feature.geometry.coordinates[1], markers[index].feature.geometry.coordinates[0]],
+                            30,
+                            {'stroke': 'none', 'fill': 'none'},
+                            {'stroke': '#30a3ec', 'stroke-width': 3});
+
+                    map.map.addLayer(p);
+                    setTimeout(function () {
+                        map.map.removeLayer(p);
+                    }, 1000);
                 }
                 catch (e) {
                     //map.map.fitBounds(store.layer.getBounds());
