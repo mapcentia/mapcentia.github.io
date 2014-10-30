@@ -62,7 +62,7 @@ var cowi_lp = (function () {
     var loadMessage = Ext.MessageBox;
     var init_list = function (conf) {
         var host, grid, cloud = new mygeocloud_ol.map("map", "dk");
-        host = !conf.dbHost ? "http://plandk2.mapcentia.com" : dbHost.host;
+        host = !conf.dbHost ? "http://plandk2.mapcentia.com" : conf.dbHost;
         loadMessage.show({ msg: 'Henter lokalplaner...',
             progressText: 'Henter...', width: 300, wait: true, waitConfig: {interval: 200} });
         var store = new mygeocloud_ol.geoJsonStore("dk", {styleMap: styleMap});
