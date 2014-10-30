@@ -61,7 +61,8 @@ var cowi_lp = (function () {
     };
     var loadMessage = Ext.MessageBox;
     var init_list = function (conf) {
-        var grid, cloud = new mygeocloud_ol.map("map", "dk");
+        var host, grid, cloud = new mygeocloud_ol.map("map", "dk");
+        host = !conf.host ? "http://plandk2.mapcentia.com" : conf.host;
         loadMessage.show({ msg: 'Henter lokalplaner...',
             progressText: 'Henter...', width: 300, wait: true, waitConfig: {interval: 200} });
         var store = new mygeocloud_ol.geoJsonStore("dk", {styleMap: styleMap});
@@ -99,7 +100,7 @@ var cowi_lp = (function () {
                     grid.grid.getSelectionModel().each(function (rec) {
                         feature = rec.get('feature');
                     });
-                    var link = "http://plandk2.mapcentia.com/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + feature.attributes.planid;
+                    var link = host + "/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + feature.attributes.planid;
                     var record = grid.grid.getSelectionModel().getSelected();
                     window.open(link);
                 }
