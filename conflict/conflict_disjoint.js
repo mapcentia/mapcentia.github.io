@@ -15,6 +15,9 @@ var cowi = (function () {
     };
     var init_search = function (db, komKode, layers, bbox, callback) {
         cloudMap = new mygeocloud_ol.map("map", db);
+        cloudMap.addBaseLayer("dtkSkaermkortDaempet");
+        cloudMap.setBaseLayer("dtkSkaermkortDaempet");
+
         cloudMap.map.zoomToExtent(bbox);
         $("#result").append("<div id='spinner' style='display:none'><img src='http://mapcentia.github.io/conflict/ajax-loader.gif'></div>");
         var style = {
@@ -122,7 +125,7 @@ var cowi = (function () {
                 onLoad: function () {
                     cloudMap.zoomToExtentOfgeoJsonStore(store);
                     cloudMap.map.addLayers([store.layer]);
-                    conflict(store.geoJSON.features[0].properties.wkt,type);
+                    conflict(store.geoJSON.features[0].properties.wkt, type);
                 }
             });
         })();
@@ -203,7 +206,7 @@ var cowi = (function () {
                 onLoad: function () {
                     cloudMap.zoomToExtentOfgeoJsonStore(store);
                     cloudMap.map.addLayers([store.layer]);
-                    conflict(store.geoJSON.features[0].properties.wkt,type);
+                    conflict(store.geoJSON.features[0].properties.wkt, type);
                 }
             });
         })();
@@ -224,10 +227,11 @@ var cowi = (function () {
             else {
                 storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
 
-            }            storeLp.load();
+            }
+            storeLp.load();
             storeLp.onLoad = function () {
                 var f = this.geoJSON.features;
-                if (typeof this.geoJSON.features === "object"){
+                if (typeof this.geoJSON.features === "object") {
                     $('#result-table').append("<tr><td></td><td class='layer-name'>Lokalplaner</td></tr>");
 
                     for (var i = 0; i < f.length; i++) {
