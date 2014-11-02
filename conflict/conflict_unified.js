@@ -14,6 +14,8 @@ var cowi = (function () {
         },
         init_search = function (db, komKode, layers, bbox, callback) {
             cloudMap = new mygeocloud_ol.map("map", db);
+            cloudMap.addBaseLayer("dtkSkaermkortDaempet");
+            cloudMap.setBaseLayer("dtkSkaermkortDaempet");
             cloudMap.map.zoomToExtent(bbox);
 
             $("#result").append("<div id='spinner' style='display:none'><img src='http://mapcentia.github.io/conflict/ajax-loader.gif'></div>");
