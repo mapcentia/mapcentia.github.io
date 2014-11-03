@@ -26,7 +26,7 @@ mapcentia_districtmap = (function () {
                     width: "500px",
                     height: "500px",
                     table: "kommuneplan.kpplandk2_view",
-                    gridHeight: "245px",
+                    gridHeight: 245,
                     rules: {
                         rules: [
                             new OpenLayers.Rule({
