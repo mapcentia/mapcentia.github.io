@@ -26,6 +26,7 @@ mapcentia_districtmap = (function () {
                     width: "500px",
                     height: "500px",
                     table: "kommuneplan.kpplandk2_view",
+                    gridHeight: "245px",
                     rules: {
                         rules: [
                             new OpenLayers.Rule({
@@ -220,7 +221,7 @@ mapcentia_districtmap = (function () {
                 grid = new mygeocloud_ol.grid("grid", store, {
                     columns: defaults.columns,
                     selectControl: selectControl,
-                    height: 245
+                    height: defaults.gridHeight
                 });
                 $("#zoom").on("click",
                     function () {
