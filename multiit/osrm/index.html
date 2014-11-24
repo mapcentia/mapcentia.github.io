@@ -1,0 +1,173 @@
+<html>
+<head>
+    <title>GeoExt MapPanel Example</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="http://cdn.sencha.com/ext/gpl/4.2.0/resources/css/ext-all.css"/>
+</head>
+<body>
+<input type="text" id='a1' value="Flintevej 37">
+<input type="button" value="Tilføj via punkt" onclick="routeToMap.getCoordFromAddresse(document.getElementById('a1').value)">
+<ol id="list"></ol>
+<input type="button" value="Beregn rute" onclick="routeToMap.getRoute()">
+<br>
+<div id="mappanel"></div>
+</body>
+<!-- ExtJS -->
+<script src="http://cdn.sencha.com/ext/gpl/4.2.1/ext-all.js"></script>
+<!-- OpenLayers -->
+<script type="text/javascript" src="http://eu1.mapcentia.com/js/openlayers/proj4js-combined.js"></script>
+<script type="text/javascript" src="http://eu1.mapcentia.com/js/openlayers/defs/EPSG900913.js"></script>
+<script type="text/javascript" src="http://eu1.mapcentia.com/js/openlayers/OpenLayers.js"></script>
+<script>
+    Ext.Loader.setConfig({
+        enabled: true,
+        disableCaching: false,
+        paths: {
+            GeoExt: "http://geoext.github.com/geoext2/src/GeoExt/",
+            Ext: "http://cdn.sencha.io/ext-4.1.0-gpl/src"
+        }
+    });
+    Ext.require(['Ext.container.Viewport',
+                'Ext.state.Manager',
+                'Ext.state.CookieProvider',
+                'Ext.window.MessageBox',
+                'GeoExt.panel.Map']
+    );
+    var map = new OpenLayers.Map({});
+    map.addLayers([new OpenLayers.Layer.WMS("OpenLayers WMS ", "http://vmap0.tiles.osgeo.org/wms/vmap0?", {
+        layers: 'basic'
+    })]);
+    Ext.application({
+        name: 'OSRM demo',
+        launch: function () {
+            mappanel = Ext.create('GeoExt.panel.Map', {
+                title: 'OSRM demo',
+                map: map,
+                center: '12.3046875,51.48193359375',
+                zoom: 6,
+                renderTo: "mappanel",
+                stateId: "mappanel",
+                height: 400,
+                width: 600
+            });
+        }
+    });
+
+    var routeToMap = (function () {
+        "use strict";
+        var decode, transformPoint, addLine, layer, getCoordFromAddresse, getRoute, layer, viaPoints = [];
+        layer = new OpenLayers.Layer.Vector("Rute", {
+            renderers: ['Canvas', 'SVG', 'VML']
+        });
+        getCoordFromAddresse = function (address, elId) {
+            Ext.data.JsonP.request({
+                callbackKey: "json_callback",
+                url: 'https://nominatim.openstreetmap.org/search?format=json&q=' + address,
+                success: function (arr) {
+                    var i, node, textNode;
+                    for (i = 0; i < arr.length; i = i + 1) {
+                        if (i === 0) { // Kun det først resultat
+                            viaPoints.push(arr[i].lat + "," + arr[i].lon);
+                            node = document.createElement("li");
+                            textNode = document.createTextNode(arr[i].display_name);
+                            node.appendChild(textNode);
+                            document.getElementById("list").appendChild(node);
+                        }
+                    }
+                },
+                failure: function (response) {
+                    Ext.MessageBox.show({
+                        title: 'Failure',
+                        msg: 'Noget tekst',
+                        buttons: Ext.MessageBox.OK,
+                        width: 400,
+                        height: 300,
+                        icon: Ext.MessageBox.ERROR
+                    });
+                }
+            });
+        };
+
+        getRoute = function () {
+            Ext.data.JsonP.request({
+                url: 'https://router.project-osrm.org/viaroute?z=17&output=json&loc=' + viaPoints.join("&loc="),
+                callbackKey: "jsonp",
+                disableCaching: false, // VIGTIG. Forhindrer cache-busting parameteren _dc, som OSRM ikke tolererer
+                success: function (response) {
+                    layer.addFeatures(new OpenLayers.Format.GeoJSON().read(decode(response.route_geometry, 6)));
+                    map.addLayers([layer]);
+                    map.zoomToExtent(layer.getDataExtent());
+
+                },
+                failure: function (response) {
+                    Ext.MessageBox.show({
+                        title: 'Failure',
+                        msg: 'Noget tekst',
+                        buttons: Ext.MessageBox.OK,
+                        width: 400,
+                        height: 300,
+                        icon: Ext.MessageBox.ERROR
+                    });
+                }
+            });
+        };
+        transformPoint = function (lat, lon, s, d) {
+            var p = [];
+            if (typeof Proj4js === "object") {
+                var source = new Proj4js.Proj(s);
+                var dest = new Proj4js.Proj(d);
+                p = new Proj4js.Point(lat, lon);
+                Proj4js.transform(source, dest, p);
+            }
+            else {
+                p.x = null;
+                p.y = null;
+            }
+            return p;
+        };
+        decode = function (encoded, precision) {
+            precision = Math.pow(10, -precision);
+            var len = encoded.length, index = 0, lat = 0, lng = 0, array = [], geojson = {}, webmercatorPoint;
+            while (index < len) {
+                var b, shift = 0, result = 0;
+                do {
+                    b = encoded.charCodeAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                var dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+                lat += dlat;
+                shift = 0;
+                result = 0;
+                do {
+                    b = encoded.charCodeAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                var dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+                lng += dlng;
+                webmercatorPoint = transformPoint(lat * precision, lng * precision, "EPSG:4326", "EPSG:900913");
+                //array.push([webmercatorPoint.x, webmercatorPoint.y]);
+                array.push([lng * precision, lat * precision]);
+            }
+            geojson = {
+                "type": "FeatureCollection",
+                "features": [{
+                    "geometry": {
+                        "type": "MultiLineString",
+                        "coordinates": [array]
+                    },
+                    "type": "Feature",
+                    "properties": {"gid": 1}
+                }]
+            };
+            return geojson;
+        };
+        return {
+            getCoordFromAddresse: getCoordFromAddresse,
+            getRoute: getRoute
+        }
+
+    })();
+</script>
+</html>
