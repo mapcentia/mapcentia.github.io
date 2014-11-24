@@ -6,10 +6,12 @@
 </head>
 <body>
 <input type="text" id='a1' value="Flintevej 37">
-<input type="button" value="Tilføj via punkt" onclick="routeToMap.getCoordFromAddresse(document.getElementById('a1').value)">
+<input type="button" value="Tilføj via punkt"
+       onclick="routeToMap.getCoordFromAddresse(document.getElementById('a1').value)">
 <ol id="list"></ol>
 <input type="button" value="Beregn rute" onclick="routeToMap.getRoute()">
 <br>
+
 <div id="mappanel"></div>
 </body>
 <!-- ExtJS -->
@@ -56,8 +58,17 @@
     var routeToMap = (function () {
         "use strict";
         var decode, transformPoint, addLine, layer, getCoordFromAddresse, getRoute, layer, viaPoints = [];
+
         layer = new OpenLayers.Layer.Vector("Rute", {
-            renderers: ['Canvas', 'SVG', 'VML']
+            renderers: ['Canvas', 'SVG', 'VML'],
+            styleMap: new OpenLayers.StyleMap({
+                'default': new OpenLayers.Style({
+                    strokeColor: '#000000',
+                    strokeWidth: 3,
+                    fillOpacity: 0,
+                    strokeOpacity: 0.8
+                })
+            })
         });
         getCoordFromAddresse = function (address, elId) {
             Ext.data.JsonP.request({
