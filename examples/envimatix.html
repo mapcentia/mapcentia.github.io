@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src='http://us1.mapcentia.com/api/v3/js/geocloud.php'></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: relative;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+            height: 400px;
+        }
+
+        .range {
+            position: absolute;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<input id='range' class='range' type='range' min='0' max='1.0' step='any'/>
+<script>
+
+    (function () {
+        // Create a new map object in element with id 'map-div'
+        var map = new geocloud.map({
+            el: "map"
+        });
+        // Add a base layer
+        map.addBaseLayer(geocloud.STAMENTONER);
+        map.setBaseLayer(geocloud.STAMENTONER);
+        map.map.setView([53.07092720421681,-111.93145751953125],8);
+        var overlay = map.addTileLayers({
+            db: "envimatix",
+            layers: ['public.lc80410232014264lgn00_toa_refl_quac_veg_falsecolor', 'public.lc80410232014248lgn00_toa_refl_quac_veg_falsecolor']
+        })[1];
+        function clip() {
+            var nw = map.map.containerPointToLayerPoint([0, 0]),
+                    se = map.map.containerPointToLayerPoint(map.map.getSize()),
+                    clipX = nw.x + (se.x - nw.x) * range.value;
+
+            overlay.getContainer().style.clip = 'rect(' + [nw.y, clipX, se.y, nw.x].join('px,') + 'px)';
+        }
+        var range = document.getElementById('range');
+        range['oninput' in range ? 'oninput' : 'onchange'] = clip;
+        map.map.on('move', clip);
+        clip();
+    }())
+</script>
+</body>
+</html>
