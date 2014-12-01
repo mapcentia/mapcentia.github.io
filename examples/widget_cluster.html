@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .map {
+            top: 0;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+<script src='http://eu1.mapcentia.com/apps/widgets/gc2map/js/gc2map.js'></script>
+<div class="map" style="position: absolute"></div>
+<script>
+    (function () {
+        gc2map.init({
+            db: 'mydb',
+            // layers: ['public.urban_areas'],
+            zoom: [9.865, 55.58239999999999, 8],
+            setBaseLayer: 'osm',
+            width: '100%',
+            height: '100%',
+            schema: 'public',
+            callBack: function (e) {
+                var tweetGroups = new L.MarkerClusterGroup({
+                    maxClusterRadius: 100,
+                    iconCreateFunction: null,
+                    spiderfyOnMaxZoom: true,
+                    showCoverageOnHover: false,
+                    zoomToBoundsOnClick: true,
+                    spiderfyDistanceMultiplier: 2
+                });
+                var store = new geocloud.sqlStore({
+                    db: "trackunit",
+                    sql: "SELECT * FROM trackunit.units",
+                    lifetime: 3600,
+                    onLoad: function () {
+                        // Zoom to vector layer
+                        //e.zoomToExtentOfgeoJsonStore(store);
+                    },
+                    pointToLayer: function (feature, latlng) {
+                        tweetGroups.addLayer(L.marker(latlng));
+                        return tweetGroups;
+                    }
+                });
+                e.addGeoJsonStore(store);
+                store.load();
+            }
+        });
+    }())
+</script>
+</body>
+</html>
