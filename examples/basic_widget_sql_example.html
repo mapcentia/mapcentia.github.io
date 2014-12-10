@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="http://eu1.mapcentia.com/js/leaflet/plugins/awesome-markers/leaflet.awesome-markers.css" type="text/css"
+          rel="stylesheet">
+    <script src='http://ballerup.mapcentia.com:80/apps/widgets/gc2map/js/gc2map.js'></script>
+</head>
+<body>
+<div></div>
+</body>
+<div></div>
+<script>
+    (function () {
+        gc2map.init({
+            db: 'ballerup',
+            layers: ['proj_daginstitution.nyeskoledistrikter'],
+            zoom: [12.3397,55.7345,12],
+            setBaseLayer: 'dtkSkaermkortDaempet',
+            width: '500px',
+            height: '500px',
+            callBack: function (e) {
+                var store = new geocloud.sqlStore({
+                    db: "ballerup",
+                    sql: "SELECT * FROM proj_daginstitution.b_mlvby",
+                    // Bind a popup to each point
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(feature.properties['institutionsnavn']);
+                    },
+                    // Make markers instead of simple vector point features
+                    pointToLayer: function (feature, latlng) {
+                        return L.marker(latlng, {
+                            zIndexOffset: 10000,
+                            icon: L.AwesomeMarkers.icon({
+                                        icon: 'star',
+                                        markerColor: 'blue',
+                                        prefix: 'fa'
+                                    }
+                            )
+                        });
+                    }
+                });
+                e.addGeoJsonStore(store);
+                store.load();
+            }
+        });
+    }())
+</script>
+</html>

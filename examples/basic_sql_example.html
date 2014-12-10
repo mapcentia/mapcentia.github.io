@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src='http://ballerup.mapcentia.com/api/v3/js/geocloud.php?maplib=leaflet'></script>
+</head>
+<body>
+<div style="width: 500px;height: 500px; position: relative" id="map"></div>
+</body>
+<script>
+    var gc2 = new geocloud.map({
+        el: "map"
+    });
+    // Add a base layer
+    gc2.addBaseLayer(geocloud.GOOGLETERRAIN);
+    gc2.setBaseLayer(geocloud.GOOGLETERRAIN);
+    var layers = gc2.addTileLayers({
+        db: "ballerup",
+        layers: ['proj_daginstitution.nyeskoledistrikter']
+    });
+    gc2.map.setView([55.73445620353332,12.339706420898438],12);
+
+    var store = new geocloud.sqlStore({
+        db: "ballerup",
+        sql: "SELECT * FROM proj_daginstitution.b_mlvby",
+        onLoad: function () {
+            // Zoom to vector layer
+            //gc2.zoomToExtentOfgeoJsonStore(store);
+        },
+        // Bind a popup to each point
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup(feature.properties['institutionsnavn']);
+        },
+        // Make markers instead of simple vector point features
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {
+                zIndexOffset: 10000,
+                icon: L.AwesomeMarkers.icon({
+                            icon: 'star',
+                            markerColor: 'blue',
+                            prefix: 'fa'
+                        }
+                )
+            });
+        }
+    });
+    gc2.addGeoJsonStore(store);
+    store.load();
+</script>
+</html>

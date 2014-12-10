@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src='http://ballerup.mapcentia.com/api/v3/js/geocloud.php?maplib=leaflet'></script>
+</head>
+<body>
+<div style="width: 500px;height: 500px; position: relative" id="map"></div>
+</body>
+<script>
+    var gc2 = new geocloud.map({
+        el: "map"
+    });
+    // Add a base layer
+    gc2.setBaseLayer(geocloud.DTKSKAERMKORTDAEMPET);
+    var layers = gc2.addTileLayers({
+        db: "ballerup",
+        layers: ['proj_daginstitution.nyeskoledistrikter','proj_daginstitution.b_mlvby']
+    });
+    gc2.map.setView([55.73445620353332,12.339706420898438],12);
+</script>
+</html>

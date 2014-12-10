@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link href="http://eu1.mapcentia.com/js/leaflet/plugins/awesome-markers/leaflet.awesome-markers.css" type="text/css"
+          rel="stylesheet">
+    <script src='http://ballerup.mapcentia.com:80/apps/widgets/gc2map/js/gc2map.js'></script>
+</head>
+<body>
+<div></div>
+</body>
+<div></div>
+<script>
+    (function () {
+        gc2map.init({
+            db: 'ballerup',
+            layers: ['proj_daginstitution.nyeskoledistrikter','proj_daginstitution.b_mlvby'],
+            zoom: [12.3397,55.7345,12],
+            baseLayers: [
+                {id:'stamenToner', name: 'Stamen toner'},
+                {id:'dtkSkaermkortDaempet', name: 'Skærmkort'},
+                {id:'googleStreets', name: 'Google Streets'},
+            ],
+            setBaseLayer: 'dtkSkaermkortDaempet',
+            width: '500px',
+            height: '500px'
+        });
+    }())
+</script>
+</html>
