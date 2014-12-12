@@ -1,0 +1,46 @@
+{
+    "type": "jsonpstore",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "designer|userClassName": "Group",
+        "model": "Category",
+        "storeId": "Group"
+    },
+    "name": "Client1",
+    "designerId": "74865a9d-2218-43c5-8d15-00773e027b1f",
+    "cn": [
+        {
+            "type": "Ext.data.proxy.JsonP",
+            "reference": {
+                "name": "proxy",
+                "type": "object"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "callbackKey": "jsonp_callback",
+                "url": "http://trackanalyzer.safetrack.dk/api/v1/resource/group/?token=6ded763dae6a4e9cbe3fe8f9c0ada704"
+            },
+            "name": "MyJsonPProxy",
+            "designerId": "c276d303-c2a3-4ab1-89cf-9455dd4c544e",
+            "cn": [
+                {
+                    "type": "Ext.data.reader.Json",
+                    "reference": {
+                        "name": "reader",
+                        "type": "object"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "root": "groups.list"
+                    },
+                    "name": "MyJsonReader",
+                    "designerId": "ff0e9c68-1f03-40f3-af20-e47a7f77463f"
+                }
+            ]
+        }
+    ]
+}

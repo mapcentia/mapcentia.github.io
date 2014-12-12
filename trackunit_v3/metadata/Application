@@ -1,0 +1,29 @@
+{
+    "type": "Ext.app.Application",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "controllers": [
+            "MyController"
+        ],
+        "models": [
+            "Category"
+        ],
+        "name": "MyApp",
+        "stores": [
+            "Category",
+            "Client",
+            "Group"
+        ],
+        "views": [
+            "MyViewport",
+            "StandardForm",
+            "AttributField"
+        ]
+    },
+    "name": "Application",
+    "designerId": "application"
+}

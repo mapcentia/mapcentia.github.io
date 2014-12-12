@@ -1,0 +1,62 @@
+{
+    "type": "Ext.app.Controller",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "designer|userClassName": "MyController"
+    },
+    "designerId": "ba2d61af-89a8-46d8-9b22-decfe3a189ad",
+    "cn": [
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "button#heatmap",
+                "designer|targetType": "Ext.button.Button",
+                "fn": "onHeatClick",
+                "implHandler": [
+                    "if (button.up(\"form\").isValid() === false){",
+                    "            return false",
+                    "        }",
+                    "var values = button.up(\"form\").getValues();",
+                    "window.startAnalyzing('heatmap', null, values);"
+                ],
+                "name": "click",
+                "scope": "me"
+            },
+            "name": "onHeatClick",
+            "designerId": "cc6f965c-5eab-4934-9ba4-636b9b8e2aec"
+        },
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "button#adminmap",
+                "designer|targetType": "Ext.button.Button",
+                "fn": "onAdminClick",
+                "implHandler": [
+                    "if (button.up(\"form\").isValid() === false){",
+                    "            return false",
+                    "        }",
+                    "var values = button.up(\"form\").getValues();",
+                    "window.startAnalyzing('group',values.border, values);"
+                ],
+                "name": "click",
+                "scope": "me"
+            },
+            "name": "onAdminClick",
+            "designerId": "d43e28a2-db30-454b-b4b6-f76061e6d16c"
+        }
+    ]
+}

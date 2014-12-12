@@ -1,0 +1,93 @@
+{
+    "type": "Ext.form.FieldSet",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "designer|userClassName": "AttributField",
+        "height": null,
+        "title": "Type of analysis",
+        "width": null
+    },
+    "name": "MyFieldSet2",
+    "designerId": "b0afb108-4d39-4efa-8d41-9d40b6a6292f",
+    "cn": [
+        {
+            "type": "Ext.form.FieldContainer",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "container|align": "stretch",
+                "fieldLabel": null,
+                "height": null,
+                "layout": "hbox"
+            },
+            "name": "MyFieldContainer",
+            "designerId": "3be8104c-2343-4338-8b3e-11ef2608803b",
+            "cn": [
+                {
+                    "type": "Ext.form.field.ComboBox",
+                    "reference": {
+                        "name": "items",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "allowBlank": false,
+                        "editable": false,
+                        "emptyText": "Field",
+                        "fieldLabel": null,
+                        "labelAlign": "top",
+                        "layout|flex": 1,
+                        "name": "attribute",
+                        "store": [
+                            "[",
+                            "[\"run1\",\"Avg run1\"],",
+                            "[\"activity\",\"Activity\"],",
+                            "[\"count\",\"Count\"]",
+                            "]"
+                        ]
+                    },
+                    "name": "MyComboBox4",
+                    "configAlternates": {
+                        "store": "array"
+                    },
+                    "designerId": "8b20a2cf-bcfb-4a13-8029-852dbf35286e"
+                },
+                {
+                    "type": "Ext.form.field.ComboBox",
+                    "reference": {
+                        "name": "items",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "allowBlank": false,
+                        "editable": false,
+                        "emptyText": "Type",
+                        "fieldLabel": null,
+                        "labelAlign": "top",
+                        "layout|flex": 1,
+                        "name": "border",
+                        "store": [
+                            "[",
+                            "[\"avgadmin\",\"Admin borders\"],",
+                            "[\"avgzone\",\"Zones\"]",
+                            "]"
+                        ]
+                    },
+                    "name": "MyComboBox3",
+                    "configAlternates": {
+                        "store": "array"
+                    },
+                    "designerId": "4359bdd1-2a8f-418c-a514-7f113dca2ccf"
+                }
+            ]
+        }
+    ]
+}

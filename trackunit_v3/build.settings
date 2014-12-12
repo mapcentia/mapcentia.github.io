@@ -1,0 +1,6 @@
+{
+    "webBuild": {
+        "environment": "production",
+        "publishPath": "/Users/mh/Documents/www/mapcentia.github.io"
+    }
+}
