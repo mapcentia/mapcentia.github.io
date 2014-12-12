@@ -30,13 +30,23 @@ Ext.define('MyApp.store.Group', {
             storeId: 'Group',
             proxy: {
                 type: 'jsonp',
-                url: 'http://trackanalyzer.safetrack.dk/api/v1/resource/group/?token=6ded763dae6a4e9cbe3fe8f9c0ada704',
                 callbackKey: 'jsonp_callback',
                 reader: {
                     type: 'json',
                     root: 'groups.list'
                 }
+            },
+            listeners: {
+                beforeload: {
+                    fn: me.onJsonpstoreBeforeLoad,
+                    scope: me
+                }
             }
         }, cfg)]);
+    },
+
+    onJsonpstoreBeforeLoad: function(store, operation, eOpts) {
+        this.proxy.url = "http://trackanalyzer.safetrack.dk/api/v1/resource/group/?token=" + window.token;
     }
+
 });

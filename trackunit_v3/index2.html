@@ -7,7 +7,7 @@
 <!-- <x-compile> -->
 <!-- <x-bootstrap> -->
 <link rel="stylesheet" href="bootstrap.css">
-<script src="ext/ext-dev.js"></script>
+<script src="ext/ext-all-dev.js"></script>
 <link rel="stylesheet" href="http://cdn.sencha.com/ext/gpl/4.2.1/resources/ext-theme-gray/ext-theme-gray-all.css">
 <!-- </x-bootstrap> -->
 <script type="text/javascript" src="app.js"></script>
@@ -55,11 +55,12 @@ window.initialize = function () {
         center: new google.maps.LatLng(56, 10),
         mapTypeId: google.maps.MapTypeId.TERRAIN
     };
-    map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    $("#map-canvas").append('<div id="info" class="pretty-box" style="position: absolute; z-index: 1000"></div>');
-    $("#map-canvas").append('<div id="legend" class="pretty-box" style="position: absolute; z-index: 1000"></div>');
-    $("#map-canvas").append('<div id="process" class="pretty-box" style="position: absolute; z-index: 1000"><div id="spinner"><img src="ajax-loader.gif"></div><div id="process-inner"></div></div>');
-
+    Ext.onReady(function() {
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+        $("#map-canvas").append('<div id="info" class="pretty-box" style="position: absolute; z-index: 1000"></div>');
+        $("#map-canvas").append('<div id="legend" class="pretty-box" style="position: absolute; z-index: 1000"></div>');
+        $("#map-canvas").append('<div id="process" class="pretty-box" style="position: absolute; z-index: 1000"><div id="spinner"><img src="ajax-loader.gif"></div><div id="process-inner"></div></div>');
+    });
 };
 // 1. we import data from SafeTrack API to GC2
 window.startAnalyzing = function (t, c, conf) {
@@ -299,7 +300,6 @@ window.secondstotime = function (secs) {
         s = Math.floor((t - Date.parse("1/1/70")) / 3600000) + s.substr(2);
     return s;
 };
-
 google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 <style>

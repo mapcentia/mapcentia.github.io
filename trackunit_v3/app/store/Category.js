@@ -30,13 +30,23 @@ Ext.define('MyApp.store.Category', {
             storeId: 'Category',
             proxy: {
                 type: 'jsonp',
-                url: 'http://trackanalyzer.safetrack.dk/api/v1/resource/category/?token=6ded763dae6a4e9cbe3fe8f9c0ada704',
                 callbackKey: 'jsonp_callback',
                 reader: {
                     type: 'json',
                     root: 'categories.list'
                 }
+            },
+            listeners: {
+                beforeload: {
+                    fn: me.onJsonpstoreBeforeLoad,
+                    scope: me
+                }
             }
         }, cfg)]);
+    },
+
+    onJsonpstoreBeforeLoad: function(store, operation, eOpts) {
+        this.proxy.url = "http://trackanalyzer.safetrack.dk/api/v1/resource/category/?token=" + window.token;
     }
+
 });

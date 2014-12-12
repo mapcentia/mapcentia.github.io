@@ -23,7 +23,7 @@
             "userConfig": {
                 "callbackKey": "jsonp_callback",
                 "limitParam": null,
-                "url": "http://trackanalyzer.safetrack.dk/api/v1/resource/category/?token=6ded763dae6a4e9cbe3fe8f9c0ada704"
+                "url": null
             },
             "name": "MyJsonPProxy",
             "designerId": "a8f40ac6-5a6a-4124-aafb-84dfa1c8f0d7",
@@ -42,6 +42,24 @@
                     "designerId": "4853fa22-57e5-404d-ac24-df2c9bd52bc7"
                 }
             ]
+        },
+        {
+            "type": "basiceventbinding",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "fn": "onJsonpstoreBeforeLoad",
+                "implHandler": [
+                    "this.proxy.url = \"http://trackanalyzer.safetrack.dk/api/v1/resource/category/?token=\" + window.token;"
+                ],
+                "name": "beforeload",
+                "scope": "me"
+            },
+            "name": "onJsonpstoreBeforeLoad",
+            "designerId": "15eb1a1d-cda5-49a7-bb2a-4ff7856b2bcb"
         }
     ]
 }
