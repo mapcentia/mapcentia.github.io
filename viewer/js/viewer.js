@@ -265,6 +265,13 @@ Viewer = function () {
                 });
                 cloud.map.addLayer(drawnItems);
                 cloud.map.addControl(drawControl);
+                var toolbar;
+                for (var toolbarId in drawControl._toolbars) {
+                    toolbar = drawControl._toolbars[toolbarId];
+                    if (toolbar instanceof L.DrawToolbar) {
+                        toolbar._modes.marker.handler.enable();
+                    }
+                }
                 drawOn = true;
             } else {
                 cloud.map.removeControl(drawControl);
@@ -634,7 +641,7 @@ Viewer = function () {
                             sql = "SELECT foo.the_geom,ST_Value(rast, foo.the_geom) As band1, ST_Value(rast, 2, foo.the_geom) As band2, ST_Value(rast, 3, foo.the_geom) As band3 " +
                             "FROM " + value + " CROSS JOIN (SELECT ST_transform(ST_GeomFromText('POINT(" + coords.x + " " + coords.y + ")',3857)," + srid + ") As the_geom) As foo " +
                             "WHERE ST_Intersects(rast,the_geom) ";
-                            console.log(sql);
+                            //console.log(sql);
                         } else {
 
                             if (geoType !== "POLYGON" && geoType !== "MULTIPOLYGON") {
@@ -767,7 +774,7 @@ Viewer = function () {
                                     "SELECT ST_PixelWidth(rast) as width, ST_NumBands(rast) as numbands from " + value + " limit 1), " +
                                     "rastunion as (" +
                                     "SELECT ST_SetSRID(ST_union(rast)," + srid + ") as rast FROM " + value + ", pixelsize " +
-                                    "WHERE ST_Intersects(rast,ST_buffer(ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',4326)," + srid + "),pixelsize.width))" +
+                                    "WHERE ST_Intersects(rast,ST_buffer(ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',4326)," + srid + "),30))" +
                                     ")," +
                                     "pixel as (" +
                                     "SELECT (ST_WorldToRasterCoord(rast,ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',4326)," + srid + "))  ).* from rastunion)" +
@@ -792,7 +799,7 @@ Viewer = function () {
                             }
 
                             sql = unions.join(" UNION ");
-                            console.log(sql);
+                            //console.log(sql);
                         } else {
 
                             if (geoType !== "POLYGON" && geoType !== "MULTIPOLYGON") {
@@ -814,7 +821,7 @@ Viewer = function () {
                     });
                 }, 250);
             }
-        }
+        };
     };
     return {
         init: init,
