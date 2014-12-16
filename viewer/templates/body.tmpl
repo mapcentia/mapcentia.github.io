@@ -1,0 +1,215 @@
+<!-- map -->
+<div id="pane">
+    <div id="map"></div>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav" style="float: left">
+                    <li>
+                        <!--<a href="javascript:void(0)" title="Layers" onclick="$('#menu').multilevelpushmenu('expand');">
+                            {{{Layers}}} <span class="glyphicon glyphicon-arrow-right"></span></a>-->
+                        <button type="button" class="btn btn-default navbar-btn"
+                                onclick="$('#menu').multilevelpushmenu('expand');">
+                            <span class="fa fa-location-arrow"></span> {{{Layers}}}
+                        </button>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav">
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{{Baselayers}}} <b
+                                class="caret"></b></a>
+                        <ul class="dropdown-menu" id="base-layer-list">
+                        </ul>
+                    </li>
+                    <li id="share-modal-li" class="gc-btn">
+                        <a href="javascript:void(0)" id="share-modal" title="Share"
+                           onclick="MapCentia.share();">
+                            {{{Share}}} </a>
+                    </li>
+                    <li id="legend-popover-li" class="gc-btn">
+                        <a href="javascript:void(0)" id="legend-popover" rel="popover" data-placement="bottom"
+                                >
+                            {{{Legend}}} </a>
+                    </li>
+                    <li id="legend-modal-li" class="gc-btn">
+                        <a href="javascript:void(0)" id="legend-modal" title="Legend">
+                            {{{Legend}}} </a>
+                    </li>
+                    <li id="draw-button-li" class="gc-btn" style="display: none">
+                        <button type="button" class="btn btn-default navbar-btn" data-toggle="button" id="draw-button">
+                            {{{Draw}}}
+                        </button>
+                    </li>
+                    <li>
+                        <form class="navbar-form navbar-left" role="search" onsubmit="return false;">
+                            <div class="form-group">
+                                <input type="text" id="search-input" name="search-input" class="form-control"
+                                       placeholder="{{{Search}}}">
+                            </div>
+                        </form>
+                    </li>
+                    <li>
+                        <button id="locate-btn" type="button" class="btn btn-default navbar-btn">
+                            <i class="fa fa-location-arrow"></i>
+                        </button>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- layers -->
+    <div id="layers" class="panel-group"></div>
+    <!-- legend -->
+    <div id="legend"></div>
+</div>
+<div id="menu"></div>
+<!-- legend modal -->
+<div id="modal-legend" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{{Legend}}}</h4>
+            </div>
+            <div class="modal-body"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{{Close}}}</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- info modal -->
+<div id="modal-info" class="modal fade infobox">
+    <div class="modal-dialog modal-infobox">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{{Info}}}</h4>
+            </div>
+            <div class="modal-body" id="modal-info-body">
+                <ul class="nav nav-tabs" id="info-tab"></ul>
+                <div class="tab-content" id="info-pane"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{{Close}}}</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<!-- Share modal -->
+<div id="modal-share" class="modal fade ">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">{{{Share the map}}}</h4>
+            </div>
+            <div class="modal-body" id="modal-share-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label"><i class="fa fa-share"></i></label>
+
+                        <div class="col-sm-10">
+                            <button type="button" class="btn btn-default btn-share" data-toggle="tooltip"
+                                    data-placement="bottom" title="Twitter" onclick="MapCentia.shareTwitter();"><i
+                                    class="fa fa-twitter"></i>
+                            </button>
+                            <button type="button" class="btn btn-default btn-share" data-toggle="tooltip"
+                                    data-placement="bottom" title="LinkedIn" onclick="MapCentia.shareLinkedIn();"><i
+                                    class="fa fa-linkedin"></i>
+                            </button>
+                            <button type="button" class="btn btn-default btn-share" data-toggle="tooltip"
+                                    data-placement="bottom" title="Google+" onclick="MapCentia.shareGooglePlus();"><i
+                                    class="fa fa-google-plus"></i>
+                            </button>
+                            <button type="button" class="btn btn-default btn-share" data-toggle="tooltip"
+                                    data-placement="bottom" title="Facebook" onclick="MapCentia.shareFacebook();"><i
+                                    class="fa fa-facebook"></i>
+                            </button>
+                            <button type="button" class="btn btn-default btn-share" data-toggle="tooltip"
+                                    data-placement="bottom" title="Tumblr" onclick="MapCentia.shareTumblr();"><i
+                                    class="fa fa-tumblr"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="share-url" class="col-sm-1 control-label"><i class="fa fa-link"></i></label>
+
+                        <div class="col-sm-10">
+                            <input data-toggle="tooltip" data-placement="top" title="{{{URL to this map}}}" type="text"
+                                   class="form-control share-text" id="share-url" value="">
+                        </div>
+                    </div>
+                    <div class="form-group" id="group-iframe">
+                        <label for="share-iframe" class="col-sm-1 control-label"><i class="fa fa-code"></i></label>
+
+                        <div class="col-sm-10">
+                            <input data-toggle="tooltip" data-placement="top"
+                                   title="{{{Iframe with this map to embed on web page}}}" type="text"
+                                   class="form-control share-text" id="share-iframe" value="">
+                        </div>
+                    </div>
+                    <div class="form-group" id="group-static">
+                        <label for="share-static" class="col-sm-1 control-label"><i class="fa fa-picture-o"></i></label>
+
+                        <div class="col-sm-10">
+                            <input data-toggle="tooltip" data-placement="top"
+                                   title="{{{URL to a static PNG image of this map}}}" type="text"
+                                   class="form-control share-text" id="share-static" value="">
+                        </div>
+                    </div>
+                    <div class="form-group" id="group-javascript">
+                        <label for="share-javascript" class="col-sm-1 control-label">js</label>
+
+                        <div class="col-sm-10">
+                            <textarea data-toggle="tooltip" data-placement="top"
+                                      title="{{{JavaScript for an application}}}" class="form-control share-text"
+                                      id="share-javascript" rows="6" value=""></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="group-javascript-object" style="display: none">
+                        <label for="share-javascript-object" class="col-sm-1 control-label">DK:Lag</label>
+
+                        <div class="col-sm-10">
+                            <textarea data-toggle="tooltip" data-placement="top"
+                                      title="{{{JavaScript object}}}" class="form-control share-text"
+                                      id="share-javascript-object" rows="3" value=""></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group" id="group-extent" style="display: none">
+                        <label for="share-extent" class="col-sm-1 control-label">Extent</label>
+                        <div class="col-sm-10">
+                            <textarea data-toggle="tooltip" data-placement="top"
+                                      title="{{{JavaScript object}}}" class="form-control share-text"
+                                      id="share-extent" rows="1" value=""></textarea>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">{{{Close}}}</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
