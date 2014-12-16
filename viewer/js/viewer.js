@@ -787,6 +787,8 @@ Viewer = function () {
                                         //"from rastunion) " +
                                     "Select " +
                                     "ST_Neighborhood(rast, 1, columnx, rowy, 1, 1) as neighborhood_band1," +
+                                    "ST_Neighborhood(rast, 2, columnx, rowy, 1, 1) as neighborhood_band2," +
+                                    "ST_Neighborhood(rast, 3, columnx, rowy, 1, 1) as neighborhood_band3," +
                                     "foo.the_geom " +
                                         //"ST_Value(newrast1, 1, foo.the_geom) As mean_band1," +
                                         //"CASE WHEN pixelsize.numbands > 1 THEN (ST_Value(newrast2, 1, foo.the_geom)) ELSE 'Nan' END as mean_band2," +
