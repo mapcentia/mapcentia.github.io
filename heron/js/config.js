@@ -108,12 +108,12 @@ MapCentia.setup = function () {
                         transitionEffect: 'resize'
                     }
                 ),
-                new OpenLayers.Layer.OSM("osm"),
-                new OpenLayers.Layer.XYZ(
+                new OpenLayers.Layer.OSM("osm")
+                /*new OpenLayers.Layer.XYZ(
                     "DigitalGlobe:Imagery",
                     "https://services.digitalglobe.com/earthservice/wmtsaccess?CONNECTID=" + "cc512ac4-bbf1-4279-972d-b698b47a0e22" + "&Service=WMTS&REQUEST=GetTile&Version=1.0.0&Format=image/png&Layer=" + "DigitalGlobe:ImageryTileService" + "&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:${z}&TileRow=${y}&TileCol=${x}",
                     {numZoomLevels: 20}
-                )
+                )*/
             ];
             $.ajax({
                 url: host + "/api/v1/meta/" + db + "/" + schema,
@@ -250,11 +250,11 @@ MapCentia.setup = function () {
                                     layer: "osm",
                                     text: 'Osm'
                                 },
-                                {
+                                /*{
                                     nodeType: "gx_layer",
                                     layer: "DigitalGlobe:Imagery",
                                     text: 'DigitalGlobe:Imagery'
-                                },
+                                },*/
                                 {
                                     nodeType: "gx_layer",
                                     layer: "None",
@@ -652,6 +652,16 @@ MapCentia.init = function () {
                                         fontWeight: "bold",
                                         labelOutlineColor: "white",
                                         labelOutlineWidth: 3
+                                    }
+                                ),
+                                "select": new OpenLayers.Style({
+                                        fillColor: "#000000",
+                                        fillOpacity: 0.0,
+                                        pointRadius: 10,
+                                        strokeColor: "#0000FF",
+                                        strokeWidth: 3,
+                                        strokeOpacity: 0.7,
+                                        graphicZIndex: 3,
                                     }
                                 )
                             })
