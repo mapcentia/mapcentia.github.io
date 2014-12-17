@@ -427,6 +427,36 @@ MapCentia.init = function () {
                     if (e.pressed === false) {
 
                     } else {
+                        queryWin = new Ext.Window({
+                            title: "Query result",
+                            modal: false,
+                            border: false,
+                            layout: 'fit',
+                            width: 400,
+                            height: 400,
+                            closeAction: 'close',
+                            x: 100,
+                            y: 100,
+                            plain: true,
+                            listeners: {
+                                hide: {
+                                    fn: function (el, e) {
+                                        Ext.iterate(qstore, function (v) {
+                                            v.reset();
+                                        });
+                                    }
+                                }
+                            },
+                            items: [
+                                new Ext.TabPanel({
+                                    activeTab: 0,
+                                    frame: true,
+                                    id: "queryTabs",
+                                    tbar: []
+                                })
+                            ]
+                        });
+
                         var clickController = OpenLayers.Class(OpenLayers.Control, {
                             defaultHandlerOptions: {
                                 'single': true,
@@ -443,35 +473,6 @@ MapCentia.init = function () {
                                 }, this.handlerOptions);
                             },
                             trigger: function (e) {
-                                queryWin = new Ext.Window({
-                                    title: "Query result",
-                                    modal: false,
-                                    border: false,
-                                    layout: 'fit',
-                                    width: 400,
-                                    height: 400,
-                                    closeAction: 'close',
-                                    x: 100,
-                                    y: 100,
-                                    plain: true,
-                                    listeners: {
-                                        hide: {
-                                            fn: function (el, e) {
-                                                Ext.iterate(qstore, function (v) {
-                                                    v.reset();
-                                                });
-                                            }
-                                        }
-                                    },
-                                    items: [
-                                        new Ext.TabPanel({
-                                            activeTab: 0,
-                                            frame: true,
-                                            id: "queryTabs",
-                                            tbar: []
-                                        })
-                                    ]
-                                });
                                 queryWin.show();
                                 var layers, count = 0, hit = false, distance, db = "mydb_us",
                                     event = new geocloud.clickEvent(e, MapCentia.gc2),
