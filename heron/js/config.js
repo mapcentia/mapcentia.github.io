@@ -858,7 +858,7 @@ MapCentia.init = function () {
                                                                         maximum: max,
                                                                         minimum: min,
                                                                         roundMajorUnit : false,
-                                                                        majorUnit: parseFloat((max-min)/data.length).toFixed(3)
+                                                                        majorUnit: parseFloat((max-min)/data.length).toFixed(2)
                                                                     }),
                                                                     chartStyle: {
                                                                         padding: 10,
