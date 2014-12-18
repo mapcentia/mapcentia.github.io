@@ -826,7 +826,6 @@ MapCentia.init = function () {
                                             //max = Math.ceil(max*1000)/1000;
 
                                             store.sort('num', 'ASC');
-                                            console.log(data);
                                             Ext.getCmp("queryTabs").add(
                                                 {
                                                     title: layerTitel,
