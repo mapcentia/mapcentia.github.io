@@ -810,7 +810,7 @@ MapCentia.init = function () {
                                             for (i = 0; i < data.length; i = i + 1) {
                                                 data[i] = {
                                                     num: i + 1,
-                                                    value: parseFloat(data[i].properties.mean_band1).toFixed(3)
+                                                    value: Math.round(+(data[i].properties.mean_band1)*1000)/1000
                                                 };
                                             }
                                             var store = new Ext.data.JsonStore({
@@ -819,15 +819,14 @@ MapCentia.init = function () {
                                             });
                                             store.sort('value', 'ASC');
                                             var min = store.data.items[0].data.value;
-                                            min = Math.floor(min*100)/100;
+                                            //min = Math.floor(min*1000)/1000;
 
                                             store.sort('value', 'DESC');
                                             var max = store.data.items[0].data.value;
-                                            max = Math.ceil(max*100)/100;
+                                            //max = Math.ceil(max*1000)/1000;
 
                                             store.sort('num', 'ASC');
-
-
+                                            console.log(data);
                                             Ext.getCmp("queryTabs").add(
                                                 {
                                                     title: layerTitel,
@@ -858,7 +857,7 @@ MapCentia.init = function () {
                                                                         maximum: max,
                                                                         minimum: min,
                                                                         roundMajorUnit : false,
-                                                                        majorUnit: parseFloat((max-min)/data.length).toFixed(2)
+                                                                        majorUnit: Math.ceil((max-min)/data.length*1000)/1000
                                                                     }),
                                                                     chartStyle: {
                                                                         padding: 10,
