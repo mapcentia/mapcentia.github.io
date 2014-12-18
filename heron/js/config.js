@@ -110,10 +110,10 @@ MapCentia.setup = function () {
                 ),
                 new OpenLayers.Layer.OSM("osm")
                 /*new OpenLayers.Layer.XYZ(
-                    "DigitalGlobe:Imagery",
-                    "https://services.digitalglobe.com/earthservice/wmtsaccess?CONNECTID=" + "cc512ac4-bbf1-4279-972d-b698b47a0e22" + "&Service=WMTS&REQUEST=GetTile&Version=1.0.0&Format=image/png&Layer=" + "DigitalGlobe:ImageryTileService" + "&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:${z}&TileRow=${y}&TileCol=${x}",
-                    {numZoomLevels: 20}
-                )*/
+                 "DigitalGlobe:Imagery",
+                 "https://services.digitalglobe.com/earthservice/wmtsaccess?CONNECTID=" + "cc512ac4-bbf1-4279-972d-b698b47a0e22" + "&Service=WMTS&REQUEST=GetTile&Version=1.0.0&Format=image/png&Layer=" + "DigitalGlobe:ImageryTileService" + "&TileMatrixSet=EPSG:3857&TileMatrix=EPSG:3857:${z}&TileRow=${y}&TileCol=${x}",
+                 {numZoomLevels: 20}
+                 )*/
             ];
             $.ajax({
                 url: host + "/api/v1/meta/" + db + "/" + schema,
@@ -251,10 +251,10 @@ MapCentia.setup = function () {
                                     text: 'Osm'
                                 },
                                 /*{
-                                    nodeType: "gx_layer",
-                                    layer: "DigitalGlobe:Imagery",
-                                    text: 'DigitalGlobe:Imagery'
-                                },*/
+                                 nodeType: "gx_layer",
+                                 layer: "DigitalGlobe:Imagery",
+                                 text: 'DigitalGlobe:Imagery'
+                                 },*/
                                 {
                                     nodeType: "gx_layer",
                                     layer: "None",
@@ -782,7 +782,7 @@ MapCentia.init = function () {
                                         )
                                     }),
                                     onLoad: function () {
-                                        var layerObj = qstore[this.id], out = [], source = {}, pkeyValue;
+                                        var layerObj = qstore[this.id], out = [], source = {}, pkeyValue, data = [];
                                         isEmpty = layerObj.isEmpty();
                                         if ((!isEmpty)) {
                                             queryWin.show();
@@ -799,8 +799,13 @@ MapCentia.init = function () {
                                                     }
                                                     source[i + " " + property[2]] = property[3];
                                                 });
+                                                data.push({num: i, properties: feature.properties});
+
                                                 out = [];
                                             });
+                                            for (i = 0; i < data.length; i = i + 1) {
+                                                data[i] = {num: i, value: parseFloat(data[i].properties.mean_band1)};
+                                            }
                                             Ext.getCmp("queryTabs").add(
                                                 {
                                                     title: layerTitel,
@@ -835,6 +840,7 @@ MapCentia.init = function () {
                                         }
                                         count++;
                                         Ext.getCmp("queryTabs").activate(0);
+                                        console.log(data)
                                     }
                                 });
                                 MapCentia.gc2.addGeoJsonStore(qstore[index]);
@@ -852,28 +858,28 @@ MapCentia.init = function () {
                                         "pixelsize as (" +
                                         "SELECT ST_PixelWidth(rast) as width, ST_NumBands(rast) as numbands from " + value + " limit 1), " +
                                         "rastunion as (" +
-                                        "SELECT ST_SetSRID(ST_union(rast)," + srid + ") as rast FROM " + value + ", pixelsize " +
+                                        "SELECT ST_SetSRID(ST_union(rast)," + srid + ") as rast FROM " + value + " " +
                                         "WHERE ST_Intersects(rast,ST_buffer(ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + "),30))" +
                                         ")," +
                                         "pixel as (" +
                                         "SELECT (ST_WorldToRasterCoord(rast,ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + "))  ).* from rastunion)" +
-                                            //"," +
-                                            //"map as (" +
-                                            //"SELECT " +
-                                            //"ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast1," +
-                                            //"ST_MapAlgebra(rast, 2, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast2," +
-                                            //"ST_MapAlgebra(rast, 3, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast3 " +
-                                            //"from rastunion) " +
+                                        "," +
+                                        "map as (" +
+                                        "SELECT " +
+                                        "ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast1 " +
+                                        //"ST_MapAlgebra(rast, 2, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast2," +
+                                        //"ST_MapAlgebra(rast, 3, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast3 " +
+                                        "from rastunion) " +
                                         "Select " +
-                                        "ST_Neighborhood(rast, 1, columnx, rowy, 1, 1) as neighborhood_band1," +
-                                        "ST_Neighborhood(rast, 2, columnx, rowy, 1, 1) as neighborhood_band2," +
-                                        "ST_Neighborhood(rast, 3, columnx, rowy, 1, 1) as neighborhood_band3," +
-                                        "foo.the_geom " +
-                                            //"ST_Value(newrast1, 1, foo.the_geom) As mean_band1," +
+                                            //"ST_Neighborhood(rast, 1, columnx, rowy, 1, 1) as neighborhood_band1," +
+                                            //"ST_Neighborhood(rast, 2, columnx, rowy, 1, 1) as neighborhood_band2," +
+                                            //"ST_Neighborhood(rast, 3, columnx, rowy, 1, 1) as neighborhood_band3," +
+                                        "foo.the_geom, " +
+                                        "ST_Value(newrast1, 1, foo.the_geom) as mean_band1 " +
                                             //"CASE WHEN pixelsize.numbands > 1 THEN (ST_Value(newrast2, 1, foo.the_geom)) ELSE 'Nan' END as mean_band2," +
-                                            //"CASE WHEN pixelsize.numbands > 2 THEN (ST_Value(newrast3, 1, foo.the_geom)) ELSE 'Nan' END as mean_band3," +
+                                            //"CASE WHEN pixelsize.numbands > 2 THEN (ST_Value(newrast3, 1, foo.the_geom)) ELSE 'Nan' END as mean_band3 " +
                                             //"pixel.* " +
-                                        "FROM rastunion, pixel " +
+                                        "FROM rastunion, map " +
                                         "CROSS JOIN (SELECT ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + ") As the_geom) As foo" +
                                         ") as final "
                                     );
