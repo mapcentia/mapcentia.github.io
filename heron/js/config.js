@@ -14,7 +14,8 @@ Ext.namespace("Heron.options.wfs");
 Ext.namespace("Heron.options.center");
 Ext.namespace("Heron.options.zoom");
 Ext.namespace("Heron.options.layertree");
-var metaData, metaDataKeys = [], metaDataKeysTitle = [], click, poilayer, qstore = [];
+Ext.chart.Chart.CHART_URL = 'http://eu1.mapcentia.com/js/ext/resources/charts.swf';
+var metaData, metaDataKeys = [], metaDataKeysTitle = [], click, poilayer, qstore = [], queryWin;
 MapCentia.setup = function () {
     "use strict";
     Heron.globals.metaReady = false;
@@ -573,7 +574,6 @@ MapCentia.init = function () {
                                         sql = "SELECT foo.the_geom,ST_Value(rast, foo.the_geom) As band1, ST_Value(rast, 2, foo.the_geom) As band2, ST_Value(rast, 3, foo.the_geom) As band3 " +
                                         "FROM " + value + " CROSS JOIN (SELECT ST_transform(ST_GeomFromText('POINT(" + coords.x + " " + coords.y + ")',3857)," + srid + ") As the_geom) As foo " +
                                         "WHERE ST_Intersects(rast,the_geom) ";
-                                        //console.log(sql);
                                     } else {
                                         if (geoType !== "POLYGON" && geoType !== "MULTIPOLYGON") {
                                             sql = "SELECT * FROM " + value + " WHERE round(ST_Distance(ST_Transform(\"" + f_geometry_column + "\",3857), ST_GeomFromText('POINT(" + coords.x + " " + coords.y + ")',3857))) < " + distance;
@@ -611,7 +611,7 @@ MapCentia.init = function () {
                 toggleGroup: "rasterGroup",
                 //iconCls: 'bmenu',
                 handler: function (e) {
-                    var coords = [], num = 0;
+                    var num = 0;
                     try {
                         click.deactivate();
                         Heron.App.map.removeControl(click);
@@ -662,7 +662,7 @@ MapCentia.init = function () {
                                         strokeColor: "#0000FF",
                                         strokeWidth: 3,
                                         strokeOpacity: 0.7,
-                                        graphicZIndex: 3,
+                                        graphicZIndex: 3
                                     }
                                 )
                             })
@@ -683,18 +683,17 @@ MapCentia.init = function () {
                         //selectControl.activate();
                         click.events.register("featureadded", this, function (e) {
                             e.feature.attributes = {
-                                num: num
+                                num: poilayer.features.length
                             };
-                            num = num + 1;
                             poilayer.redraw();
                         });
                         queryWin = new Ext.Window({
-                            title: "Query result",
+                            title: "POI graph",
                             modal: false,
                             border: false,
                             layout: 'fit',
-                            width: 400,
-                            height: 400,
+                            width: 500,
+                            height: 300,
                             closeAction: 'close',
                             x: 100,
                             y: 100,
@@ -726,6 +725,12 @@ MapCentia.init = function () {
                                                 var feature = poilayer.selectedFeatures[0];
                                                 modifyControl.unselectFeature(feature);
                                                 poilayer.removeFeatures(feature);
+                                                for (var i = 0; i < poilayer.features.length; i = i + 1) {
+                                                    poilayer.features[i].attributes = {
+                                                        num: i + 1
+                                                    };
+                                                }
+                                                poilayer.redraw();
                                             }
                                         }, '-',
                                         {
@@ -741,7 +746,7 @@ MapCentia.init = function () {
                         });
                         queryWin.show();
                         var getData = function (e) {
-                            coords = [];
+                            var coords = [];
                             for (var i = 0; i < poilayer.features.length; i++) {
                                 coords.push([poilayer.features[i].geometry.x, poilayer.features[i].geometry.y]);
                             }
@@ -776,8 +781,7 @@ MapCentia.init = function () {
                                                 strokeColor: "#FF0000",
                                                 strokeWidth: 3,
                                                 strokeOpacity: 0.7,
-                                                graphicZIndex: 3,
-
+                                                graphicZIndex: 3
                                             }
                                         )
                                     }),
@@ -804,8 +808,12 @@ MapCentia.init = function () {
                                                 out = [];
                                             });
                                             for (i = 0; i < data.length; i = i + 1) {
-                                                data[i] = {num: i, value: parseFloat(data[i].properties.mean_band1)};
+                                                data[i] = {num: i +1, value: parseFloat(data[i].properties.mean_band1).toFixed(3)};
                                             }
+                                            var store = new Ext.data.JsonStore({
+                                                fields: ['num', 'value'],
+                                                data: data
+                                            });
                                             Ext.getCmp("queryTabs").add(
                                                 {
                                                     title: layerTitel,
@@ -818,12 +826,59 @@ MapCentia.init = function () {
                                                             id: layerTitel,
                                                             border: false,
                                                             items: [
-                                                                new Ext.grid.PropertyGrid({
-                                                                    autoHeight: false,
-                                                                    border: false,
-                                                                    startEditing: Ext.emptyFn,
-                                                                    source: source
-                                                                })
+                                                                {
+                                                                    xtype: 'linechart',
+                                                                    store: store,
+                                                                    xField: 'num',
+                                                                    listeners: {
+                                                                        itemclick: function (o) {
+                                                                            var rec = store.getAt(o.index);
+                                                                            Ext.example.msg('Item Selected', 'You chose {0}.', rec.get('name'));
+                                                                        }
+                                                                    },
+                                                                    series: [{
+                                                                        type: 'line',
+                                                                        yField: 'value'
+                                                                    }],
+                                                                    chartStyle: {
+                                                                        padding: 10,
+                                                                        animationEnabled: true,
+                                                                        font: {
+                                                                            name: 'Tahoma',
+                                                                            color: 0x444444,
+                                                                            size: 11
+                                                                        },
+                                                                        dataTip: {
+                                                                            padding: 5,
+                                                                            border: {
+                                                                                color: 0x99bbe8,
+                                                                                size:1
+                                                                            },
+                                                                            background: {
+                                                                                color: 0xDAE7F6,
+                                                                                alpha: 0.9
+                                                                            },
+                                                                            font: {
+                                                                                name: 'Tahoma',
+                                                                                color: 0x15428B,
+                                                                                size: 10,
+                                                                                bold: true
+                                                                            }
+                                                                        },
+                                                                        xAxis: {
+                                                                            color: 0x69aBc8,
+                                                                            majorTicks: {color: 0x69aBc8, length: 4},
+                                                                            minorTicks: {color: 0x69aBc8, length: 2},
+                                                                            majorGridLines: {size: 1, color: 0xeeeeee}
+                                                                        },
+                                                                        yAxis: {
+                                                                            color: 0x69aBc8,
+                                                                            majorTicks: {color: 0x69aBc8, length: 4},
+                                                                            minorTicks: {color: 0x69aBc8, length: 2},
+                                                                            majorGridLines: {size: 1, color: 0xdfe8f6}
+                                                                        }
+                                                                    }
+                                                                }
                                                             ]
                                                         }
                                                     ]
@@ -840,7 +895,6 @@ MapCentia.init = function () {
                                         }
                                         count++;
                                         Ext.getCmp("queryTabs").activate(0);
-                                        console.log(data)
                                     }
                                 });
                                 MapCentia.gc2.addGeoJsonStore(qstore[index]);
@@ -858,7 +912,7 @@ MapCentia.init = function () {
                                         "pixelsize as (" +
                                         "SELECT ST_PixelWidth(rast) as width, ST_NumBands(rast) as numbands from " + value + " limit 1), " +
                                         "rastunion as (" +
-                                        "SELECT ST_SetSRID(ST_union(rast)," + srid + ") as rast FROM " + value + " " +
+                                        "SELECT ST_SetSRID(ST_union(rast)," + srid + ") as rast FROM " + value + ", pixelsize " +
                                         "WHERE ST_Intersects(rast,ST_buffer(ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + "),30))" +
                                         ")," +
                                         "pixel as (" +
@@ -867,10 +921,10 @@ MapCentia.init = function () {
                                         "map as (" +
                                         "SELECT " +
                                         "ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast1 " +
-                                        //"ST_MapAlgebra(rast, 2, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast2," +
-                                        //"ST_MapAlgebra(rast, 3, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast3 " +
+                                            //"ST_MapAlgebra(rast, 2, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast2," +
+                                            //"ST_MapAlgebra(rast, 3, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast3 " +
                                         "from rastunion) " +
-                                        "Select " +
+                                        "Select " + i + " as sortid," +
                                             //"ST_Neighborhood(rast, 1, columnx, rowy, 1, 1) as neighborhood_band1," +
                                             //"ST_Neighborhood(rast, 2, columnx, rowy, 1, 1) as neighborhood_band2," +
                                             //"ST_Neighborhood(rast, 3, columnx, rowy, 1, 1) as neighborhood_band3," +
@@ -879,8 +933,8 @@ MapCentia.init = function () {
                                             //"CASE WHEN pixelsize.numbands > 1 THEN (ST_Value(newrast2, 1, foo.the_geom)) ELSE 'Nan' END as mean_band2," +
                                             //"CASE WHEN pixelsize.numbands > 2 THEN (ST_Value(newrast3, 1, foo.the_geom)) ELSE 'Nan' END as mean_band3 " +
                                             //"pixel.* " +
-                                        "FROM rastunion, map " +
-                                        "CROSS JOIN (SELECT ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + ") As the_geom) As foo" +
+                                        "FROM rastunion, pixel, map " +
+                                        "CROSS JOIN (SELECT ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + ") As the_geom) As foo ORDER BY sortid" +
                                         ") as final "
                                     );
                                 }
@@ -994,7 +1048,5 @@ MapCentia.setup();
         setTimeout(pollForLayers, 10);
     }
 }());
-
-var queryWin;
 
 
