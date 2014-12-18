@@ -528,7 +528,7 @@ MapCentia.init = function () {
                                                         if (property[2] === pkey) {
                                                             pkeyValue = property[3];
                                                         }
-                                                        source[property[2]] = property[3];
+                                                        source[property[2]] = parseFloat(property[3]).toFixed(3);
                                                     });
                                                     out = [];
                                                 });
