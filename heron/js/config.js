@@ -819,9 +819,11 @@ MapCentia.init = function () {
                                             });
                                             store.sort('value', 'ASC');
                                             var min = store.data.items[0].data.value;
+                                            min = Math.floor(min*100)/100;
 
                                             store.sort('value', 'DESC');
                                             var max = store.data.items[0].data.value;
+                                            max = Math.ceil(max*100)/100;
 
                                             store.sort('num', 'ASC');
 
