@@ -808,12 +808,24 @@ MapCentia.init = function () {
                                                 out = [];
                                             });
                                             for (i = 0; i < data.length; i = i + 1) {
-                                                data[i] = {num: i +1, value: parseFloat(data[i].properties.mean_band1).toFixed(3)};
+                                                data[i] = {
+                                                    num: i + 1,
+                                                    value: parseFloat(data[i].properties.mean_band1).toFixed(3)
+                                                };
                                             }
                                             var store = new Ext.data.JsonStore({
                                                 fields: ['num', 'value'],
                                                 data: data
                                             });
+                                            store.sort('value', 'ASC');
+                                            var min = store.data.items[0].data.value;
+
+                                            store.sort('value', 'DESC');
+                                            var max = store.data.items[0].data.value;
+
+                                            store.sort('num', 'ASC');
+
+
                                             Ext.getCmp("queryTabs").add(
                                                 {
                                                     title: layerTitel,
@@ -840,6 +852,12 @@ MapCentia.init = function () {
                                                                         type: 'line',
                                                                         yField: 'value'
                                                                     }],
+                                                                    yAxis: new Ext.chart.NumericAxis({
+                                                                        maximum: max,
+                                                                        minimum: min,
+                                                                        roundMajorUnit : false,
+                                                                        majorUnit: parseFloat((max-min)/data.length).toFixed(3)
+                                                                    }),
                                                                     chartStyle: {
                                                                         padding: 10,
                                                                         animationEnabled: true,
@@ -852,7 +870,7 @@ MapCentia.init = function () {
                                                                             padding: 5,
                                                                             border: {
                                                                                 color: 0x99bbe8,
-                                                                                size:1
+                                                                                size: 1
                                                                             },
                                                                             background: {
                                                                                 color: 0xDAE7F6,
