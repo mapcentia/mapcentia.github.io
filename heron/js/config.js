@@ -22,8 +22,8 @@ MapCentia.setup = function () {
     Heron.globals.serviceUrl = '/cgi/heron.cgi';
     var uri = window.location.pathname.split("/"),
         host = "http://us1.mapcentia.com",
-        db = "mydb_us",
-        schema = "envimatix",
+        db = "envimatix",
+        schema = "test",
         url = host + '/wms/' + db + '/tilecache/' + schema;
 
     $.ajax({
@@ -475,7 +475,7 @@ MapCentia.init = function () {
                             },
                             trigger: function (e) {
                                 queryWin.show();
-                                var layers, count = 0, hit = false, distance, db = "mydb_us",
+                                var layers, count = 0, hit = false, distance, db = "envimatix",
                                     event = new geocloud.clickEvent(e, MapCentia.gc2),
                                     coords = event.getCoordinate();
                                 $.each(qstore, function (index, st) {
@@ -750,7 +750,7 @@ MapCentia.init = function () {
                             for (var i = 0; i < poilayer.features.length; i++) {
                                 coords.push([poilayer.features[i].geometry.x, poilayer.features[i].geometry.y]);
                             }
-                            var layers, count = 0, hit = false, db = "mydb_us";
+                            var layers, count = 0, hit = false, db = "envimatix";
                             $.each(qstore, function (index, st) {
                                 try {
                                     st.reset();
