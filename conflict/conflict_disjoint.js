@@ -18,7 +18,33 @@ var cowi = (function () {
         cloudMap.addBaseLayer("dtkSkaermkortDaempet");
         cloudMap.setBaseLayer("dtkSkaermkortDaempet");
 
-        cloudMap.map.zoomToExtent(bbox);
+        //cloudMap.map.zoomToExtent(bbox);
+        var storeBorder = new geocloud.geoJsonStore({
+            db: "dk",
+            sql: "select * from admin.kommuner where komkode='0" + komKode + "'",styleMap: new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style({
+                        fillColor: "#000000",
+                        fillOpacity: 0.0,
+                        pointRadius: 8,
+                        strokeColor: "#000000",
+                        strokeWidth: 3,
+                        strokeOpacity: 0.5,
+                        graphicZIndex: 3
+                    }
+                )
+            }),
+            lifetime: 9999999
+        });
+        // Add the store as a vector overlay
+        // Fire the SQL
+        storeBorder.load();
+        // Define a callback for when the SQL returns
+        storeBorder.onLoad = function () {
+            // Zoom to vector layer
+            cloudMap.map.addLayers([storeBorder.layer]);
+
+            cloudMap.zoomToExtentOfgeoJsonStore(storeBorder);
+        };
         $("#result").append("<div id='spinner' style='display:none'><img src='http://mapcentia.github.io/conflict/ajax-loader.gif'></div>");
         var style = {
             "color": "#ff0000",
@@ -118,7 +144,7 @@ var cowi = (function () {
                 store.reset();
                 store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
                 store.load();
-            }
+            };
             store = new geocloud.geoJsonStore({
                 db: "dk",
                 sql: null,
