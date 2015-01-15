@@ -27,6 +27,7 @@ mapcentia_districtmap = (function () {
                     height: "500px",
                     table: "kommuneplan.kpplandk2_view",
                     gridHeight: 245,
+                    baseLayer: "dtkSkaermkortDaempet",
                     rules: {
                         rules: [
                             new OpenLayers.Rule({
@@ -212,7 +213,7 @@ mapcentia_districtmap = (function () {
                     )
                 }
             ), lifetime: 0});
-            map.addBaseLayer("dtkSkaermkortDaempet");
+            map.addBaseLayer(defaults.baseLayer);
             map.addGeoJsonStore(store);
             store.sql = "SELECT anvgen,plannr,plannavn,html,textvalue as anv,(case when status = 'vedtaget' then 'Vedtaget' else 'Forslag' END) as status,the_geom FROM " + defaults.table + ",ANVGEN_PLANDK2 WHERE " + encodeURIComponent(defaults.where) + " AND (status = 'forslag' OR status = 'vedtaget') AND langid=1 AND ANVGEN_PLANDK2.fieldkey=" + defaults.table + ".anvgen order by substring(plannr from '[A-Z]|[a-z]+')::text,substring(split_part(plannr, '.', 2) from '[0-9]+')::int";
             store.load();
