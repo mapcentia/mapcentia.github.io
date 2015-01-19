@@ -13,10 +13,10 @@ var cowi = (function () {
         (visible) ? cloudMap.map.getLayersByName(id)[0].setVisibility(true) : cloudMap.map.getLayersByName(id)[0].setVisibility(false);
         addLegend();
     };
-    var init_search = function (db, komKode, layers, bbox, callback) {
+    var init_search = function (db, komKode, layers, bbox, callback, baseLayer) {
         cloudMap = new mygeocloud_ol.map("map", db);
-        cloudMap.addBaseLayer("dtkSkaermkortDaempet");
-        cloudMap.setBaseLayer("dtkSkaermkortDaempet");
+        cloudMap.addBaseLayer(baseLayer || "dtkSkaermkortDaempet");
+        cloudMap.setBaseLayer(baseLayer || "dtkSkaermkortDaempet");
 
         //cloudMap.map.zoomToExtent(bbox);
         var storeBorder = new geocloud.geoJsonStore({
@@ -301,7 +301,7 @@ var cowi = (function () {
                 }
             }
             store = null;
-        }
+        };
         return cloudMap;
     };
     return {
