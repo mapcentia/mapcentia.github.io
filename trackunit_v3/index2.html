@@ -12,11 +12,18 @@
 <!-- </x-bootstrap> -->
 <script type="text/javascript" src="app.js"></script>
 <!-- </x-compile> -->
+<script src='http://eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=leaflet'></script>
+<script src='http://eu1.mapcentia.com/js/leaflet/plugins/Leaflet.heat/leaflet-heat.js'></script>
+<script src='http://eu1.mapcentia.com/js/leaflet/plugins/markercluster/leaflet.markercluster-src.js'></script>
+<link rel="stylesheet" href="http://eu1.mapcentia.com/js/leaflet/plugins/markercluster/MarkerCluster.css">
+<link rel="stylesheet" href="http://eu1.mapcentia.com/js/leaflet/plugins/markercluster/MarkerCluster.Default.css">
+
+
 <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
-<script src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=visualization"></script>
 <script src="http://trackanalyzer.safetrack.dk/js/geojson.js"></script>
 <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js' type='text/javascript'></script>
 <script>
+var gc2, heat, cluster, geoJSONLayer;
 var map;
 var colors;
 var view;
@@ -49,18 +56,20 @@ window.user = vars["user"];
 window.token = vars["token"];
 
 window.apiUrl = host;
+Ext.onReady(function () {
+    $("#map-canvas").append('<div id="info" class="pretty-box" style="position: absolute; z-index: 1000"></div>');
+    $("#map-canvas").append('<div id="legend" class="pretty-box" style="position: absolute; z-index: 1000"></div>');
+    $("#map-canvas").append('<div id="process" class="pretty-box" style="position: absolute; z-index: 1000"><div id="spinner"><img src="ajax-loader.gif"></div><div id="process-inner"></div></div>');
+    window.initialize();
+});
 window.initialize = function () {
-    var mapOptions = {
-        zoom: 7,
-        center: new google.maps.LatLng(56, 10),
-        mapTypeId: google.maps.MapTypeId.TERRAIN
-    };
-    Ext.onReady(function() {
-        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-        $("#map-canvas").append('<div id="info" class="pretty-box" style="position: absolute; z-index: 1000"></div>');
-        $("#map-canvas").append('<div id="legend" class="pretty-box" style="position: absolute; z-index: 1000"></div>');
-        $("#map-canvas").append('<div id="process" class="pretty-box" style="position: absolute; z-index: 1000"><div id="spinner"><img src="ajax-loader.gif"></div><div id="process-inner"></div></div>');
+    gc2 = new geocloud.map({
+        el: "map-canvas"
     });
+    // Add a base layer
+    gc2.addBaseLayer(geocloud.GOOGLESTREETS);
+    gc2.setBaseLayer(geocloud.GOOGLESTREETS);
+    gc2.map.setView([56, 10], 7);
 };
 // 1. we import data from SafeTrack API to GC2
 window.startAnalyzing = function (t, c, conf) {
@@ -122,6 +131,12 @@ window.unitsummary_callback = function (data) {
             script.src = gc2host + '/api/v1/sql/trackunit?q=select * from ' + data.relation + '&srs=4326&jsonp_callback=heatmap_callback';
             document.getElementsByTagName('head')[0].appendChild(script);
         }
+        // Get the raw point data
+        if (type === "cluster") {
+            var script = document.createElement('script');
+            script.src = gc2host + '/api/v1/sql/trackunit?q=select * from ' + data.relation + '&srs=4326&jsonp_callback=cluster_callback';
+            document.getElementsByTagName('head')[0].appendChild(script);
+        }
         // Add server side heatmap
         if (type === "serverheatmap") {
             serverHeatmap(data);
@@ -162,75 +177,97 @@ window.data_callback = function (data) {
     updateProcess("Result fetched", data._execution_time);
     document.getElementById("spinner").style.display = "none";
 
-    var vec;
-    for (var i = 0; i < data.features.length; i++) {
-        var obj = data.features[i];
-        var color = (function (n) {
-            for (var i = 0; i < colors.length; i++) {
-                if (n < colors[i][0]) {
-                    break;
+    geoJSONLayer = L.geoJson(data, {
+        //style: this.defaults.styleMap,
+        //pointToLayer: this.defaults.pointToLayer,
+        style: function (feature) {
+            return {
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7,
+                fillColor: (function (n) {
+                    for (var i = 0; i < colors.length; i++) {
+                        if (n < colors[i][0]) {
+                            break;
+                        }
+                    }
+                    return colors[i][1];
+                })(feature.properties[field])
+            };
+        },
+        onEachFeature: function (feature, layer) {
+            layer.on({
+                mouseover: function (e) {
+                    var layer = e.target, div;
+                    layer.setStyle({
+                        weight: 5,
+                        color: '#666',
+                        dashArray: '',
+                        fillOpacity: 0.7
+                    });
+                    if (!L.Browser.ie && !L.Browser.opera) {
+                        layer.bringToFront();
+                    }
+                    div = document.createElement('div');
+                    div.innerHTML = 'Run1 : ' + secondstotime(layer.feature.properties.run1) + '<br>Activity : ' + secondstotime(layer.feature.properties.activity) + '<br>Count : ' + layer.feature.properties.count + '<br>';
+                    $("#info").fadeIn(200);
+                    $("#info").empty();
+                    document.getElementById('info').appendChild(div);
+                },
+                mouseout: function (e) {
+                    geoJSONLayer.resetStyle(e.target);
+                    $("#info").hide();
+                    $("#info").empty();
                 }
-            }
-            return colors[i][1];
-        })(obj.properties[field])
-
-        googleMapsVector[i] = new GeoJSON(obj.geometry, {
-            strokeColor: '#FFF',
-            strokeWeight: 1,
-            fillOpacity: 1,
-            fillColor: color
-        });
-        properties[i] = obj.properties;
-    }
-    for (var i = 0; i < googleMapsVector.length; i++) {
-        if (googleMapsVector[i][0] === undefined) {
-            vec = googleMapsVector[i];
-            vec.setMap(map);
+                //click: zoomToFeature
+            });
         }
-        else {
-            for (var u = 0; u < googleMapsVector[i].length; u++) {
-                vec = googleMapsVector[i][u];
-                vec.setMap(map);
-            }
-        }
-        vec.properties = properties[i];
-        google.maps.event.addListener(vec, "mouseover", function () {
-            this.setOptions({strokeColor: "#000000"});
-            var div = document.createElement('div');
-            div.innerHTML = 'Run1 : ' + secondstotime(this.properties.run1) + '<br>Activity : ' + secondstotime(this.properties.activity) + '<br>Count : ' + this.properties.count + '<br>';
-            $("#info").fadeIn(300);
-            $("#info").empty();
-            document.getElementById('info').appendChild(div);
-        });
-        google.maps.event.addListener(vec, "mouseout", function () {
-            this.setOptions({strokeColor: "#FFF"});
-        });
-    }
+        //clickable: this.defaults.clickable
+    });
+    gc2.map.addLayer(geoJSONLayer);
 
 };
 // Create a heat map
 window.heatmap_callback = function (data) {
+    var points = [], features = data.features;
+    updateProcess("Result fetched", data._execution_time);
+    document.getElementById("spinner").style.display = "none";
+    for (var key in features) {
+        if (features.hasOwnProperty(key)) {
+            features[key].geometry.coordinates.reverse();
+            features[key].geometry.coordinates.push(features[key].properties.run1 + "")
+            points.push(features[key].geometry.coordinates)
+        }
+    }
+    heat = L.heatLayer(points, {
+        blur: 40
+    }).addTo(gc2.map);
+};
+// Create a cluster map
+window.cluster_callback = function (data) {
+    var points = [], features = data.features;
     updateProcess("Result fetched", data._execution_time);
     document.getElementById("spinner").style.display = "none";
 
-    var heatmapData = [];
-    for (var i = 0; i < data.features.length; i++) {
-        var coords = data.features[i].geometry.coordinates;
-        var latLng = new google.maps.LatLng(coords[1], coords[0]);
-        var weight = data.features[i].properties.run1;
-        if (weight < 0) weight = 0;
-        var weightedLoc = {
-            location: latLng
-            //weight: weight
-        };
-        heatmapData.push(weightedLoc);
+    for (var key in features) {
+        if (features.hasOwnProperty(key)) {
+            features[key].geometry.coordinates.reverse();
+            features[key].geometry.coordinates.push(features[key].properties.run1 + "")
+            points.push(features[key].geometry.coordinates)
+        }
     }
-    heatmap = new google.maps.visualization.HeatmapLayer({
-        data: heatmapData,
-        dissipating: true,
-        map: map,
-        radius: 30
-    });
+    cluster = L.markerClusterGroup();
+
+    for (var i = 0; i < points.length; i++) {
+        var a = points[i];
+        var title = a[2];
+        var marker = L.marker(new L.LatLng(a[0], a[1]), {title: title});
+        marker.bindPopup(title);
+        cluster.addLayer(marker);
+    }
+    gc2.map.addLayer(cluster);
 };
 // Create a server side heat map
 window.serverHeatmap = function (data) {
@@ -264,23 +301,23 @@ window.updateProcess = function (text, time) {
 };
 
 window.clearOverlay = function () {
-    for (var i = 0; i < googleMapsVector.length; i++) {
-        if (googleMapsVector[i][0] === undefined) {
-            googleMapsVector[i].setMap(null);
-        }
-        else {
-            for (var u = 0; u < googleMapsVector[i].length; u++) {
-                googleMapsVector[i][u].setMap(null);
-            }
-        }
+    try {
+        gc2.map.removeLayer(heat);
     }
-    googleMapsVector = [];
-    if (typeof heatmap === "object") {
-        heatmap.setMap(null);
+    catch (e) {
     }
-    if (typeof serverSideHeatmap === "object") {
-        map.overlayMapTypes.setAt(0, null);
+    try {
+        gc2.map.removeLayer(cluster);
     }
+    catch (e) {
+    }
+    try {
+        gc2.map.removeLayer(geoJSONLayer);
+    }
+    catch (e) {
+    }
+    $("#info").fadeOut(300);
+    $("#info").empty();
 };
 
 window.createLegend = function (c) {
@@ -300,7 +337,6 @@ window.secondstotime = function (secs) {
         s = Math.floor((t - Date.parse("1/1/70")) / 3600000) + s.substr(2);
     return s;
 };
-google.maps.event.addDomListener(window, 'load', initialize);
 </script>
 <style>
     #process {
