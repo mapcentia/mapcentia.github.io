@@ -32,6 +32,14 @@ Ext.define('MyApp.controller.MyController', {
         window.startAnalyzing('group',values.border, values);
     },
 
+    onClusterClick: function(button, e, eOpts) {
+        if (button.up("form").isValid() === false){
+                    return false
+                }
+        var values = button.up("form").getValues();
+        window.startAnalyzing('cluster',values.border, values);
+    },
+
     init: function(application) {
         this.control({
             "button#heatmap": {
@@ -39,6 +47,9 @@ Ext.define('MyApp.controller.MyController', {
             },
             "button#adminmap": {
                 click: this.onAdminClick
+            },
+            "button#clustermap": {
+                click: this.onClusterClick
             }
         });
     }

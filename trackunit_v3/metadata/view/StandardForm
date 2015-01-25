@@ -43,7 +43,8 @@
                         "format": "Y-m-d",
                         "labelAlign": "top",
                         "layout|anchor": "100%",
-                        "name": "startdate"
+                        "name": "startdate",
+                        "value": 1390604400000
                     },
                     "name": "MyDateField",
                     "designerId": "f20572c3-17d2-4630-9fa3-b94e4074023f"
@@ -62,7 +63,8 @@
                         "format": "Y-m-d",
                         "labelAlign": "top",
                         "layout|anchor": "100%",
-                        "name": "enddate"
+                        "name": "enddate",
+                        "value": 1391122800000
                     },
                     "name": "MyDateField1",
                     "designerId": "28e9fa74-a499-4ff5-8028-93d2ab328d05"

@@ -57,6 +57,30 @@
             },
             "name": "onAdminClick",
             "designerId": "d43e28a2-db30-454b-b4b6-f76061e6d16c"
+        },
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "button#clustermap",
+                "designer|targetType": "Ext.button.Button",
+                "fn": "onClusterClick",
+                "implHandler": [
+                    "if (button.up(\"form\").isValid() === false){",
+                    "            return false",
+                    "        }",
+                    "var values = button.up(\"form\").getValues();",
+                    "window.startAnalyzing('cluster',values.border, values);"
+                ],
+                "name": "click",
+                "scope": "me"
+            },
+            "name": "onClusterClick",
+            "designerId": "3f58f6a3-d36c-416e-91e8-95c20874e603"
         }
     ]
 }

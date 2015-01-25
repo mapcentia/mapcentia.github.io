@@ -39,6 +39,7 @@ Ext.define('MyApp.view.StandardForm', {
                             fieldLabel: '',
                             labelAlign: 'top',
                             name: 'startdate',
+                            value: '2014-01-25',
                             allowBlank: false,
                             emptyText: 'Start date',
                             format: 'Y-m-d'
@@ -49,6 +50,7 @@ Ext.define('MyApp.view.StandardForm', {
                             fieldLabel: '',
                             labelAlign: 'top',
                             name: 'enddate',
+                            value: '2014-01-31',
                             allowBlank: false,
                             emptyText: 'End date',
                             format: 'Y-m-d'

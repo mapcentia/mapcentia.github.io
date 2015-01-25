@@ -61,6 +61,17 @@ Ext.define('MyApp.view.MyViewport', {
                         {
                             xtype: 'form',
                             bodyPadding: 10,
+                            title: 'Clusters',
+                            listeners: {
+                                beforerender: {
+                                    fn: me.BeforeRenderBoderForm1,
+                                    scope: me
+                                }
+                            }
+                        },
+                        {
+                            xtype: 'form',
+                            bodyPadding: 10,
                             title: 'Border',
                             listeners: {
                                 beforerender: {
@@ -84,6 +95,16 @@ Ext.define('MyApp.view.MyViewport', {
                         text: 'Make map',
             itemId: 'heatmap'
                 })
+    },
+
+    BeforeRenderBoderForm1: function(component, eOpts) {
+        var form = new MyApp.view.StandardForm();
+        component.add(form);
+        component.add({
+                        xtype: 'button',
+                        text: 'Make map',
+            itemId: 'clustermap'
+                });
     },
 
     BeforeRenderBoderForm: function(component, eOpts) {
