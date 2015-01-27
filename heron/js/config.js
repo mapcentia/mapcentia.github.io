@@ -23,7 +23,7 @@ MapCentia.setup = function () {
     var uri = window.location.pathname.split("/"),
         host = "http://us1.mapcentia.com",
         db = "envimatix",
-        schema = "test",
+        schema = "test2",
         url = host + '/wms/' + db + '/tilecache/' + schema;
 
     $.ajax({
@@ -745,7 +745,7 @@ MapCentia.init = function () {
                                         Heron.App.map.removeLayer(poilayer);
                                     }
                                     catch(e) {
-                                        
+
                                     }
                                 }
                             }
