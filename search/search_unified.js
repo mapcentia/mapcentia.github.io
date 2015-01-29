@@ -210,7 +210,7 @@ var search = (function () {
                     store[i].id = arr[i];
                     store[i].load();
                     store[i].onLoad = function () {
-                        if (this.geoJSON.features !== undefined) {
+                        if (typeof this.geoJSON !== null && this.geoJSON.features !== undefined) {
                             cloudMap.addTileLayers({
                                 db: db,
                                 layers: [this.id],
