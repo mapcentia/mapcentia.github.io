@@ -249,7 +249,7 @@ MapCentia.setup = function () {
                     Heron.options.layertree.tree = children.concat([
                         {
                             text: 'BaseLayers',
-                            expanded: true,
+                            expanded: false,
                             children: [
                                 {
                                     nodeType: "gx_layer",
