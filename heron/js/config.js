@@ -72,6 +72,11 @@ MapCentia.setup = function () {
                     {type: google.maps.MapTypeId.TERRAIN, visibility: false},
                     {singleTile: false, buffer: 0, isBaseLayer: true}
                 ),
+                new OpenLayers.Layer.Google(
+                    "Google Hybrid",
+                    {type: google.maps.MapTypeId.HYBRID, visibility: false},
+                    {singleTile: false, buffer: 0, isBaseLayer: true}
+                ),
                 [
                     "OpenLayers.Layer.Bing",
                     {
@@ -241,7 +246,7 @@ MapCentia.setup = function () {
                     });
                     children.reverse();
 
-                    Heron.options.layertree.tree = [
+                    Heron.options.layertree.tree = children.concat([
                         {
                             text: 'BaseLayers',
                             expanded: true,
@@ -254,6 +259,11 @@ MapCentia.setup = function () {
                                     nodeType: "gx_layer",
                                     layer: "Google Terrain",
                                     text: 'Google Terrain'
+                                },
+                                {
+                                    nodeType: "gx_layer",
+                                    layer: "Google Hybrid",
+                                    text: 'Google Hybrid'
                                 },
                                 {
                                     nodeType: "gx_layer",
@@ -292,7 +302,7 @@ MapCentia.setup = function () {
                                 }
                             ]
                         }
-                    ].concat(children);
+                    ]);
                     Heron.globals.metaReady = true;
                 }
             });
