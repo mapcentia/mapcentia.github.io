@@ -677,6 +677,7 @@ MapCentia.init = function () {
 
                         return false;
                     }
+
                     poilayer = new OpenLayers.Layer.Vector("Vector", {
                         styleMap: new OpenLayers.StyleMap({
                             "default": new OpenLayers.Style({
@@ -729,10 +730,14 @@ MapCentia.init = function () {
                         };
                         poilayer.redraw();
                     });
+                    var scrollerMenu = new Ext.ux.TabScrollerMenu({
+                        maxText  : 50,
+                        pageSize : 10
+                    });
                     queryWin = new Ext.Window({
                         title: "POI graph",
                         modal: false,
-                        border: false,
+                        border: true,
                         layout: 'fit',
                         width: 500,
                         height: 300,
@@ -754,7 +759,7 @@ MapCentia.init = function () {
                                         Heron.App.map.removeControl(click);
                                         Heron.App.map.removeLayer(poilayer);
                                     }
-                                    catch(e) {
+                                    catch (e) {
 
                                     }
                                 }
@@ -762,9 +767,16 @@ MapCentia.init = function () {
                         },
                         items: [
                             new Ext.TabPanel({
+                                enableTabScroll : true,
+                                resizeTabs      : true,
+                                border          : false,
+                                minTabWidth     : 175,
+                                plugins         : [scrollerMenu],
                                 activeTab: 0,
                                 frame: true,
                                 id: "queryTabs",
+                                //autoScroll: true,
+                                html: "<div id='wait-spinner' style='float: right; margin: 3px; position: relative;display: none'><img style='width:25px' src='http://www.gifstache.com/images/ajax_loader.gif'></div>",
                                 tbar: [new GeoExt.Action({
                                     control: click,
                                     text: "<i class='icon-pencil btn-gc'></i> " + __("Draw"),
@@ -800,6 +812,7 @@ MapCentia.init = function () {
                     queryWin.show();
                     var getData = function (e) {
                         var coords = [], stores = [], comboData = [], mins = [], maxs = [], layerTitles = [];
+                        document.getElementById("wait-spinner").style.display = "inline";
                         for (var i = 0; i < poilayer.features.length; i++) {
                             coords.push([poilayer.features[i].geometry.x, poilayer.features[i].geometry.y]);
                         }
@@ -857,7 +870,6 @@ MapCentia.init = function () {
                                                 source[i + " " + property[2]] = property[3];
                                             });
                                             data.push({num: i, properties: feature.properties});
-
                                             out = [];
                                         });
                                         for (i = 0; i < data.length; i = i + 1) {
@@ -911,6 +923,12 @@ MapCentia.init = function () {
                                                                     type: 'line',
                                                                     yField: 'value'
                                                                 }],
+                                                                xAxis: new Ext.chart.NumericAxis({
+                                                                    minimum: 1,
+                                                                    maximum: data.length,
+                                                                    roundMajorUnit: true,
+                                                                    majorUnit: 1
+                                                                }),
                                                                 yAxis: new Ext.chart.NumericAxis({
                                                                     maximum: max,
                                                                     minimum: min,
@@ -974,7 +992,7 @@ MapCentia.init = function () {
                                     Ext.getCmp("queryTabs").activate(0);
                                 }
                             });
-                            MapCentia.gc2.addGeoJsonStore(qstore[index]);
+                            //MapCentia.gc2.addGeoJsonStore(qstore[index]);
                             var sql, f_geometry_column = metaDataKeys[value.split(".")[1]].f_geometry_column;
                             var unions = [];
                             for (var i = 0; i < coords.length; i++) {
@@ -1017,6 +1035,7 @@ MapCentia.init = function () {
                         });
                         (function pollForQueries() {
                             if (layers.length === count) {
+                                document.getElementById("wait-spinner").style.display = "none";
                                 var obj = {}, fields = ['num'], series = [], min = mins.sort()[0], max = maxs.sort(function (a, b) {
                                     return b - a
                                 })[0];
@@ -1127,14 +1146,12 @@ MapCentia.init = function () {
                                             }
                                         ]
                                     }
-                                );
+                                ).doLayout();
                             } else {
                                 setTimeout(pollForQueries, 10);
                             }
                         }());
                     };
-
-
                 }
             }
         },
