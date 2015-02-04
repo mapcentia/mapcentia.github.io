@@ -435,6 +435,7 @@ MapCentia.init = function () {
             }
         ]
     };
+
     Heron.options.map.toolbar = [
         {
             type: "any",
@@ -731,8 +732,8 @@ MapCentia.init = function () {
                         poilayer.redraw();
                     });
                     var scrollerMenu = new Ext.ux.TabScrollerMenu({
-                        maxText  : 50,
-                        pageSize : 10
+                        maxText: 50,
+                        pageSize: 10
                     });
                     queryWin = new Ext.Window({
                         title: "POI graph",
@@ -767,15 +768,14 @@ MapCentia.init = function () {
                         },
                         items: [
                             new Ext.TabPanel({
-                                enableTabScroll : true,
-                                resizeTabs      : true,
-                                border          : false,
-                                minTabWidth     : 175,
-                                plugins         : [scrollerMenu],
+                                enableTabScroll: true,
+                                resizeTabs: true,
+                                border: false,
+                                minTabWidth: 175,
+                                plugins: [scrollerMenu],
                                 activeTab: 0,
                                 frame: true,
                                 id: "queryTabs",
-                                //autoScroll: true,
                                 html: "<div id='wait-spinner' style='float: right; margin: 3px; position: relative;display: none'><img style='width:25px' src='http://www.gifstache.com/images/ajax_loader.gif'></div>",
                                 tbar: [new GeoExt.Action({
                                     control: click,
@@ -1156,6 +1156,41 @@ MapCentia.init = function () {
             }
         },
         {type: "-"},
+        {
+            type: "any",
+            options: {
+                text: 'All on',
+                tooltip: 'Switch all layers on',
+                toggleGroup: "rasterGroup",
+                //iconCls: 'icon-getfeatureinfo',
+                id: "allOnBtn",
+                handler: function(){
+                    for (var i = 0; i < Heron.App.map.layers.length; i = i + 1) {
+                        if (Heron.App.map.layers[i].CLASS_NAME === "OpenLayers.Layer.WMS") {
+                            Heron.App.map.layers[i].setVisibility(true);
+                        }                    }
+                }
+            }
+        },
+        {type: "-"},
+        {
+            type: "any",
+            options: {
+                text: 'All off',
+                tooltip: 'Switch all layers off',
+                toggleGroup: "rasterGroup",
+                //iconCls: 'icon-getfeatureinfo',
+                id: "allOffBtn",
+                handler: function(){
+                    for (var i = 0; i < Heron.App.map.layers.length; i = i + 1) {
+                        if (Heron.App.map.layers[i].CLASS_NAME === "OpenLayers.Layer.WMS") {
+                            Heron.App.map.layers[i].setVisibility(false);
+                        }
+                    }
+                }
+            }
+        },
+        {type: "-"},
         {type: "pan"},
         {type: "zoomin"},
         {type: "zoomout"},
@@ -1170,7 +1205,7 @@ MapCentia.init = function () {
         {type: "measurearea", options: {geodesic: true}},
         {type: "-"},
         {type: "addbookmark"}
-    ]
+    ];
 
     Heron.layout = {
         xtype: 'panel',
@@ -1251,6 +1286,12 @@ MapCentia.setup();
         Heron.App.show();
         MapCentia.gc2 = new geocloud.map({});
         MapCentia.gc2.map = Heron.App.map;
+
+
+
+        /*console.log(Heron.App.map.getLayersByName("test2.p041r025_30jun2013_rdvi_lai")[0])
+         var l = Heron.App.map.getLayersByName("test2.p041r025_30jun2013_rdvi_lai")[0];
+         l.setVisibility(true);*/
     } else {
         setTimeout(pollForLayers, 10);
     }
