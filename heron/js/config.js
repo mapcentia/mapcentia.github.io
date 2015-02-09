@@ -1162,10 +1162,10 @@ MapCentia.init = function () {
         {
             type: "any",
             options: {
-                text: 'All on',
+                text: '',
                 tooltip: 'Switch all layers on',
                 toggleGroup: "rasterGroup",
-                //iconCls: 'icon-getfeatureinfo',
+                iconCls: 'icon-add',
                 id: "allOnBtn",
                 handler: function(){
                     for (var i = 0; i < Heron.App.map.layers.length; i = i + 1) {
@@ -1179,10 +1179,10 @@ MapCentia.init = function () {
         {
             type: "any",
             options: {
-                text: 'All off',
+                text: '',
                 tooltip: 'Switch all layers off',
                 toggleGroup: "rasterGroup",
-                //iconCls: 'icon-getfeatureinfo',
+                iconCls: 'icon-delete',
                 id: "allOffBtn",
                 handler: function(){
                     for (var i = 0; i < Heron.App.map.layers.length; i = i + 1) {
