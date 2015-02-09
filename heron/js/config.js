@@ -1167,11 +1167,12 @@ MapCentia.init = function () {
                 toggleGroup: "rasterGroup",
                 iconCls: 'icon-add',
                 id: "allOnBtn",
-                handler: function(){
+                handler: function () {
                     for (var i = 0; i < Heron.App.map.layers.length; i = i + 1) {
                         if (Heron.App.map.layers[i].CLASS_NAME === "OpenLayers.Layer.WMS") {
                             Heron.App.map.layers[i].setVisibility(true);
-                        }                    }
+                        }
+                    }
                 }
             }
         },
@@ -1184,7 +1185,7 @@ MapCentia.init = function () {
                 toggleGroup: "rasterGroup",
                 iconCls: 'icon-delete',
                 id: "allOffBtn",
-                handler: function(){
+                handler: function () {
                     for (var i = 0; i < Heron.App.map.layers.length; i = i + 1) {
                         if (Heron.App.map.layers[i].CLASS_NAME === "OpenLayers.Layer.WMS") {
                             Heron.App.map.layers[i].setVisibility(false);
@@ -1201,7 +1202,7 @@ MapCentia.init = function () {
                 tooltip: 'Search for Strm',
                 iconCls: 'icon-find',
                 id: "searchStrm",
-                handler: function(){
+                handler: function () {
                     var strmWin = new Ext.Window({
                         title: "Search strm",
                         modal: false,
@@ -1262,16 +1263,32 @@ MapCentia.init = function () {
                                                         try {
                                                             strmStore.reset();
                                                         }
-                                                        catch (e){}
+                                                        catch (e) {
+                                                        }
                                                         strmStore = new geocloud.geoJsonStore({
                                                             db: "envimatix",
-                                                            sql: "SELECT * FROM test2.prairie_sec_gcswgs84 WHERE strm='" + values.strm + "'"
+                                                            sql: "SELECT * FROM test2.ab_sec_gcswgs84 WHERE strm='" + values.strm + "'",
+                                                            styleMap: new OpenLayers.StyleMap({
+                                                                "default": new OpenLayers.Style({
+                                                                        fillColor: "#000000",
+                                                                        fillOpacity: 0.0,
+                                                                        pointRadius: 8,
+                                                                        strokeColor: "#00FF00",
+                                                                        strokeWidth: 3,
+                                                                        strokeOpacity: 0.7,
+                                                                        graphicZIndex: 3
+                                                                    }
+                                                                )
+                                                            })
                                                         });
                                                         MapCentia.gc2.addGeoJsonStore(strmStore);
                                                         strmStore.load();
                                                         strmStore.onLoad = function () {
                                                             if (strmStore.geoJSON !== null) {
                                                                 MapCentia.gc2.zoomToExtentOfgeoJsonStore(strmStore);
+                                                            }
+                                                            else {
+                                                                alert("Didn't find anything");
                                                             }
                                                         };
                                                     } else {
@@ -1387,7 +1404,6 @@ MapCentia.setup();
         Heron.App.show();
         MapCentia.gc2 = new geocloud.map({});
         MapCentia.gc2.map = Heron.App.map;
-
 
 
         /*console.log(Heron.App.map.getLayersByName("test2.p041r025_30jun2013_rdvi_lai")[0])
