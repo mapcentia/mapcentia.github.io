@@ -779,13 +779,14 @@ MapCentia.init = function () {
                                 html: "<div id='wait-spinner' style='float: right; margin: 3px; position: relative;display: none'><img style='width:25px' src='http://www.gifstache.com/images/ajax_loader.gif'></div>",
                                 tbar: [new GeoExt.Action({
                                     control: click,
-                                    text: "<i class='icon-pencil btn-gc'></i> " + __("Draw"),
+                                    iconCls: 'icon-add',
                                     enableToggle: true,
                                     tooltip: "Toggle on to draw point. Off to drag and delete points."
-                                }),
+                                }), '-',
                                     {
-                                        text: "Delete",
+                                        text: "",
                                         tooltip: "Delete the selected point",
+                                        iconCls: 'icon-delete',
                                         handler: function () {
                                             var feature = poilayer.selectedFeatures[0];
                                             modifyControl.unselectFeature(feature);
@@ -799,8 +800,9 @@ MapCentia.init = function () {
                                         }
                                     }, '-',
                                     {
-                                        text: "Graph",
+                                        text: "Plot graph",
                                         tooltip: "Plot graph",
+                                        iconCls: 'icon-chart-curve',
                                         handler: function () {
                                             getData();
                                         }
