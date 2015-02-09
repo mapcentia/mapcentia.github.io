@@ -15,7 +15,7 @@ Ext.namespace("Heron.options.center");
 Ext.namespace("Heron.options.zoom");
 Ext.namespace("Heron.options.layertree");
 Ext.chart.Chart.CHART_URL = 'http://eu1.mapcentia.com/js/ext/resources/charts.swf';
-var metaData, metaDataKeys = [], metaDataKeysTitle = [], click, poilayer, qstore = [], queryWin;
+var metaData, metaDataKeys = [], metaDataKeysTitle = [], click, poilayer, qstore = [], queryWin, strmStore;
 MapCentia.setup = function () {
     "use strict";
     Heron.globals.metaReady = false;
@@ -58,6 +58,11 @@ MapCentia.setup = function () {
             };
             Heron.options.map.layers = [
                 new OpenLayers.Layer.Google(
+                    "Google Hybrid",
+                    {type: google.maps.MapTypeId.HYBRID, visibility: false},
+                    {singleTile: false, buffer: 0, isBaseLayer: true}
+                ),
+                new OpenLayers.Layer.Google(
                     "Google Streets", // the default
                     {type: google.maps.MapTypeId.ROADMAP, visibility: false},
                     {singleTile: false, buffer: 0, isBaseLayer: true}
@@ -70,11 +75,6 @@ MapCentia.setup = function () {
                 new OpenLayers.Layer.Google(
                     "Google Terrain",
                     {type: google.maps.MapTypeId.TERRAIN, visibility: false},
-                    {singleTile: false, buffer: 0, isBaseLayer: true}
-                ),
-                new OpenLayers.Layer.Google(
-                    "Google Hybrid",
-                    {type: google.maps.MapTypeId.HYBRID, visibility: false},
                     {singleTile: false, buffer: 0, isBaseLayer: true}
                 ),
                 [
@@ -253,6 +253,11 @@ MapCentia.setup = function () {
                             children: [
                                 {
                                     nodeType: "gx_layer",
+                                    layer: "Google Hybrid",
+                                    text: 'Google Hybrid'
+                                },
+                                {
+                                    nodeType: "gx_layer",
                                     layer: "Google Streets",
                                     text: 'Google Streets'
                                 }, {
@@ -262,13 +267,13 @@ MapCentia.setup = function () {
                                 },
                                 {
                                     nodeType: "gx_layer",
-                                    layer: "Google Hybrid",
-                                    text: 'Google Hybrid'
+                                    layer: "Google Satellite",
+                                    text: 'Google Satellite'
                                 },
                                 {
                                     nodeType: "gx_layer",
-                                    layer: "Google Satellite",
-                                    text: 'Google Satellite'
+                                    layer: "Bing Aerial With Labels",
+                                    text: 'Bing Aerial With Labels'
                                 },
                                 {
                                     nodeType: "gx_layer",
@@ -279,11 +284,6 @@ MapCentia.setup = function () {
                                     nodeType: "gx_layer",
                                     layer: "Bing Aerial",
                                     text: 'Bing Aerial'
-                                },
-                                {
-                                    nodeType: "gx_layer",
-                                    layer: "Bing Aerial With Labels",
-                                    text: 'Bing Aerial With Labels'
                                 },
                                 {
                                     nodeType: "gx_layer",
@@ -440,7 +440,7 @@ MapCentia.init = function () {
         {
             type: "any",
             options: {
-                text: 'Info',
+                text: '',
                 enableToggle: true,
                 tooltip: 'Query raster by click',
                 toggleGroup: "rasterGroup",
@@ -647,12 +647,12 @@ MapCentia.init = function () {
         {
             type: "any",
             options: {
-                text: 'POI',
+                text: '',
                 tooltip: 'Plot graph from POIs',
                 enableToggle: true,
                 toggleGroup: "rasterGroup",
                 id: "poiBtn",
-                //iconCls: 'bmenu',
+                iconCls: 'icon-flag-red',
                 handler: function (e) {
                     var num = 0;
                     try {
@@ -816,7 +816,7 @@ MapCentia.init = function () {
                         for (var i = 0; i < poilayer.features.length; i++) {
                             coords.push([poilayer.features[i].geometry.x, poilayer.features[i].geometry.y]);
                         }
-                        var layers, count = 0, hit = false, db = "envimatix";
+                        var layers, count = 0, numOfRasterLayers = 0, hit = false, db = "envimatix";
                         $.each(qstore, function (index, st) {
                             try {
                                 st.reset();
@@ -834,210 +834,213 @@ MapCentia.init = function () {
                             var geoField = metaDataKeys[value.split(".")[1]].f_geometry_column;
                             var geoType = metaDataKeys[value.split(".")[1]].type;
                             var layerTitel = metaDataKeys[value.split(".")[1]].f_table_title || metaDataKeys[value.split(".")[1]].f_table_name;
-                            qstore[index] = new geocloud.sqlStore({
-                                db: db,
-                                id: index,
-                                jsonp: false,
-                                method: "post",
-                                styleMap: new OpenLayers.StyleMap({
-                                    "default": new OpenLayers.Style({
-                                            fillColor: "#000000",
-                                            fillOpacity: 0.0,
-                                            pointRadius: 8,
-                                            strokeColor: "#FF0000",
-                                            strokeWidth: 3,
-                                            strokeOpacity: 0.7,
-                                            graphicZIndex: 3
-                                        }
-                                    )
-                                }),
-                                onLoad: function () {
-                                    var layerObj = qstore[this.id], out = [], source = {}, pkeyValue, data = [];
-                                    isEmpty = layerObj.isEmpty();
-                                    if ((!isEmpty)) {
-                                        queryWin.show();
-                                        $.each(layerObj.geoJSON.features, function (i, feature) {
-                                            $.each(feature.properties, function (name, property) {
-                                                out.push([name, 0, name, property]);
+                            if (geoType === "RASTER") {
+                                numOfRasterLayers = numOfRasterLayers + 1;
+                                qstore[index] = new geocloud.sqlStore({
+                                    db: db,
+                                    id: index,
+                                    jsonp: false,
+                                    method: "post",
+                                    styleMap: new OpenLayers.StyleMap({
+                                        "default": new OpenLayers.Style({
+                                                fillColor: "#000000",
+                                                fillOpacity: 0.0,
+                                                pointRadius: 8,
+                                                strokeColor: "#FF0000",
+                                                strokeWidth: 3,
+                                                strokeOpacity: 0.7,
+                                                graphicZIndex: 3
+                                            }
+                                        )
+                                    }),
+                                    onLoad: function () {
+                                        var layerObj = qstore[this.id], out = [], source = {}, pkeyValue, data = [];
+                                        isEmpty = layerObj.isEmpty();
+                                        if ((!isEmpty)) {
+                                            queryWin.show();
+                                            $.each(layerObj.geoJSON.features, function (i, feature) {
+                                                $.each(feature.properties, function (name, property) {
+                                                    out.push([name, 0, name, property]);
+                                                });
+                                                out.sort(function (a, b) {
+                                                    return a[1] - b[1];
+                                                });
+                                                $.each(out, function (name, property) {
+                                                    if (property[2] === pkey) {
+                                                        pkeyValue = property[3];
+                                                    }
+                                                    source[i + " " + property[2]] = property[3];
+                                                });
+                                                data.push({num: i, properties: feature.properties});
+                                                out = [];
                                             });
-                                            out.sort(function (a, b) {
-                                                return a[1] - b[1];
+                                            for (i = 0; i < data.length; i = i + 1) {
+                                                data[i] = {
+                                                    num: i + 1,
+                                                    value: Math.round(+(data[i].properties.mean_band1) * 1000) / 1000
+                                                };
+                                            }
+                                            var store = new Ext.data.JsonStore({
+                                                fields: ['num', 'value'],
+                                                data: data
                                             });
-                                            $.each(out, function (name, property) {
-                                                if (property[2] === pkey) {
-                                                    pkeyValue = property[3];
-                                                }
-                                                source[i + " " + property[2]] = property[3];
-                                            });
-                                            data.push({num: i, properties: feature.properties});
-                                            out = [];
-                                        });
-                                        for (i = 0; i < data.length; i = i + 1) {
-                                            data[i] = {
-                                                num: i + 1,
-                                                value: Math.round(+(data[i].properties.mean_band1) * 1000) / 1000
-                                            };
-                                        }
-                                        var store = new Ext.data.JsonStore({
-                                            fields: ['num', 'value'],
-                                            data: data
-                                        });
-                                        store.sort('value', 'ASC');
-                                        var min = store.data.items[0].data.value;
+                                            store.sort('value', 'ASC');
+                                            var min = store.data.items[0].data.value;
 
-                                        store.sort('value', 'DESC');
-                                        var max = store.data.items[0].data.value;
+                                            store.sort('value', 'DESC');
+                                            var max = store.data.items[0].data.value;
 
-                                        // Add a small buffer
-                                        var diff = max - min;
-                                        max = max + (diff / 20);
-                                        min = min - (diff / 20);
-                                        mins.push(min);
-                                        maxs.push(max);
-                                        layerTitles.push(layerTitel);
-                                        store.sort('num', 'ASC');
-                                        stores.push(data);
-                                        Ext.getCmp("queryTabs").add(
-                                            {
-                                                title: layerTitel,
-                                                layout: "fit",
-                                                border: false,
-                                                items: [
-                                                    {
-                                                        xtype: "panel",
-                                                        layout: "fit",
-                                                        id: layerTitel,
-                                                        border: false,
-                                                        items: [
-                                                            {
-                                                                xtype: 'linechart',
-                                                                store: store,
-                                                                xField: 'num',
-                                                                listeners: {
-                                                                    itemclick: function (o) {
-                                                                        var rec = store.getAt(o.index);
-                                                                        Ext.example.msg('Item Selected', 'You chose {0}.', rec.get('name'));
-                                                                    }
-                                                                },
-                                                                series: [{
-                                                                    type: 'line',
-                                                                    yField: 'value'
-                                                                }],
-                                                                xAxis: new Ext.chart.NumericAxis({
-                                                                    minimum: 1,
-                                                                    maximum: data.length,
-                                                                    roundMajorUnit: true,
-                                                                    majorUnit: 1
-                                                                }),
-                                                                yAxis: new Ext.chart.NumericAxis({
-                                                                    maximum: max,
-                                                                    minimum: min,
-                                                                    roundMajorUnit: false,
-                                                                    majorUnit: Math.ceil((max - min) / data.length * 1000) / 1000
-                                                                }),
-                                                                chartStyle: {
-                                                                    padding: 10,
-                                                                    animationEnabled: true,
-                                                                    font: {
-                                                                        name: 'Tahoma',
-                                                                        color: 0x444444,
-                                                                        size: 11
-                                                                    },
-                                                                    dataTip: {
-                                                                        padding: 5,
-                                                                        border: {
-                                                                            color: 0x99bbe8,
-                                                                            size: 1
-                                                                        },
-                                                                        background: {
-                                                                            color: 0xDAE7F6,
-                                                                            alpha: 0.9
-                                                                        },
-                                                                        font: {
-                                                                            name: 'Tahoma',
-                                                                            color: 0x15428B,
-                                                                            size: 10,
-                                                                            bold: true
+                                            // Add a small buffer
+                                            var diff = max - min;
+                                            max = max + (diff / 20);
+                                            min = min - (diff / 20);
+                                            mins.push(min);
+                                            maxs.push(max);
+                                            layerTitles.push(layerTitel);
+                                            store.sort('num', 'ASC');
+                                            stores.push(data);
+                                            Ext.getCmp("queryTabs").add(
+                                                {
+                                                    title: layerTitel,
+                                                    layout: "fit",
+                                                    border: false,
+                                                    items: [
+                                                        {
+                                                            xtype: "panel",
+                                                            layout: "fit",
+                                                            id: layerTitel,
+                                                            border: false,
+                                                            items: [
+                                                                {
+                                                                    xtype: 'linechart',
+                                                                    store: store,
+                                                                    xField: 'num',
+                                                                    listeners: {
+                                                                        itemclick: function (o) {
+                                                                            var rec = store.getAt(o.index);
+                                                                            Ext.example.msg('Item Selected', 'You chose {0}.', rec.get('name'));
                                                                         }
                                                                     },
-                                                                    xAxis: {
-                                                                        color: 0x69aBc8,
-                                                                        majorTicks: {color: 0x69aBc8, length: 4},
-                                                                        minorTicks: {color: 0x69aBc8, length: 2},
-                                                                        majorGridLines: {size: 1, color: 0xeeeeee}
-                                                                    },
-                                                                    yAxis: {
-                                                                        color: 0x69aBc8,
-                                                                        majorTicks: {color: 0x69aBc8, length: 4},
-                                                                        minorTicks: {color: 0x69aBc8, length: 2},
-                                                                        majorGridLines: {size: 1, color: 0xdfe8f6}
+                                                                    series: [{
+                                                                        type: 'line',
+                                                                        yField: 'value'
+                                                                    }],
+                                                                    xAxis: new Ext.chart.NumericAxis({
+                                                                        minimum: 1,
+                                                                        maximum: data.length,
+                                                                        roundMajorUnit: true,
+                                                                        majorUnit: 1
+                                                                    }),
+                                                                    yAxis: new Ext.chart.NumericAxis({
+                                                                        maximum: max,
+                                                                        minimum: min,
+                                                                        roundMajorUnit: false,
+                                                                        majorUnit: Math.ceil((max - min) / data.length * 1000) / 1000
+                                                                    }),
+                                                                    chartStyle: {
+                                                                        padding: 10,
+                                                                        animationEnabled: true,
+                                                                        font: {
+                                                                            name: 'Tahoma',
+                                                                            color: 0x444444,
+                                                                            size: 11
+                                                                        },
+                                                                        dataTip: {
+                                                                            padding: 5,
+                                                                            border: {
+                                                                                color: 0x99bbe8,
+                                                                                size: 1
+                                                                            },
+                                                                            background: {
+                                                                                color: 0xDAE7F6,
+                                                                                alpha: 0.9
+                                                                            },
+                                                                            font: {
+                                                                                name: 'Tahoma',
+                                                                                color: 0x15428B,
+                                                                                size: 10,
+                                                                                bold: true
+                                                                            }
+                                                                        },
+                                                                        xAxis: {
+                                                                            color: 0x69aBc8,
+                                                                            majorTicks: {color: 0x69aBc8, length: 4},
+                                                                            minorTicks: {color: 0x69aBc8, length: 2},
+                                                                            majorGridLines: {size: 1, color: 0xeeeeee}
+                                                                        },
+                                                                        yAxis: {
+                                                                            color: 0x69aBc8,
+                                                                            majorTicks: {color: 0x69aBc8, length: 4},
+                                                                            minorTicks: {color: 0x69aBc8, length: 2},
+                                                                            majorGridLines: {size: 1, color: 0xdfe8f6}
+                                                                        }
                                                                     }
                                                                 }
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            );
+                                            hit = true;
+                                        }
+                                        if (!hit) {
+                                            try {
+                                                queryWin.hide();
                                             }
-                                        );
-                                        hit = true;
-                                    }
-                                    if (!hit) {
-                                        try {
-                                            queryWin.hide();
+                                            catch (e) {
+                                            }
                                         }
-                                        catch (e) {
-                                        }
+                                        count++;
+                                        Ext.getCmp("queryTabs").activate(0);
                                     }
-                                    count++;
-                                    Ext.getCmp("queryTabs").activate(0);
+                                });
+                                //MapCentia.gc2.addGeoJsonStore(qstore[index]);
+                                var sql, f_geometry_column = metaDataKeys[value.split(".")[1]].f_geometry_column;
+                                var unions = [];
+                                for (var i = 0; i < coords.length; i++) {
+                                    unions.push(
+                                        "SELECT * FROM (" +
+                                        "WITH " +
+                                        "pixelsize as (" +
+                                        "SELECT ST_PixelWidth(rast) as width, ST_NumBands(rast) as numbands from " + value + " limit 1), " +
+                                        "rastunion as (" +
+                                        "SELECT ST_SetSRID(ST_union(rast)," + srid + ") as rast FROM " + value + ", pixelsize " +
+                                        "WHERE ST_Intersects(rast,ST_buffer(ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + "),30))" +
+                                        ")," +
+                                        "pixel as (" +
+                                        "SELECT (ST_WorldToRasterCoord(rast,ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + "))  ).* from rastunion)" +
+                                        "," +
+                                        "map as (" +
+                                        "SELECT " +
+                                        "ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast1 " +
+                                            //"ST_MapAlgebra(rast, 2, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast2," +
+                                            //"ST_MapAlgebra(rast, 3, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast3 " +
+                                        "from rastunion) " +
+                                        "Select " + i + " as sortid," +
+                                            //"ST_Neighborhood(rast, 1, columnx, rowy, 1, 1) as neighborhood_band1," +
+                                            //"ST_Neighborhood(rast, 2, columnx, rowy, 1, 1) as neighborhood_band2," +
+                                            //"ST_Neighborhood(rast, 3, columnx, rowy, 1, 1) as neighborhood_band3," +
+                                        "foo.the_geom, " +
+                                        "ST_Value(newrast1, 1, foo.the_geom) as mean_band1 " +
+                                            //"CASE WHEN pixelsize.numbands > 1 THEN (ST_Value(newrast2, 1, foo.the_geom)) ELSE 'Nan' END as mean_band2," +
+                                            //"CASE WHEN pixelsize.numbands > 2 THEN (ST_Value(newrast3, 1, foo.the_geom)) ELSE 'Nan' END as mean_band3 " +
+                                            //"pixel.* " +
+                                        "FROM rastunion, pixel, map " +
+                                        "CROSS JOIN (SELECT ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + ") As the_geom) As foo ORDER BY sortid" +
+                                        ") as final "
+                                    );
                                 }
-                            });
-                            //MapCentia.gc2.addGeoJsonStore(qstore[index]);
-                            var sql, f_geometry_column = metaDataKeys[value.split(".")[1]].f_geometry_column;
-                            var unions = [];
-                            for (var i = 0; i < coords.length; i++) {
-                                unions.push(
-                                    "SELECT * FROM (" +
-                                    "WITH " +
-                                    "pixelsize as (" +
-                                    "SELECT ST_PixelWidth(rast) as width, ST_NumBands(rast) as numbands from " + value + " limit 1), " +
-                                    "rastunion as (" +
-                                    "SELECT ST_SetSRID(ST_union(rast)," + srid + ") as rast FROM " + value + ", pixelsize " +
-                                    "WHERE ST_Intersects(rast,ST_buffer(ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + "),30))" +
-                                    ")," +
-                                    "pixel as (" +
-                                    "SELECT (ST_WorldToRasterCoord(rast,ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + "))  ).* from rastunion)" +
-                                    "," +
-                                    "map as (" +
-                                    "SELECT " +
-                                    "ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast1 " +
-                                        //"ST_MapAlgebra(rast, 2, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast2," +
-                                        //"ST_MapAlgebra(rast, 3, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast3 " +
-                                    "from rastunion) " +
-                                    "Select " + i + " as sortid," +
-                                        //"ST_Neighborhood(rast, 1, columnx, rowy, 1, 1) as neighborhood_band1," +
-                                        //"ST_Neighborhood(rast, 2, columnx, rowy, 1, 1) as neighborhood_band2," +
-                                        //"ST_Neighborhood(rast, 3, columnx, rowy, 1, 1) as neighborhood_band3," +
-                                    "foo.the_geom, " +
-                                    "ST_Value(newrast1, 1, foo.the_geom) as mean_band1 " +
-                                        //"CASE WHEN pixelsize.numbands > 1 THEN (ST_Value(newrast2, 1, foo.the_geom)) ELSE 'Nan' END as mean_band2," +
-                                        //"CASE WHEN pixelsize.numbands > 2 THEN (ST_Value(newrast3, 1, foo.the_geom)) ELSE 'Nan' END as mean_band3 " +
-                                        //"pixel.* " +
-                                    "FROM rastunion, pixel, map " +
-                                    "CROSS JOIN (SELECT ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + ") As the_geom) As foo ORDER BY sortid" +
-                                    ") as final "
-                                );
+                                sql = unions.join(" UNION ");
+                                qstore[index].sql = sql;
+                                qstore[index].load();
                             }
-                            sql = unions.join(" UNION ");
-                            qstore[index].sql = sql;
-                            qstore[index].load();
 
                         });
                         (function pollForQueries() {
-                            if (layers.length === count) {
+                            if (numOfRasterLayers === count) {
                                 document.getElementById("wait-spinner").style.display = "none";
                                 var obj = {}, fields = ['num'], series = [], min = mins.sort()[0], max = maxs.sort(function (a, b) {
-                                    return b - a
+                                    return b - a;
                                 })[0];
                                 for (var n = 0; n < poilayer.features.length; n = n + 1) {
                                     obj.num = n;
@@ -1187,6 +1190,104 @@ MapCentia.init = function () {
                             Heron.App.map.layers[i].setVisibility(false);
                         }
                     }
+                }
+            }
+        },
+        {type: "-"},
+        {
+            type: "any",
+            options: {
+                text: 'Search',
+                tooltip: 'Search for Strm',
+                iconCls: 'icon-find',
+                id: "searchStrm",
+                handler: function(){
+                    var strmWin = new Ext.Window({
+                        title: "Search strm",
+                        modal: false,
+                        layout: 'fit',
+                        width: 270,
+                        height: 80,
+                        closeAction: 'close',
+                        plain: true,
+                        listeners: {
+                            hide: {
+                                fn: function (el, e) {
+                                    try {
+                                        strmStore.reset();
+                                    }
+                                    catch (e) {
+                                    }
+                                }
+                            }
+                        },
+                        items: [
+                            {
+                                defaults: {
+                                    border: false
+                                },
+                                layout: 'hbox',
+                                items: [
+                                    {
+                                        xtype: "form",
+                                        id: "strmForm",
+                                        layout: "form",
+                                        bodyStyle: 'padding: 10px',
+                                        items: [
+                                            {
+                                                xtype: 'container',
+                                                items: [
+                                                    {
+                                                        xtype: "textfield",
+                                                        name: 'strm',
+                                                        //emptyText
+                                                        allowBlank: false,
+                                                        width: 150
+                                                    }
+                                                ]
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        layout: 'form',
+                                        bodyStyle: 'padding: 10px',
+                                        items: [
+                                            {
+                                                xtype: 'button',
+                                                text: __('Search'),
+                                                handler: function () {
+                                                    var f = Ext.getCmp('strmForm');
+                                                    if (f.form.isValid()) {
+                                                        var values = f.form.getValues();
+                                                        try {
+                                                            strmStore.reset();
+                                                        }
+                                                        catch (e){}
+                                                        strmStore = new geocloud.geoJsonStore({
+                                                            db: "envimatix",
+                                                            sql: "SELECT * FROM test2.prairie_sec_gcswgs84 WHERE strm='" + values.strm + "'"
+                                                        });
+                                                        MapCentia.gc2.addGeoJsonStore(strmStore);
+                                                        strmStore.load();
+                                                        strmStore.onLoad = function () {
+                                                            if (strmStore.geoJSON !== null) {
+                                                                MapCentia.gc2.zoomToExtentOfgeoJsonStore(strmStore);
+                                                            }
+                                                        };
+                                                    } else {
+                                                        var s = '';
+                                                        Ext.iterate(f.form.getValues(), function (key, value) {
+                                                            s += String.format("{0} = {1}<br />", key, value);
+                                                        }, this);
+                                                    }
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    }).show(this);
                 }
             }
         },
