@@ -1045,7 +1045,7 @@ MapCentia.init = function () {
                                     return b - a;
                                 })[0];
                                 for (var n = 0; n < poilayer.features.length; n = n + 1) {
-                                    obj.num = n;
+                                    obj.num = n +1;
                                     for (var u = 0; u < stores.length; u = u + 1) {
                                         obj["value" + u] = stores[u][n].value;
                                     }
@@ -1097,6 +1097,12 @@ MapCentia.init = function () {
                                                             minimum: min,
                                                             roundMajorUnit: false,
                                                             majorUnit: Math.ceil((max - min) / comboData.length * 1000) / 1000
+                                                        }),
+                                                        xAxis: new Ext.chart.NumericAxis({
+                                                            minimum: 1,
+                                                            maximum: comboData.length,
+                                                            roundMajorUnit: true,
+                                                            majorUnit: 1
                                                         }),
                                                         chartStyle: {
                                                             padding: 10,
