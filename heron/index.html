@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
     <title>GC2 Heron viewer</title>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
     <!-- External lib: ExtJS -->
     <link rel="stylesheet" type="text/css" href="http://cdnjs.cloudflare.com/ajax/libs/extjs/3.4.1-1/resources/css/ext-all.css"/>
     <link rel="stylesheet" type="text/css" href="http://dev.sencha.com/deploy/ext-3.3.1/examples/tabs/tab-scroller-menu.css"/>
@@ -15,6 +15,8 @@
             src="http://cdnjs.cloudflare.com/ajax/libs/extjs/3.4.1-1/adapter/ext/ext-base.js"></script>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/extjs/3.4.1-1/ext-all.js"></script>
     <script type="text/javascript" src="http://dev.sencha.com/deploy/ext-3.3.1/examples/ux/TabScrollerMenu.js"></script>
+    <script type="text/javascript" src="http://eu1.mapcentia.com/js/openlayers/proj4js-combined.js?e3d43fb0b6487682"></script>
+
 
     <!-- External lib: OpenLayers -->
     <link rel="stylesheet" type="text/css"
@@ -71,6 +73,9 @@
         }
         .x-btn .icon-chart-curve {
             background-image: url("http://us1.mapcentia.com/js/heron/resources/images/silk/chart_curve.png") !important;
+        }
+        .pac-container {
+            z-index: 10000
         }
     </style>
 </head>
