@@ -15,7 +15,7 @@ Ext.namespace("Heron.options.center");
 Ext.namespace("Heron.options.zoom");
 Ext.namespace("Heron.options.layertree");
 Ext.chart.Chart.CHART_URL = 'http://eu1.mapcentia.com/js/ext/resources/charts.swf';
-var metaData, metaDataKeys = [], metaDataKeysTitle = [], click, poilayer, qstore = [], queryWin, strmStore;
+var metaData, metaDataKeys = [], metaDataKeysTitle = [], click, poilayer, qstore = [], queryWin, strmStore, searchWin, placeMarkers, placePopup;
 MapCentia.setup = function () {
     "use strict";
     Heron.globals.metaReady = false;
@@ -1099,7 +1099,7 @@ MapCentia.init = function () {
                                                             majorUnit: Math.ceil((max - min) / comboData.length * 1000) / 1000
                                                         }),
                                                         xAxis: new Ext.chart.NumericAxis({
-                                                            minimum: 1,
+                                                            minimum: 0.8,
                                                             maximum: comboData.length,
                                                             roundMajorUnit: true,
                                                             majorUnit: 1
@@ -1313,6 +1313,81 @@ MapCentia.init = function () {
                             }
                         ]
                     }).show(this);
+                }
+            }
+        },
+        {type: "-"},
+        {
+            type: "any",
+            options: {
+                text: 'Place search',
+                tooltip: 'Search with Google Places',
+                iconCls: 'icon-find',
+                id: "googleSearch",
+                handler: function (objRef) {
+                    if (!searchWin) {
+                        searchWin = new Ext.Window({
+                            title: "Find",
+                            layout: 'fit',
+                            width: 300,
+                            height: 70,
+                            plain: true,
+                            closeAction: 'hide',
+                            html: '<div style="padding: 5px" id="searchContent"><input style="width: 270px" type="text" id="gAddress" name="gAddress" value="" /></div>',
+                            x: 300,
+                            y: 70
+                        });
+                    }
+                    if (typeof(objRef) === "object") {
+                        searchWin.show(objRef);
+                    } else {
+                        searchWin.show();
+                    }//end if object reference was passed
+                    var input = document.getElementById('gAddress');
+                    var options = {
+                        //bounds: defaultBounds
+                        //types: ['establishment']
+                    };
+                    var autocomplete = new google.maps.places.Autocomplete(input, options);
+                    //console.log(autocomplete.getBounds());
+                    google.maps.event.addListener(autocomplete, 'place_changed', function () {
+                        var place = autocomplete.getPlace();
+                        var transformPoint = function (lat, lon, s, d) {
+                            var p = [];
+                            if (typeof Proj4js === "object") {
+                                var source = new Proj4js.Proj(s);    //source coordinates will be in Longitude/Latitude
+                                var dest = new Proj4js.Proj(d);
+                                p = new Proj4js.Point(lat, lon);
+                                Proj4js.transform(source, dest, p);
+                            }
+                            else {
+                                p.x = null;
+                                p.y = null;
+                            }
+                            return p;
+                        };
+                        var p = transformPoint(place.geometry.location.lng(), place.geometry.location.lat(), "EPSG:4326", "EPSG:900913");
+                        var point = new OpenLayers.LonLat(p.x, p.y);
+                        MapCentia.gc2.map.setCenter(point, 17);
+                        try {
+                            placeMarkers.destroy();
+                        } catch (e) {
+                        }
+
+                        try {
+                            placePopup.destroy();
+                        } catch (e) {
+                        }
+
+                        placeMarkers = new OpenLayers.Layer.Markers("Markers");
+                        MapCentia.gc2.map.addLayer(placeMarkers);
+                        var size = new OpenLayers.Size(21, 25);
+                        var offset = new OpenLayers.Pixel(-(size.w / 2), -size.h);
+                        placeMarkers.addMarker(new OpenLayers.Marker(point));
+                        placePopup = new OpenLayers.Popup.FramedCloud("place", point, null, "<div id='placeResult' style='z-index:1000;width:200px;height:50px;overflow:auto'>" + place.formatted_address + "</div>", null, true);
+                        MapCentia.gc2.map.addPopup(placePopup);
+                    });
+
                 }
             }
         },
