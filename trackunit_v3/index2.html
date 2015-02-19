@@ -17,8 +17,10 @@
     <script src='http://eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=leaflet'></script>
     <script src='http://eu1.mapcentia.com/js/leaflet/plugins/Leaflet.heat/leaflet-heat.js'></script>
     <script src='http://eu1.mapcentia.com/js/leaflet/plugins/markercluster/leaflet.markercluster-src.js'></script>
+    <script src='http://eu1.mapcentia.com/js/leaflet/plugins/Leaflet.label/leaflet.label.js'></script>
     <link rel="stylesheet" href="http://eu1.mapcentia.com/js/leaflet/plugins/markercluster/MarkerCluster.css">
     <link rel="stylesheet" href="http://eu1.mapcentia.com/js/leaflet/plugins/markercluster/MarkerCluster.Default.css">
+    <link rel="stylesheet" href="http://eu1.mapcentia.com/js/leaflet/plugins/Leaflet.label/leaflet.label.css">
     <script src="http://crypto-js.googlecode.com/svn/tags/3.0.2/build/rollups/md5.js"></script>
     <script src="http://trackanalyzer.safetrack.dk/js/geojson.js"></script>
     <script src="https://rawgit.com/jseppi/Leaflet.MakiMarkers/master/Leaflet.MakiMarkers.js"></script>
@@ -336,7 +338,8 @@
                                     group.push(
                                             L.marker([obj.location.latitude, obj.location.longitude], {
                                                 icon: icon
-                                            }).bindPopup(categoryNames[obj.categoryId])
+                                            }).bindLabel((typeof categoryNames[obj.categoryId] === "undefined") ? "NOT AVAILABLE" : categoryNames[obj.categoryId], {noHide: true}).on("click", function () {
+                                                    }).showLabel()
                                     );
                                 }
                             }
@@ -345,8 +348,6 @@
                             $.each(legend, function (i, v) {
                                 legendDiv.append("<div><i class='cat-color' style='background-color: #" + v + "'></i> " + i + "</div>")
                             });
-                            console.log(legend)
-
                         }
                     });
 
