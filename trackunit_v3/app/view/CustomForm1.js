@@ -18,7 +18,8 @@ Ext.define('MyApp.view.CustomForm1', {
 
     requires: [
         'Ext.form.FieldSet',
-        'Ext.form.field.ComboBox'
+        'Ext.form.field.ComboBox',
+        'Ext.form.field.Checkbox'
     ],
 
     border: false,
@@ -66,6 +67,13 @@ Ext.define('MyApp.view.CustomForm1', {
                             valueField: 'id'
                         }
                     ]
+                },
+                {
+                    xtype: 'checkboxfield',
+                    anchor: '100%',
+                    name: 'labels',
+                    boxLabel: 'Show labels',
+                    checked: true
                 }
             ]
         });

@@ -90,6 +90,23 @@
                     "designerId": "4b101a2b-dbfa-4c42-b0e5-2b3505c43d6d"
                 }
             ]
+        },
+        {
+            "type": "Ext.form.field.Checkbox",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "boxLabel": "Show labels",
+                "checked": true,
+                "fieldLabel": null,
+                "layout|anchor": "100%",
+                "name": "labels"
+            },
+            "name": "MyCheckbox",
+            "designerId": "c9b9256d-c542-4929-bbfa-c70f845f1a2d"
         }
     ]
 }

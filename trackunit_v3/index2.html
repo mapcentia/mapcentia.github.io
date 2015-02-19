@@ -297,6 +297,7 @@
             }
             var legendDiv = $("#legend");
             legendDiv.empty();
+            console.log(data.labels);
             $.ajax({
                 url: 'https://api.trackunit.com/public/Category',
                 data: 'token=' + window.token + '&format=json',
@@ -338,8 +339,8 @@
                                     group.push(
                                             L.marker([obj.location.latitude, obj.location.longitude], {
                                                 icon: icon
-                                            }).bindLabel((typeof categoryNames[obj.categoryId] === "undefined") ? "NOT AVAILABLE" : categoryNames[obj.categoryId], {noHide: true}).on("click", function () {
-                                                    }).showLabel()
+                                            }).bindLabel((typeof categoryNames[obj.categoryId] === "undefined") ? "NOT AVAILABLE" : categoryNames[obj.categoryId], {noHide: (data.labels ? true : false)}).on("click", function () {
+                                            }).showLabel()
                                     );
                                 }
                             }
