@@ -83,7 +83,7 @@ Ext.define('MyApp.view.MyViewport', {
                         {
                             xtype: 'form',
                             bodyPadding: 10,
-                            title: 'Test',
+                            title: 'Products',
                             listeners: {
                                 beforerender: {
                                     fn: me.BeforeRenderTestForm,
