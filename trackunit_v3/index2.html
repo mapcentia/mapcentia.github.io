@@ -318,7 +318,6 @@
                         dataType: 'jsonp',
                         jsonp: 'callback',
                         success: function (response) {
-                            console.log(response);
                             var obj, categories = [], u, color, group = [], legend = {};
                             for (u = 0; u < response.list.length; u = u + 1) {
                                 obj = response.list[u];
@@ -328,6 +327,7 @@
                             }
                             for (u = 0; u < response.list.length; u = u + 1) {
                                 obj = response.list[u];
+                                console.log(obj);
                                 color = colorObj[obj.categoryId] || "000000";
                                 legend[(typeof categoryNames[obj.categoryId] === "undefined") ? "NOT AVAILABLE" : categoryNames[obj.categoryId]] = color;
                                 var icon = marker = L.MakiMarkers.icon({
@@ -339,7 +339,7 @@
                                     group.push(
                                             L.marker([obj.location.latitude, obj.location.longitude], {
                                                 icon: icon
-                                            }).bindLabel((typeof categoryNames[obj.categoryId] === "undefined") ? "NOT AVAILABLE" : categoryNames[obj.categoryId] + " " + obj.displayName, {noHide: (data.labels ? true : false)}).on("click", function () {
+                                            }).bindLabel(((typeof categoryNames[obj.categoryId] === "undefined") ? "" : categoryNames[obj.categoryId] + " | ")  + obj.displayName, {noHide: (data.labels ? true : false)}).on("click", function () {
                                             }).showLabel()
                                     );
                                 }
