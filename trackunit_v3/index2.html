@@ -318,6 +318,7 @@
                         dataType: 'jsonp',
                         jsonp: 'callback',
                         success: function (response) {
+                            console.log(response);
                             var obj, categories = [], u, color, group = [], legend = {};
                             for (u = 0; u < response.list.length; u = u + 1) {
                                 obj = response.list[u];
@@ -338,7 +339,7 @@
                                     group.push(
                                             L.marker([obj.location.latitude, obj.location.longitude], {
                                                 icon: icon
-                                            }).bindLabel((typeof categoryNames[obj.categoryId] === "undefined") ? "NOT AVAILABLE" : categoryNames[obj.categoryId], {noHide: (data.labels ? true : false)}).on("click", function () {
+                                            }).bindLabel((typeof categoryNames[obj.categoryId] === "undefined") ? "NOT AVAILABLE" : categoryNames[obj.categoryId] + " " + obj.displayName, {noHide: (data.labels ? true : false)}).on("click", function () {
                                             }).showLabel()
                                     );
                                 }
