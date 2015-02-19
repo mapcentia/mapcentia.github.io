@@ -81,6 +81,30 @@
             },
             "name": "onClusterClick",
             "designerId": "3f58f6a3-d36c-416e-91e8-95c20874e603"
+        },
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "button#testmap",
+                "designer|targetType": "Ext.button.Button",
+                "fn": "onTestClick",
+                "implHandler": [
+                    "if (button.up(\"form\").isValid() === false){",
+                    "            return false",
+                    "        }",
+                    "var values = button.up(\"form\").getValues();",
+                    "window.startTest(values);"
+                ],
+                "name": "click",
+                "scope": "me"
+            },
+            "name": "onTestClick",
+            "designerId": "1d23e252-e337-44d2-88f7-772356e761f7"
         }
     ]
 }

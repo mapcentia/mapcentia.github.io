@@ -181,6 +181,46 @@
                             "designerId": "29c3f770-d76a-459c-be9c-f62230fb34f0"
                         }
                     ]
+                },
+                {
+                    "type": "Ext.form.Panel",
+                    "reference": {
+                        "name": "items",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "bodyPadding": 10,
+                        "title": "Test"
+                    },
+                    "name": "MyForm3",
+                    "designerId": "c7721f55-9d02-41ee-af32-09ae00b83da0",
+                    "cn": [
+                        {
+                            "type": "basiceventbinding",
+                            "reference": {
+                                "name": "listeners",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "fn": "BeforeRenderTestForm",
+                                "implHandler": [
+                                    "var form = new MyApp.view.CustomForm1();",
+                                    "component.add(form);",
+                                    "component.add({",
+                                    "                xtype: 'button',",
+                                    "                text: 'Make map',",
+                                    "    itemId: 'testmap'",
+                                    "        });"
+                                ],
+                                "name": "beforerender",
+                                "scope": "me"
+                            },
+                            "name": "BeforeRenderTestForm",
+                            "designerId": "207b163e-36e7-401d-a91e-412754d54b11"
+                        }
+                    ]
                 }
             ]
         }

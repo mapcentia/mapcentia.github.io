@@ -1,0 +1,95 @@
+{
+    "type": "Ext.form.Panel",
+    "reference": {
+        "name": "items",
+        "type": "array"
+    },
+    "codeClass": null,
+    "userConfig": {
+        "bodyPadding": null,
+        "border": false,
+        "designer|userClassName": "CustomForm1",
+        "height": null,
+        "title": null,
+        "width": null
+    },
+    "name": "StandardForm2",
+    "designerId": "2d8f5671-afbd-4efd-a9a0-387fc8140b29",
+    "cn": [
+        {
+            "type": "Ext.form.FieldSet",
+            "reference": {
+                "name": "items",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "title": "Filter"
+            },
+            "name": "MyFieldSet1",
+            "designerId": "ee4b45cb-4104-4fac-9a4e-181be2029678",
+            "cn": [
+                {
+                    "type": "Ext.form.field.ComboBox",
+                    "reference": {
+                        "name": "items",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "displayField": "name",
+                        "emptyText": "Category",
+                        "fieldLabel": "",
+                        "labelAlign": "top",
+                        "layout|anchor": "100%",
+                        "name": "categoryid",
+                        "store": "Category",
+                        "valueField": "id"
+                    },
+                    "name": "MyComboBox",
+                    "designerId": "9c129978-e2a8-43a1-afd1-b8b8c764deec"
+                },
+                {
+                    "type": "Ext.form.field.ComboBox",
+                    "reference": {
+                        "name": "items",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "displayField": "name",
+                        "emptyText": "Client",
+                        "fieldLabel": "",
+                        "labelAlign": "top",
+                        "layout|anchor": "100%",
+                        "name": "clientid",
+                        "store": "Client",
+                        "valueField": "id"
+                    },
+                    "name": "MyComboBox1",
+                    "designerId": "78d40e4c-234a-4f62-b151-28ac0bf05325"
+                },
+                {
+                    "type": "Ext.form.field.ComboBox",
+                    "reference": {
+                        "name": "items",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "displayField": "name",
+                        "emptyText": "Group",
+                        "fieldLabel": "",
+                        "labelAlign": "top",
+                        "layout|anchor": "100%",
+                        "name": "groupid",
+                        "store": "Group",
+                        "valueField": "id"
+                    },
+                    "name": "MyComboBox2",
+                    "designerId": "4b101a2b-dbfa-4c42-b0e5-2b3505c43d6d"
+                }
+            ]
+        }
+    ]
+}

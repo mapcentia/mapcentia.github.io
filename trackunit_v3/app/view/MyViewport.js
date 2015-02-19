@@ -79,6 +79,17 @@ Ext.define('MyApp.view.MyViewport', {
                                     scope: me
                                 }
                             }
+                        },
+                        {
+                            xtype: 'form',
+                            bodyPadding: 10,
+                            title: 'Test',
+                            listeners: {
+                                beforerender: {
+                                    fn: me.BeforeRenderTestForm,
+                                    scope: me
+                                }
+                            }
                         }
                     ]
                 }
@@ -115,6 +126,16 @@ Ext.define('MyApp.view.MyViewport', {
                         xtype: 'button',
                         text: 'Make map',
             itemId: 'adminmap'
+                });
+    },
+
+    BeforeRenderTestForm: function(component, eOpts) {
+        var form = new MyApp.view.CustomForm1();
+        component.add(form);
+        component.add({
+                        xtype: 'button',
+                        text: 'Make map',
+            itemId: 'testmap'
                 });
     }
 

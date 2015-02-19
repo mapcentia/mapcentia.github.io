@@ -31,7 +31,8 @@ Ext.application({
     views: [
         'MyViewport',
         'StandardForm',
-        'AttributField'
+        'AttributField',
+        'CustomForm1'
     ],
     controllers: [
         'MyController'

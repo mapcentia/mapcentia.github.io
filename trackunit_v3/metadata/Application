@@ -21,7 +21,8 @@
         "views": [
             "MyViewport",
             "StandardForm",
-            "AttributField"
+            "AttributField",
+            "CustomForm1"
         ]
     },
     "name": "Application",

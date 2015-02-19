@@ -845,6 +845,7 @@ Ext.ClassManager.addNameAlternateMappings({
   "MyApp.store.Client": [],
   "MyApp.store.Group": [],
   "MyApp.view.AttributField": [],
+  "MyApp.view.CustomForm1": [],
   "MyApp.view.MyViewport": [],
   "MyApp.view.StandardForm": [],
   "MyApp.view.Viewport": []
@@ -1841,6 +1842,7 @@ Ext.ClassManager.addNameAliasMappings({
   "MyApp.store.Client": [],
   "MyApp.store.Group": [],
   "MyApp.view.AttributField": [],
+  "MyApp.view.CustomForm1": [],
   "MyApp.view.MyViewport": [],
   "MyApp.view.StandardForm": [],
   "MyApp.view.Viewport": []
