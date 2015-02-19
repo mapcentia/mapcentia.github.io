@@ -297,7 +297,6 @@
             }
             var legendDiv = $("#legend");
             legendDiv.empty();
-            console.log(data.labels);
             $.ajax({
                 url: 'https://api.trackunit.com/public/Category',
                 data: 'token=' + window.token + '&format=json',
