@@ -74,7 +74,7 @@
                     "            return false",
                     "        }",
                     "var values = button.up(\"form\").getValues();",
-                    "window.startAnalyzing('cluster',values.border, values);"
+                    "window.startCluster(values);"
                 ],
                 "name": "click",
                 "scope": "me"
@@ -105,6 +105,30 @@
             },
             "name": "onTestClick",
             "designerId": "1d23e252-e337-44d2-88f7-772356e761f7"
+        },
+        {
+            "type": "controlleraction",
+            "reference": {
+                "name": "listeners",
+                "type": "array"
+            },
+            "codeClass": null,
+            "userConfig": {
+                "designer|controlQuery": "button#clientsmap",
+                "designer|targetType": "Ext.button.Button",
+                "fn": "onClientsClick",
+                "implHandler": [
+                    "if (button.up(\"form\").isValid() === false){",
+                    "            return false",
+                    "        }",
+                    "var values = button.up(\"form\").getValues();",
+                    "window.startClients(values);"
+                ],
+                "name": "click",
+                "scope": "me"
+            },
+            "name": "onClientsClick",
+            "designerId": "97131e76-1549-404c-9114-72bf561814ee"
         }
     ]
 }

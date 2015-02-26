@@ -8,67 +8,14 @@
     "userConfig": {
         "bodyPadding": null,
         "border": false,
-        "designer|userClassName": "StandardForm",
+        "designer|userClassName": "CustomForm2",
         "height": null,
         "title": null,
         "width": null
     },
-    "name": "MyForm3",
-    "designerId": "ce90f29e-0e82-4cbb-9dd0-8f8add7e77b3",
+    "name": "CustomForm",
+    "designerId": "2e2c1904-5ca9-4451-a6f2-dc0263e17d2c",
     "cn": [
-        {
-            "type": "Ext.form.FieldSet",
-            "reference": {
-                "name": "items",
-                "type": "array"
-            },
-            "codeClass": null,
-            "userConfig": {
-                "title": "Periode"
-            },
-            "name": "MyFieldSet",
-            "designerId": "157f3f19-37e6-407b-ad7b-94652f6c7591",
-            "cn": [
-                {
-                    "type": "Ext.form.field.Date",
-                    "reference": {
-                        "name": "items",
-                        "type": "array"
-                    },
-                    "codeClass": null,
-                    "userConfig": {
-                        "allowBlank": false,
-                        "emptyText": "Start date",
-                        "fieldLabel": "",
-                        "format": "Y-m-d",
-                        "labelAlign": "top",
-                        "layout|anchor": "100%",
-                        "name": "startdate"
-                    },
-                    "name": "MyDateField",
-                    "designerId": "f20572c3-17d2-4630-9fa3-b94e4074023f"
-                },
-                {
-                    "type": "Ext.form.field.Date",
-                    "reference": {
-                        "name": "items",
-                        "type": "array"
-                    },
-                    "codeClass": null,
-                    "userConfig": {
-                        "allowBlank": false,
-                        "emptyText": "End date",
-                        "fieldLabel": "",
-                        "format": "Y-m-d",
-                        "labelAlign": "top",
-                        "layout|anchor": "100%",
-                        "name": "enddate"
-                    },
-                    "name": "MyDateField1",
-                    "designerId": "28e9fa74-a499-4ff5-8028-93d2ab328d05"
-                }
-            ]
-        },
         {
             "type": "Ext.form.FieldSet",
             "reference": {
@@ -80,7 +27,7 @@
                 "title": "Filter"
             },
             "name": "MyFieldSet1",
-            "designerId": "0aa29d97-e25a-4afb-8677-1f3c2f5e51c8",
+            "designerId": "0a637949-7a1e-4390-a1f1-ef48357d476b",
             "cn": [
                 {
                     "type": "Ext.form.field.ComboBox",
@@ -100,7 +47,7 @@
                         "valueField": "id"
                     },
                     "name": "MyComboBox",
-                    "designerId": "abbfe280-c8cf-431e-8609-bcb970f79d0d"
+                    "designerId": "116a42d6-85eb-499d-b68c-b18f1904ca0a"
                 },
                 {
                     "type": "Ext.form.field.ComboBox",
@@ -120,7 +67,7 @@
                         "valueField": "id"
                     },
                     "name": "MyComboBox1",
-                    "designerId": "109c530f-cb01-4237-82d6-937fef0efd3b"
+                    "designerId": "668e7891-d2e3-4032-8ef0-94807ea41fa8"
                 },
                 {
                     "type": "Ext.form.field.ComboBox",
@@ -140,7 +87,7 @@
                         "valueField": "id"
                     },
                     "name": "MyComboBox2",
-                    "designerId": "21ae6343-4b6d-4da6-b5f7-1fdb9742239c"
+                    "designerId": "28af8ebb-ef2a-45f5-8914-c8a1d6fc993d"
                 }
             ]
         }

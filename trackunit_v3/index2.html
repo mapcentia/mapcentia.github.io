@@ -40,7 +40,8 @@
         var properties = [];
         var user;
         var pw;
-        var featureGroup;
+        var featureGroup = new L.FeatureGroup();
+        var cluster = L.markerClusterGroup();
 
         var host = "http://trackanalyzer.safetrack.dk";
         var gc2host = "http://gc2.safetrack.dk";
@@ -74,6 +75,8 @@
             gc2.addBaseLayer(geocloud.GOOGLESTREETS);
             gc2.setBaseLayer(geocloud.GOOGLESTREETS);
             gc2.map.setView([56, 10], 7);
+            gc2.map.addLayer(featureGroup);
+            gc2.map.addLayer(cluster);
         };
         // 1. we import data from SafeTrack API to GC2
         window.startAnalyzing = function (t, c, conf) {
@@ -133,12 +136,6 @@
                 if (type === "heatmap") {
                     var script = document.createElement('script');
                     script.src = gc2host + '/api/v1/sql/trackunit?q=select * from ' + data.relation + '&srs=4326&jsonp_callback=heatmap_callback';
-                    document.getElementsByTagName('head')[0].appendChild(script);
-                }
-                // Get the raw point data
-                if (type === "cluster") {
-                    var script = document.createElement('script');
-                    script.src = gc2host + '/api/v1/sql/trackunit?q=select * from ' + data.relation + '&srs=4326&jsonp_callback=cluster_callback';
                     document.getElementsByTagName('head')[0].appendChild(script);
                 }
                 // Add server side heatmap
@@ -249,30 +246,7 @@
                 blur: 40
             }).addTo(gc2.map);
         };
-        // Create a cluster map
-        window.cluster_callback = function (data) {
-            var points = [], features = data.features;
-            updateProcess("Result fetched", data._execution_time);
-            document.getElementById("spinner").style.display = "none";
 
-            for (var key in features) {
-                if (features.hasOwnProperty(key)) {
-                    features[key].geometry.coordinates.reverse();
-                    features[key].geometry.coordinates.push(features[key].properties.run1 + "")
-                    points.push(features[key].geometry.coordinates)
-                }
-            }
-            cluster = L.markerClusterGroup();
-
-            for (var i = 0; i < points.length; i++) {
-                var a = points[i];
-                var title = a[2];
-                var marker = L.marker(new L.LatLng(a[0], a[1]), {title: title});
-                marker.bindPopup(title);
-                cluster.addLayer(marker);
-            }
-            gc2.map.addLayer(cluster);
-        };
         // Create a server side heat map
         window.serverHeatmap = function (data) {
             //Add tile overlay
@@ -289,12 +263,35 @@
             document.getElementById("spinner").style.display = "none";
         };
 
-        // Create test map
+        // Create a cluster map
+        window.startCluster = function (data) {
+            clearOverlay();
+            var legendDiv = $("#legend");
+            legendDiv.empty();
+
+            $.ajax({
+                url: 'https://api.trackunit.com/public/Unit',
+                data: 'token=' + window.token + '&GroupId=' + data.groupid + '&ClientId=' + data.clientid + '&CategoryId=' + data.categoryid + '&format=json',
+                contentType: "application/json; charset=utf-8",
+                scriptCharset: "utf-8",
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                success: function (response) {
+                    for (var u = 0; u < response.list.length; u = u + 1) {
+                        obj = response.list[u];
+                        if (typeof obj.location !== "undefined" || typeof obj.location !== "undefined") {
+                            var marker = L.marker([obj.location.latitude, obj.location.longitude]);
+                            //marker.bindPopup(title);
+                            cluster.addLayer(marker);
+                        }
+                    }
+                }
+            });
+        };
+
+        // Create product map
         window.startTest = function (data) {
-            try {
-                featureGroup.clearLayers();
-            } catch (e) {
-            }
+            clearOverlay();
             var legendDiv = $("#legend");
             legendDiv.empty();
             $.ajax({
@@ -318,16 +315,9 @@
                         dataType: 'jsonp',
                         jsonp: 'callback',
                         success: function (response) {
-                            var obj, categories = [], u, color, group = [], legend = {};
+                            var obj, u, color, legend = {};
                             for (u = 0; u < response.list.length; u = u + 1) {
                                 obj = response.list[u];
-                                if ($.inArray(obj.categoryId, categories) === -1) {
-                                    categories.push(obj.categoryId);
-                                }
-                            }
-                            for (u = 0; u < response.list.length; u = u + 1) {
-                                obj = response.list[u];
-                                console.log(obj);
                                 color = colorObj[obj.categoryId] || "000000";
                                 legend[(typeof categoryNames[obj.categoryId] === "undefined") ? "NOT AVAILABLE" : categoryNames[obj.categoryId]] = color;
                                 var icon = marker = L.MakiMarkers.icon({
@@ -336,15 +326,71 @@
                                     size: "m"
                                 });
                                 if (typeof obj.location !== "undefined" || typeof obj.location !== "undefined") {
-                                    group.push(
+                                    featureGroup.addLayer(
                                             L.marker([obj.location.latitude, obj.location.longitude], {
                                                 icon: icon
-                                            }).bindLabel(((typeof categoryNames[obj.categoryId] === "undefined") ? "" : categoryNames[obj.categoryId] + " | ")  + obj.displayName, {noHide: (data.labels ? true : false)}).on("click", function () {
+                                            }).bindLabel(((typeof categoryNames[obj.categoryId] === "undefined") ? "" : categoryNames[obj.categoryId] + " | ") + obj.displayName, {noHide: (data.labels ? true : false)}).on("click", function () {
                                             }).showLabel()
                                     );
                                 }
                             }
-                            featureGroup = new L.featureGroup(group).addTo(gc2.map);
+                            legendDiv.show();
+                            $.each(legend, function (i, v) {
+                                legendDiv.append("<div><i class='cat-color' style='background-color: #" + v + "'></i> " + i + "</div>")
+                            });
+                        }
+                    });
+
+                }
+            });
+        };
+
+        // Create product map
+        window.startClients = function (data) {
+            clearOverlay();
+            var legendDiv = $("#legend");
+            legendDiv.empty();
+            $.ajax({
+                url: 'https://api.trackunit.com/public/Client',
+                data: 'token=' + window.token + '&format=json',
+                contentType: "application/json; charset=utf-8",
+                scriptCharset: "utf-8",
+                dataType: 'jsonp',
+                jsonp: 'callback',
+                success: function (response) {
+                    var i, clientNames = {}, colorObj = {};
+                    for (i = 0; i < response.list.length; i = i + 1) {
+                        clientNames[response.list[i].id] = response.list[i].name;
+                        colorObj[response.list[i].id] = legendColors[i];
+                    }
+                    $.ajax({
+                        url: 'https://api.trackunit.com/public/Unit',
+                        data: 'token=' + window.token + '&GroupId=' + data.groupid + '&ClientId=' + data.clientid + '&CategoryId=' + data.categoryid + '&format=json',
+                        contentType: "application/json; charset=utf-8",
+                        scriptCharset: "utf-8",
+                        dataType: 'jsonp',
+                        jsonp: 'callback',
+                        success: function (response) {
+                            var obj, u, color, legend = {};
+
+                            for (u = 0; u < response.list.length; u = u + 1) {
+                                obj = response.list[u];
+                                color = colorObj[obj.clientId] || "000000";
+                                legend[(typeof clientNames[obj.clientId] === "undefined") ? "NOT AVAILABLE" : clientNames[obj.clientId]] = color;
+                                var icon = marker = L.MakiMarkers.icon({
+                                    icon: null,
+                                    color: color,
+                                    size: "m"
+                                });
+                                if (typeof obj.location !== "undefined" || typeof obj.location !== "undefined") {
+                                    featureGroup.addLayer(
+                                            L.marker([obj.location.latitude, obj.location.longitude], {
+                                                icon: icon
+                                            }).bindLabel(obj.displayName, {noHide: (data.labels ? true : false)}).on("click", function () {
+                                            }).showLabel()
+                                    );
+                                }
+                            }
                             legendDiv.show();
                             $.each(legend, function (i, v) {
                                 legendDiv.append("<div><i class='cat-color' style='background-color: #" + v + "'></i> " + i + "</div>")
@@ -372,13 +418,10 @@
         };
 
         window.clearOverlay = function () {
+            cluster.clearLayers();
+            featureGroup.clearLayers();
             try {
                 gc2.map.removeLayer(heat);
-            }
-            catch (e) {
-            }
-            try {
-                gc2.map.removeLayer(cluster);
             }
             catch (e) {
             }

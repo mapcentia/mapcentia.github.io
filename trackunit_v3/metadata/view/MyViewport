@@ -110,46 +110,6 @@
                     "codeClass": null,
                     "userConfig": {
                         "bodyPadding": 10,
-                        "title": "Clusters"
-                    },
-                    "name": "MyForm2",
-                    "designerId": "2dd7349a-100f-43b3-a111-068d3e9ff557",
-                    "cn": [
-                        {
-                            "type": "basiceventbinding",
-                            "reference": {
-                                "name": "listeners",
-                                "type": "array"
-                            },
-                            "codeClass": null,
-                            "userConfig": {
-                                "fn": "BeforeRenderBoderForm1",
-                                "implHandler": [
-                                    "var form = new MyApp.view.StandardForm();",
-                                    "component.add(form);",
-                                    "component.add({",
-                                    "                xtype: 'button',",
-                                    "                text: 'Make map',",
-                                    "    itemId: 'clustermap'",
-                                    "        });"
-                                ],
-                                "name": "beforerender",
-                                "scope": "me"
-                            },
-                            "name": "BeforeRenderBoderForm1",
-                            "designerId": "63e73264-bd8e-495b-a8d0-12317e027701"
-                        }
-                    ]
-                },
-                {
-                    "type": "Ext.form.Panel",
-                    "reference": {
-                        "name": "items",
-                        "type": "array"
-                    },
-                    "codeClass": null,
-                    "userConfig": {
-                        "bodyPadding": 10,
                         "title": "Border"
                     },
                     "name": "MyForm1",
@@ -191,6 +151,46 @@
                     "codeClass": null,
                     "userConfig": {
                         "bodyPadding": 10,
+                        "title": "Clusters"
+                    },
+                    "name": "MyForm2",
+                    "designerId": "2dd7349a-100f-43b3-a111-068d3e9ff557",
+                    "cn": [
+                        {
+                            "type": "basiceventbinding",
+                            "reference": {
+                                "name": "listeners",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "fn": "BeforeRenderBoderForm1",
+                                "implHandler": [
+                                    "var form = new MyApp.view.CustomForm2();",
+                                    "component.add(form);",
+                                    "component.add({",
+                                    "    xtype: 'button',",
+                                    "    text: 'Make map',",
+                                    "    itemId: 'clustermap'",
+                                    "});"
+                                ],
+                                "name": "beforerender",
+                                "scope": "me"
+                            },
+                            "name": "BeforeRenderBoderForm1",
+                            "designerId": "63e73264-bd8e-495b-a8d0-12317e027701"
+                        }
+                    ]
+                },
+                {
+                    "type": "Ext.form.Panel",
+                    "reference": {
+                        "name": "items",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "bodyPadding": 10,
                         "title": "Products"
                     },
                     "name": "MyForm3",
@@ -209,16 +209,56 @@
                                     "var form = new MyApp.view.CustomForm1();",
                                     "component.add(form);",
                                     "component.add({",
-                                    "                xtype: 'button',",
-                                    "                text: 'Make map',",
+                                    "    xtype: 'button',",
+                                    "    text: 'Make map',",
                                     "    itemId: 'testmap'",
-                                    "        });"
+                                    "});"
                                 ],
                                 "name": "beforerender",
                                 "scope": "me"
                             },
                             "name": "BeforeRenderTestForm",
                             "designerId": "207b163e-36e7-401d-a91e-412754d54b11"
+                        }
+                    ]
+                },
+                {
+                    "type": "Ext.form.Panel",
+                    "reference": {
+                        "name": "items",
+                        "type": "array"
+                    },
+                    "codeClass": null,
+                    "userConfig": {
+                        "bodyPadding": 10,
+                        "title": "Clients"
+                    },
+                    "name": "MyForm4",
+                    "designerId": "af671efd-da3d-4801-8bb5-9828da158ca2",
+                    "cn": [
+                        {
+                            "type": "basiceventbinding",
+                            "reference": {
+                                "name": "listeners",
+                                "type": "array"
+                            },
+                            "codeClass": null,
+                            "userConfig": {
+                                "fn": "BeforeRenderClientsForm",
+                                "implHandler": [
+                                    "var form = new MyApp.view.CustomForm1();",
+                                    "component.add(form);",
+                                    "component.add({",
+                                    "    xtype: 'button',",
+                                    "    text: 'Make map',",
+                                    "    itemId: 'clientsmap'",
+                                    "});"
+                                ],
+                                "name": "beforerender",
+                                "scope": "me"
+                            },
+                            "name": "BeforeRenderClientsForm",
+                            "designerId": "647a5ece-216d-4040-814e-7ca63f6d6464"
                         }
                     ]
                 }

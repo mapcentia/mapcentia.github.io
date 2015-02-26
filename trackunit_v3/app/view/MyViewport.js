@@ -61,17 +61,6 @@ Ext.define('MyApp.view.MyViewport', {
                         {
                             xtype: 'form',
                             bodyPadding: 10,
-                            title: 'Clusters',
-                            listeners: {
-                                beforerender: {
-                                    fn: me.BeforeRenderBoderForm1,
-                                    scope: me
-                                }
-                            }
-                        },
-                        {
-                            xtype: 'form',
-                            bodyPadding: 10,
                             title: 'Border',
                             listeners: {
                                 beforerender: {
@@ -83,10 +72,32 @@ Ext.define('MyApp.view.MyViewport', {
                         {
                             xtype: 'form',
                             bodyPadding: 10,
+                            title: 'Clusters',
+                            listeners: {
+                                beforerender: {
+                                    fn: me.BeforeRenderBoderForm1,
+                                    scope: me
+                                }
+                            }
+                        },
+                        {
+                            xtype: 'form',
+                            bodyPadding: 10,
                             title: 'Products',
                             listeners: {
                                 beforerender: {
                                     fn: me.BeforeRenderTestForm,
+                                    scope: me
+                                }
+                            }
+                        },
+                        {
+                            xtype: 'form',
+                            bodyPadding: 10,
+                            title: 'Clients',
+                            listeners: {
+                                beforerender: {
+                                    fn: me.BeforeRenderClientsForm,
                                     scope: me
                                 }
                             }
@@ -108,16 +119,6 @@ Ext.define('MyApp.view.MyViewport', {
                 })
     },
 
-    BeforeRenderBoderForm1: function(component, eOpts) {
-        var form = new MyApp.view.StandardForm();
-        component.add(form);
-        component.add({
-                        xtype: 'button',
-                        text: 'Make map',
-            itemId: 'clustermap'
-                });
-    },
-
     BeforeRenderBoderForm: function(component, eOpts) {
         var form = new MyApp.view.StandardForm();
         form.add(new MyApp.view.AttributField());
@@ -129,14 +130,34 @@ Ext.define('MyApp.view.MyViewport', {
                 });
     },
 
+    BeforeRenderBoderForm1: function(component, eOpts) {
+        var form = new MyApp.view.CustomForm2();
+        component.add(form);
+        component.add({
+            xtype: 'button',
+            text: 'Make map',
+            itemId: 'clustermap'
+        });
+    },
+
     BeforeRenderTestForm: function(component, eOpts) {
         var form = new MyApp.view.CustomForm1();
         component.add(form);
         component.add({
-                        xtype: 'button',
-                        text: 'Make map',
+            xtype: 'button',
+            text: 'Make map',
             itemId: 'testmap'
-                });
+        });
+    },
+
+    BeforeRenderClientsForm: function(component, eOpts) {
+        var form = new MyApp.view.CustomForm1();
+        component.add(form);
+        component.add({
+            xtype: 'button',
+            text: 'Make map',
+            itemId: 'clientsmap'
+        });
     }
 
 });

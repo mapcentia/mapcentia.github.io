@@ -10,6 +10,7 @@
         "border": false,
         "designer|userClassName": "CustomForm1",
         "height": null,
+        "margin": null,
         "title": null,
         "width": null
     },

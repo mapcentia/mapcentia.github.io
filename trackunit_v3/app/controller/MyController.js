@@ -37,7 +37,7 @@ Ext.define('MyApp.controller.MyController', {
                     return false
                 }
         var values = button.up("form").getValues();
-        window.startAnalyzing('cluster',values.border, values);
+        window.startCluster(values);
     },
 
     onTestClick: function(button, e, eOpts) {
@@ -46,6 +46,14 @@ Ext.define('MyApp.controller.MyController', {
                 }
         var values = button.up("form").getValues();
         window.startTest(values);
+    },
+
+    onClientsClick: function(button, e, eOpts) {
+        if (button.up("form").isValid() === false){
+                    return false
+                }
+        var values = button.up("form").getValues();
+        window.startClients(values);
     },
 
     init: function(application) {
@@ -61,6 +69,9 @@ Ext.define('MyApp.controller.MyController', {
             },
             "button#testmap": {
                 click: this.onTestClick
+            },
+            "button#clientsmap": {
+                click: this.onClientsClick
             }
         });
     }

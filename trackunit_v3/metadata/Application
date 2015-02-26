@@ -22,7 +22,8 @@
             "MyViewport",
             "StandardForm",
             "AttributField",
-            "CustomForm1"
+            "CustomForm1",
+            "CustomForm2"
         ]
     },
     "name": "Application",
