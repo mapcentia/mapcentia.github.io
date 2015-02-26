@@ -813,12 +813,12 @@ MapCentia.init = function () {
                     });
                     queryWin.show();
                     var getData = function (e) {
-                        var coords = [], stores = [], comboData = [], mins = [], maxs = [], layerTitles = [];
+                        var coords = [], stores = [], comboData = [], mins = [], maxs = [], layerTitles = [], numOfRasters = 0, index = 0;
                         document.getElementById("wait-spinner").style.display = "inline";
                         for (var i = 0; i < poilayer.features.length; i++) {
                             coords.push([poilayer.features[i].geometry.x, poilayer.features[i].geometry.y]);
                         }
-                        var layers, count = 0, numOfRasterLayers = 0, hit = false, db = "envimatix";
+                        var layers, hit = false, db = "envimatix";
                         $.each(qstore, function (index, st) {
                             try {
                                 st.reset();
@@ -828,16 +828,20 @@ MapCentia.init = function () {
                             }
                         });
                         layers = MapCentia.gc2.getVisibleLayers().split(";");
-                        Ext.getCmp("queryTabs").removeAll();
+                        // Count raster layers
                         $.each(layers, function (index, value) {
+                            if (metaDataKeys[value.split(".")[1]].type  === "RASTER"){
+                                numOfRasters ++;
+                            }
+                        });
+                        Ext.getCmp("queryTabs").removeAll();
+                        (function iter() {
                             var isEmpty = true;
-                            var srid = metaDataKeys[value.split(".")[1]].srid;
-                            var pkey = metaDataKeys[value.split(".")[1]].pkey;
-                            var geoField = metaDataKeys[value.split(".")[1]].f_geometry_column;
-                            var geoType = metaDataKeys[value.split(".")[1]].type;
-                            var layerTitel = metaDataKeys[value.split(".")[1]].f_table_title || metaDataKeys[value.split(".")[1]].f_table_name;
+                            var srid = metaDataKeys[layers[index].split(".")[1]].srid;
+                            var pkey = metaDataKeys[layers[index].split(".")[1]].pkey;
+                            var geoType = metaDataKeys[layers[index].split(".")[1]].type;
+                            var layerTitel = metaDataKeys[layers[index].split(".")[1]].f_table_title || metaDataKeys[layers[index].split(".")[1]].f_table_name;
                             if (geoType === "RASTER") {
-                                numOfRasterLayers = numOfRasterLayers + 1;
                                 qstore[index] = new geocloud.sqlStore({
                                     db: db,
                                     id: index,
@@ -992,21 +996,143 @@ MapCentia.init = function () {
                                             catch (e) {
                                             }
                                         }
-                                        count++;
+                                        index++;
+                                        if (numOfRasters === index) {
+                                            document.getElementById("wait-spinner").style.display = "none";
+                                            var obj = {}, fields = ['num'], series = [], min = mins.sort()[0], max = maxs.sort(function (a, b) {
+                                                return b - a;
+                                            })[0];
+                                            for (var n = 0; n < poilayer.features.length; n = n + 1) {
+                                                obj.num = n + 1;
+                                                for (var u = 0; u < stores.length; u = u + 1) {
+                                                    obj["value" + u] = stores[u][n].value;
+                                                }
+                                                comboData.push(obj);
+                                                obj = {};
+                                            }
+                                            for (n = 0; n < stores.length; n = n + 1) {
+                                                fields.push("value" + n);
+                                                series.push({
+                                                    displayName: layerTitles[n],
+                                                    type: 'line',
+                                                    yField: "value" + n
+                                                });
+                                            }
+                                            var store = new Ext.data.JsonStore({
+                                                fields: fields,
+                                                data: comboData
+                                            });
+
+                                            var diff = max - min;
+                                            max = max + (diff / 20);
+                                            min = min - (diff / 20);
+
+                                            Ext.getCmp("queryTabs").add(
+                                                {
+                                                    title: "Combo",
+                                                    layout: "fit",
+                                                    border: false,
+                                                    items: [
+                                                        {
+                                                            xtype: "panel",
+                                                            layout: "fit",
+                                                            id: "combo",
+                                                            border: false,
+                                                            items: [
+                                                                {
+                                                                    xtype: 'linechart',
+                                                                    store: store,
+                                                                    xField: 'num',
+                                                                    listeners: {
+                                                                        itemclick: function (o) {
+                                                                            var rec = store.getAt(o.index);
+                                                                            Ext.example.msg('Item Selected', 'You chose {0}.', rec.get('name'));
+                                                                        }
+                                                                    },
+                                                                    series: series,
+                                                                    yAxis: new Ext.chart.NumericAxis({
+                                                                        maximum: max,
+                                                                        minimum: min,
+                                                                        roundMajorUnit: false,
+                                                                        majorUnit: Math.ceil((max - min) / comboData.length * 1000) / 1000
+                                                                    }),
+                                                                    xAxis: new Ext.chart.NumericAxis({
+                                                                        minimum: 0.8,
+                                                                        maximum: comboData.length,
+                                                                        roundMajorUnit: true,
+                                                                        majorUnit: 1
+                                                                    }),
+                                                                    chartStyle: {
+                                                                        padding: 10,
+                                                                        animationEnabled: true,
+                                                                        font: {
+                                                                            name: 'Tahoma',
+                                                                            color: 0x444444,
+                                                                            size: 11
+                                                                        },
+                                                                        dataTip: {
+                                                                            padding: 5,
+                                                                            border: {
+                                                                                color: 0x99bbe8,
+                                                                                size: 1
+                                                                            },
+                                                                            background: {
+                                                                                color: 0xDAE7F6,
+                                                                                alpha: 0.9
+                                                                            },
+                                                                            font: {
+                                                                                name: 'Tahoma',
+                                                                                color: 0x15428B,
+                                                                                size: 10,
+                                                                                bold: true
+                                                                            }
+                                                                        },
+                                                                        xAxis: {
+                                                                            color: 0x69aBc8,
+                                                                            majorTicks: {color: 0x69aBc8, length: 4},
+                                                                            minorTicks: {color: 0x69aBc8, length: 2},
+                                                                            majorGridLines: {size: 1, color: 0xeeeeee}
+                                                                        },
+                                                                        yAxis: {
+                                                                            color: 0x69aBc8,
+                                                                            majorTicks: {color: 0x69aBc8, length: 4},
+                                                                            minorTicks: {color: 0x69aBc8, length: 2},
+                                                                            majorGridLines: {size: 1, color: 0xdfe8f6}
+                                                                        }
+                                                                    },
+                                                                    extraStyle: {
+                                                                        legend: {
+                                                                            display: 'bottom',
+                                                                            padding: 5,
+                                                                            font: {
+                                                                                family: 'Tahoma',
+                                                                                size: 13
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            ]
+                                                        }
+                                                    ]
+                                                }
+                                            ).doLayout();
+                                            return;
+                                        } else {
+                                            iter();
+                                        }
                                         Ext.getCmp("queryTabs").activate(0);
                                     }
                                 });
-                                //MapCentia.gc2.addGeoJsonStore(qstore[index]);
-                                var sql, f_geometry_column = metaDataKeys[value.split(".")[1]].f_geometry_column;
+                                var sql, f_geometry_column = metaDataKeys[layers[index].split(".")[1]].f_geometry_column;
                                 var unions = [];
                                 for (var i = 0; i < coords.length; i++) {
                                     unions.push(
                                         "SELECT * FROM (" +
                                         "WITH " +
                                         "pixelsize as (" +
-                                        "SELECT ST_PixelWidth(rast) as width, ST_NumBands(rast) as numbands from " + value + " limit 1), " +
+                                        "SELECT ST_PixelWidth(rast) as width, ST_NumBands(rast) as numbands from " + layers[index] + " limit 1), " +
                                         "rastunion as (" +
-                                        "SELECT ST_SetSRID(ST_union(rast)," + srid + ") as rast FROM " + value + ", pixelsize " +
+                                        "SELECT ST_SetSRID(ST_union(rast)," + srid + ") as rast FROM " + layers[index] + ", pixelsize " +
                                         "WHERE ST_Intersects(rast,ST_buffer(ST_Transform(ST_GeomFromText('POINT(" + coords[i][0] + " " + coords[i][1] + ")',3857)," + srid + "),30))" +
                                         ")," +
                                         "pixel as (" +
@@ -1036,132 +1162,7 @@ MapCentia.init = function () {
                                 qstore[index].sql = sql;
                                 qstore[index].load();
                             }
-
-                        });
-                        (function pollForQueries() {
-                            if (numOfRasterLayers === count) {
-                                document.getElementById("wait-spinner").style.display = "none";
-                                var obj = {}, fields = ['num'], series = [], min = mins.sort()[0], max = maxs.sort(function (a, b) {
-                                    return b - a;
-                                })[0];
-                                for (var n = 0; n < poilayer.features.length; n = n + 1) {
-                                    obj.num = n +1;
-                                    for (var u = 0; u < stores.length; u = u + 1) {
-                                        obj["value" + u] = stores[u][n].value;
-                                    }
-                                    comboData.push(obj);
-                                    obj = {};
-                                }
-                                for (n = 0; n < stores.length; n = n + 1) {
-                                    fields.push("value" + n);
-                                    series.push({
-                                        displayName: layerTitles[n],
-                                        type: 'line',
-                                        yField: "value" + n
-                                    });
-                                }
-                                var store = new Ext.data.JsonStore({
-                                    fields: fields,
-                                    data: comboData
-                                });
-
-                                var diff = max - min;
-                                max = max + (diff / 20);
-                                min = min - (diff / 20);
-
-                                Ext.getCmp("queryTabs").add(
-                                    {
-                                        title: "Combo",
-                                        layout: "fit",
-                                        border: false,
-                                        items: [
-                                            {
-                                                xtype: "panel",
-                                                layout: "fit",
-                                                id: "combo",
-                                                border: false,
-                                                items: [
-                                                    {
-                                                        xtype: 'linechart',
-                                                        store: store,
-                                                        xField: 'num',
-                                                        listeners: {
-                                                            itemclick: function (o) {
-                                                                var rec = store.getAt(o.index);
-                                                                Ext.example.msg('Item Selected', 'You chose {0}.', rec.get('name'));
-                                                            }
-                                                        },
-                                                        series: series,
-                                                        yAxis: new Ext.chart.NumericAxis({
-                                                            maximum: max,
-                                                            minimum: min,
-                                                            roundMajorUnit: false,
-                                                            majorUnit: Math.ceil((max - min) / comboData.length * 1000) / 1000
-                                                        }),
-                                                        xAxis: new Ext.chart.NumericAxis({
-                                                            minimum: 0.8,
-                                                            maximum: comboData.length,
-                                                            roundMajorUnit: true,
-                                                            majorUnit: 1
-                                                        }),
-                                                        chartStyle: {
-                                                            padding: 10,
-                                                            animationEnabled: true,
-                                                            font: {
-                                                                name: 'Tahoma',
-                                                                color: 0x444444,
-                                                                size: 11
-                                                            },
-                                                            dataTip: {
-                                                                padding: 5,
-                                                                border: {
-                                                                    color: 0x99bbe8,
-                                                                    size: 1
-                                                                },
-                                                                background: {
-                                                                    color: 0xDAE7F6,
-                                                                    alpha: 0.9
-                                                                },
-                                                                font: {
-                                                                    name: 'Tahoma',
-                                                                    color: 0x15428B,
-                                                                    size: 10,
-                                                                    bold: true
-                                                                }
-                                                            },
-                                                            xAxis: {
-                                                                color: 0x69aBc8,
-                                                                majorTicks: {color: 0x69aBc8, length: 4},
-                                                                minorTicks: {color: 0x69aBc8, length: 2},
-                                                                majorGridLines: {size: 1, color: 0xeeeeee}
-                                                            },
-                                                            yAxis: {
-                                                                color: 0x69aBc8,
-                                                                majorTicks: {color: 0x69aBc8, length: 4},
-                                                                minorTicks: {color: 0x69aBc8, length: 2},
-                                                                majorGridLines: {size: 1, color: 0xdfe8f6}
-                                                            }
-                                                        },
-                                                        extraStyle: {
-                                                            legend: {
-                                                                display: 'bottom',
-                                                                padding: 5,
-                                                                font: {
-                                                                    family: 'Tahoma',
-                                                                    size: 13
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        ]
-                                    }
-                                ).doLayout();
-                            } else {
-                                setTimeout(pollForQueries, 10);
-                            }
-                        }());
+                        })();
                     };
                 }
             }
@@ -1487,6 +1488,9 @@ MapCentia.setup();
         Heron.App.show();
         MapCentia.gc2 = new geocloud.map({});
         MapCentia.gc2.map = Heron.App.map;
+
+        var scalebar = new OpenLayers.Control.ScaleLine();
+        MapCentia.gc2.map.addControl(scalebar);
 
 
         /*console.log(Heron.App.map.getLayersByName("test2.p041r025_30jun2013_rdvi_lai")[0])
