@@ -570,7 +570,7 @@ MapCentia.init = function () {
                                                     if (property[2] === pkey) {
                                                         pkeyValue = property[3];
                                                     }
-                                                    source[property[2]] = parseFloat(property[3]).toFixed(3);
+                                                    source[property[2]] = property[3];
                                                 });
                                                 out = [];
                                             });
@@ -999,7 +999,9 @@ MapCentia.init = function () {
                                         index++;
                                         if (numOfRasters === index) {
                                             document.getElementById("wait-spinner").style.display = "none";
-                                            var obj = {}, fields = ['num'], series = [], min = mins.sort()[0], max = maxs.sort(function (a, b) {
+                                            var obj = {}, fields = ['num'], series = [];
+                                            min = mins.sort()[0];
+                                            max = maxs.sort(function (a, b) {
                                                 return b - a;
                                             })[0];
                                             for (var n = 0; n < poilayer.features.length; n = n + 1) {
@@ -1018,12 +1020,12 @@ MapCentia.init = function () {
                                                     yField: "value" + n
                                                 });
                                             }
-                                            var store = new Ext.data.JsonStore({
+                                            store = new Ext.data.JsonStore({
                                                 fields: fields,
                                                 data: comboData
                                             });
 
-                                            var diff = max - min;
+                                            diff = max - min;
                                             max = max + (diff / 20);
                                             min = min - (diff / 20);
 
@@ -1116,11 +1118,11 @@ MapCentia.init = function () {
                                                     ]
                                                 }
                                             ).doLayout();
+                                            Ext.getCmp("queryTabs").activate(0);
                                             return;
                                         } else {
                                             iter();
                                         }
-                                        Ext.getCmp("queryTabs").activate(0);
                                     }
                                 });
                                 var sql, f_geometry_column = metaDataKeys[layers[index].split(".")[1]].f_geometry_column;
@@ -1140,7 +1142,7 @@ MapCentia.init = function () {
                                         "," +
                                         "map as (" +
                                         "SELECT " +
-                                        "ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast1 " +
+                                        "ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 4, 4) as newrast1 " +
                                             //"ST_MapAlgebra(rast, 2, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast2," +
                                             //"ST_MapAlgebra(rast, 3, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast3 " +
                                         "from rastunion) " +
@@ -1208,15 +1210,15 @@ MapCentia.init = function () {
             type: "any",
             options: {
                 text: 'Search',
-                tooltip: 'Search for Strm',
+                tooltip: 'Search LLD',
                 iconCls: 'icon-find',
                 id: "searchStrm",
                 handler: function () {
                     var strmWin = new Ext.Window({
-                        title: "Search strm",
+                        title: "Search LLD  ",
                         modal: false,
                         layout: 'fit',
-                        width: 270,
+                        width: 230,
                         height: 80,
                         closeAction: 'close',
                         plain: true,
@@ -1264,7 +1266,7 @@ MapCentia.init = function () {
                                         items: [
                                             {
                                                 xtype: 'button',
-                                                text: __('Search'),
+                                                text: __('Go'),
                                                 handler: function () {
                                                     var f = Ext.getCmp('strmForm');
                                                     if (f.form.isValid()) {
