@@ -492,6 +492,10 @@ MapCentia.init = function () {
                         },
                         items: [
                             new Ext.TabPanel({
+                                enableTabScroll: true,
+                                resizeTabs: true,
+                                border: false,
+                                minTabWidth: 175,
                                 activeTab: 0,
                                 frame: true,
                                 id: "queryTabs",
@@ -517,9 +521,9 @@ MapCentia.init = function () {
                         },
                         trigger: function (e) {
                             queryWin.show();
-                            var layers, count = 0, hit = false, distance, db = "envimatix",
+                            var layers, hit = false, distance, db = "envimatix",
                                 event = new geocloud.clickEvent(e, MapCentia.gc2),
-                                coords = event.getCoordinate();
+                                coords = event.getCoordinate(), numOfRasters = 0, index = 0;;
                             $.each(qstore, function (index, st) {
                                 try {
                                     st.reset();
@@ -530,16 +534,22 @@ MapCentia.init = function () {
                                 }
                             });
                             layers = MapCentia.gc2.getVisibleLayers().split(";");
-                            Ext.getCmp("queryTabs").removeAll();
+                            // Count raster layers
                             $.each(layers, function (index, value) {
+                                if (metaDataKeys[value.split(".")[1]].type === "RASTER") {
+                                    numOfRasters++;
+                                }
+                            });
+                            Ext.getCmp("queryTabs").removeAll();
+                            (function iter() {
                                 var isEmpty = true;
-                                var srid = metaDataKeys[value.split(".")[1]].srid;
-                                var pkey = metaDataKeys[value.split(".")[1]].pkey;
-                                var geoField = metaDataKeys[value.split(".")[1]].f_geometry_column;
-                                var geoType = metaDataKeys[value.split(".")[1]].type;
-                                var layerTitel = metaDataKeys[value.split(".")[1]].f_table_title || metaDataKeys[value.split(".")[1]].f_table_name;
-                                var versioning = metaDataKeys[value.split(".")[1]].versioning;
-                                var fieldConf = Ext.decode(metaDataKeys[value.split(".")[1]].fieldconf);
+                                var srid = metaDataKeys[layers[index].split(".")[1]].srid;
+                                var pkey = metaDataKeys[layers[index].split(".")[1]].pkey;
+                                var geoField = metaDataKeys[layers[index].split(".")[1]].f_geometry_column;
+                                var geoType = metaDataKeys[layers[index].split(".")[1]].type;
+                                var layerTitel = metaDataKeys[layers[index].split(".")[1]].f_table_title || metaDataKeys[layers[index].split(".")[1]].f_table_name;
+                                var versioning = metaDataKeys[layers[index].split(".")[1]].versioning;
+                                var fieldConf = Ext.decode(metaDataKeys[layers[index].split(".")[1]].fieldconf);
                                 qstore[index] = new geocloud.sqlStore({
                                     db: db,
                                     id: index,
@@ -614,25 +624,31 @@ MapCentia.init = function () {
                                             catch (e) {
                                             }
                                         }
-                                        count++;
-                                        Ext.getCmp("queryTabs").activate(0);
+                                        index++;
+                                        if (numOfRasters === index) {
+                                            Ext.getCmp("queryTabs").activate(0);
+                                            return;
+
+                                        } else {
+                                            iter();
+                                        }
                                     }
                                 });
                                 MapCentia.gc2.addGeoJsonStore(qstore[index]);
-                                var sql, f_geometry_column = metaDataKeys[value.split(".")[1]].f_geometry_column;
+                                var sql, f_geometry_column = metaDataKeys[layers[index].split(".")[1]].f_geometry_column;
                                 if (geoType === "RASTER") {
                                     sql = "SELECT foo.the_geom,ST_Value(rast, foo.the_geom) As band1, ST_Value(rast, 2, foo.the_geom) As band2, ST_Value(rast, 3, foo.the_geom) As band3 " +
-                                    "FROM " + value + " CROSS JOIN (SELECT ST_transform(ST_GeomFromText('POINT(" + coords.x + " " + coords.y + ")',3857)," + srid + ") As the_geom) As foo " +
+                                    "FROM " + layers[index] + " CROSS JOIN (SELECT ST_transform(ST_GeomFromText('POINT(" + coords.x + " " + coords.y + ")',3857)," + srid + ") As the_geom) As foo " +
                                     "WHERE ST_Intersects(rast,the_geom) ";
                                 } else {
                                     if (geoType !== "POLYGON" && geoType !== "MULTIPOLYGON") {
-                                        sql = "SELECT * FROM " + value + " WHERE round(ST_Distance(ST_Transform(\"" + f_geometry_column + "\",3857), ST_GeomFromText('POINT(" + coords.x + " " + coords.y + ")',3857))) < " + distance;
+                                        sql = "SELECT * FROM " + layers[index] + " WHERE round(ST_Distance(ST_Transform(\"" + f_geometry_column + "\",3857), ST_GeomFromText('POINT(" + coords.x + " " + coords.y + ")',3857))) < " + distance;
                                         if (versioning) {
                                             sql = sql + " AND gc2_version_end_date IS NULL";
                                         }
                                         sql = sql + " ORDER BY round(ST_Distance(ST_Transform(\"" + f_geometry_column + "\",3857), ST_GeomFromText('POINT(" + coords.x + " " + coords.y + ")',3857)))";
                                     } else {
-                                        sql = "SELECT * FROM " + value + " WHERE ST_Intersects(ST_Transform(ST_geomfromtext('POINT(" + coords.x + " " + coords.y + ")',900913)," + srid + ")," + f_geometry_column + ")";
+                                        sql = "SELECT * FROM " + layers[index] + " WHERE ST_Intersects(ST_Transform(ST_geomfromtext('POINT(" + coords.x + " " + coords.y + ")',900913)," + srid + ")," + f_geometry_column + ")";
                                         if (versioning) {
                                             sql = sql + " AND gc2_version_end_date IS NULL";
                                         }
@@ -641,7 +657,7 @@ MapCentia.init = function () {
                                 sql = sql + " LIMIT 1";
                                 qstore[index].sql = sql;
                                 qstore[index].load();
-                            });
+                            })();
                         }
                     });
                     click = new clickController();
@@ -718,9 +734,6 @@ MapCentia.init = function () {
                                 }
                             )
                         })
-                        //visibility: defaults.visibility,
-                        //renderers: ['Canvas', 'SVG', 'VML'],
-                        //rendererOptions: defaults.rendererOptions
                     });
                     Heron.App.map.addLayer(poilayer);
                     click = new OpenLayers.Control.DrawFeature(poilayer, OpenLayers.Handler.Point);
@@ -732,7 +745,6 @@ MapCentia.init = function () {
                     Heron.App.map.addControl(click);
                     click.activate();
                     modifyControl.activate();
-                    //selectControl.activate();
                     click.events.register("featureadded", this, function (e) {
                         e.feature.attributes = {
                             num: poilayer.features.length
@@ -1187,7 +1199,7 @@ MapCentia.init = function () {
                 id: "searchStrm",
                 handler: function () {
                     var strmWin = new Ext.Window({
-                        title: "Search LLD  ",
+                        title: "Search LLD",
                         modal: false,
                         layout: 'fit',
                         width: 230,
