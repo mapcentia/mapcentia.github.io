@@ -838,8 +838,8 @@ MapCentia.init = function () {
                         layers = MapCentia.gc2.getVisibleLayers().split(";");
                         // Count raster layers
                         $.each(layers, function (index, value) {
-                            if (metaDataKeys[value.split(".")[1]].type  === "RASTER"){
-                                numOfRasters ++;
+                            if (metaDataKeys[value.split(".")[1]].type === "RASTER") {
+                                numOfRasters++;
                             }
                         });
                         Ext.getCmp("queryTabs").removeAll();
@@ -1181,42 +1181,6 @@ MapCentia.init = function () {
         {
             type: "any",
             options: {
-                text: '',
-                tooltip: 'Switch all layers on',
-                toggleGroup: "rasterGroup",
-                iconCls: 'icon-add',
-                id: "allOnBtn",
-                handler: function () {
-                    for (var i = 0; i < Heron.App.map.layers.length; i = i + 1) {
-                        if (Heron.App.map.layers[i].CLASS_NAME === "OpenLayers.Layer.WMS") {
-                            Heron.App.map.layers[i].setVisibility(true);
-                        }
-                    }
-                }
-            }
-        },
-        {type: "-"},
-        {
-            type: "any",
-            options: {
-                text: '',
-                tooltip: 'Switch all layers off',
-                toggleGroup: "rasterGroup",
-                iconCls: 'icon-delete',
-                id: "allOffBtn",
-                handler: function () {
-                    for (var i = 0; i < Heron.App.map.layers.length; i = i + 1) {
-                        if (Heron.App.map.layers[i].CLASS_NAME === "OpenLayers.Layer.WMS") {
-                            Heron.App.map.layers[i].setVisibility(false);
-                        }
-                    }
-                }
-            }
-        },
-        {type: "-"},
-        {
-            type: "any",
-            options: {
                 text: 'Search',
                 tooltip: 'Search LLD',
                 iconCls: 'icon-find',
@@ -1439,6 +1403,7 @@ MapCentia.init = function () {
                     {
                         xtype: 'hr_layertreepanel',
                         border: true,
+                        id: 'layerTree',
                         layerIcons: 'bylayertype',
                         contextMenu: [
                             {
@@ -1454,7 +1419,46 @@ MapCentia.init = function () {
                                 xtype: 'hr_layernodemenuopacityslider'
                             }
                         ],
-                        hropts: Heron.options.layertree
+                        hropts: Heron.options.layertree,
+                        tbar: [{
+                            tooltip: 'Switch all layers on',
+                            iconCls: 'icon-add',
+                            id: "allOnBtn",
+                            handler: function () {
+                                for (var i = 0; i < Heron.App.map.layers.length; i = i + 1) {
+                                    if (Heron.App.map.layers[i].CLASS_NAME === "OpenLayers.Layer.WMS") {
+                                        Heron.App.map.layers[i].setVisibility(true);
+                                    }
+                                }
+                            }
+
+                        }, {
+                            tooltip: 'Switch all layers off',
+                            toggleGroup: "rasterGroup",
+                            iconCls: 'icon-delete',
+                            id: "allOffBtn",
+                            handler: function () {
+                                for (var i = 0; i < Heron.App.map.layers.length; i = i + 1) {
+                                    if (Heron.App.map.layers[i].CLASS_NAME === "OpenLayers.Layer.WMS") {
+                                        Heron.App.map.layers[i].setVisibility(false);
+                                    }
+                                }
+                            }
+                        }, {
+                            tooltip: 'Expand all',
+                            iconCls: 'icon-arrow-down',
+                            handler: function () {
+                                Ext.getCmp("layerTree").expandAll();
+                            }
+
+                        }, {
+                            tooltip: 'Collapse all',
+                            iconCls: 'icon-arrow-up',
+                            handler: function () {
+                                Ext.getCmp("layerTree").collapseAll();
+                            }
+
+                        }]
                     },
                     {
                         xtype: 'hr_bookmarkspanel',
