@@ -582,7 +582,7 @@ MapCentia.init = function () {
                                                     if (property[2] === pkey) {
                                                         pkeyValue = property[3];
                                                     }
-                                                    if (typeof fieldConf[property[2]] !== "undefined" && typeof fieldConf[property[2]].alias !== "undefined" && fieldConf[property[2]].alias !== "") {
+                                                    if (typeof fieldConf[property[2]] !== "undefined" && typeof fieldConf[property[2]].alias !== "undefined" && fieldConf[property[2]].alias !== "" && fieldConf[property[2]].alias !== null) {
                                                         name = fieldConf[property[2]].alias;
                                                     }
                                                     else {
