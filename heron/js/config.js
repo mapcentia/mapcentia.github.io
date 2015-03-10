@@ -539,6 +539,7 @@ MapCentia.init = function () {
                                 var geoType = metaDataKeys[value.split(".")[1]].type;
                                 var layerTitel = metaDataKeys[value.split(".")[1]].f_table_title || metaDataKeys[value.split(".")[1]].f_table_name;
                                 var versioning = metaDataKeys[value.split(".")[1]].versioning;
+                                var fieldConf = Ext.decode(metaDataKeys[value.split(".")[1]].fieldconf);
                                 qstore[index] = new geocloud.sqlStore({
                                     db: db,
                                     id: index,
@@ -567,10 +568,17 @@ MapCentia.init = function () {
                                                     return a[1] - b[1];
                                                 });
                                                 $.each(out, function (name, property) {
+                                                    var name;
                                                     if (property[2] === pkey) {
                                                         pkeyValue = property[3];
                                                     }
-                                                    source[property[2]] = property[3];
+                                                    if (typeof fieldConf[property[2]] !== "undefined" && typeof fieldConf[property[2]].alias !== "undefined" && fieldConf[property[2]].alias !== "") {
+                                                        name = fieldConf[property[2]].alias;
+                                                    }
+                                                    else {
+                                                        name = property[2];
+                                                    }
+                                                    source[name] = property[3];
                                                 });
                                                 out = [];
                                             });
