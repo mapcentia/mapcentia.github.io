@@ -536,9 +536,9 @@ MapCentia.init = function () {
                             layers = MapCentia.gc2.getVisibleLayers().split(";");
                             // Count raster layers
                             $.each(layers, function (index, value) {
-                                if (metaDataKeys[value.split(".")[1]].type === "RASTER") {
+                               // if (metaDataKeys[value.split(".")[1]].type === "RASTER") {
                                     numOfRasters++;
-                                }
+                               // }
                             });
                             Ext.getCmp("queryTabs").removeAll();
                             (function iter() {
