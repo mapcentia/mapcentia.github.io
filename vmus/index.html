@@ -1,0 +1,543 @@
+<script type="text/javascript" src="http://eu1.mapcentia.com/js/openlayers/OpenLayers.js"></script>
+<script type="text/javascript" src="http://eu1.mapcentia.com/api/v3/js/geocloud.js"></script>
+<link href="css/bootstrap.css" rel="stylesheet">
+<style>
+    .navbar .nav > li {
+        padding: 0px 85px; /* this the one which enforces space between each link*/
+    }
+
+    .base-map-button {
+        width: 150px;
+        margin-top: 0px !important;
+    }
+
+    .popover {
+        width: 250px;
+    }
+
+    .popover-inner {
+        overflow: auto;
+        max-height: 600px;
+    }
+
+    .right {
+        float: right !important;
+    }
+
+    #modal-fund {
+        width: 1200px;
+        margin-left: -600px;
+        z-index: 999999;
+    }
+
+    #wait {
+        background-color: transparent !important;
+    }
+
+    #result {
+        opacity: 1 !important;
+        background-color: transparent !important;
+        padding: 10px
+    }
+
+    #result_GroupDiv {
+        background: white;
+        box-shadow: 0 3px 14px rgba(0, 0, 0, 0.4);
+        padding: 1px;
+        text-align: left;
+        -webkit-border-radius: 20px;
+        border-radius: 20px;
+    }
+
+    #queryResult {
+        margin-left: 10px;
+        line-height: 1.2;
+        font: 12px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+        width: 300px;
+    }
+
+    #map {
+    }
+
+    .images {
+        width: 500px;
+        margin-bottom: 4px;
+    }
+
+    .images-small {
+        width: 100%;
+        margin-bottom: 4px;
+    }
+
+    .images-base-map {
+        width: 50px;
+        margin-right: 10px;
+        vertical-align: middle;
+    }
+
+    #alert {
+        position: absolute;
+        height: 60px;
+        width: 300px;
+        margin: -100px 0 0 -200px;
+        top: 50%;
+        left: 50%;
+        display: none;
+        font-size: 130%;
+        text-align: center;
+    }
+
+    .image-text {
+        width: 500px;
+        margin-bottom: 15px;
+        font-size: 14pt;
+        line-height: 20pt;
+    }
+
+    #base-layers div {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .modal-text {
+        float: left;
+        position: relative;
+        width: 550px;
+        font-size: 14pt;
+        line-height: 20pt;
+    }
+
+    #teaser-text {
+        font-size: 9pt;
+        line-height: 12pt;
+    }
+
+    #legend {
+
+        padding: 10px;
+        background-color: white;
+        border-radius: 6px;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        border: 1px solid #ccc;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        *border-right-width: 2px;
+        *border-bottom-width: 2px;
+        -webkit-border-radius: 6px;
+        -moz-border-radius: 6px;
+        border-radius: 6px;
+        -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        -webkit-background-clip: padding-box;
+        -moz-background-clip: padding;
+        background-clip: padding-box;
+
+        position: absolute;
+        z-index: 2000;
+        bottom: 10px;
+        right: 10px;
+    }
+</style>
+<div class="navbar">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span>
+                <span class="icon-bar"></span> <span class="icon-bar"></span>
+            </a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li>
+                        <button class="btn" data-toggle="button" id="base-layers-popover" rel="popover"
+                                data-placement="bottom" title="Baggrundskort">
+                            Baggrundskort
+                        </button>
+                    </li>
+                    <li style="padding-left:200px">
+                        <button class="btn" data-toggle="button" id="layers-popover" rel="popover"
+                                data-placement="bottom" title="P&aring; opdagelse">
+                            P&aring; opdagelse
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<table border="0">
+    <tr>
+        <td valign="top" width="450px" height="500px">
+            <div id="map" style="width:100%;height: 400px;position: relative">
+                <div id="layers" data-toggle="buttons-radio"></div>
+                <div id="legend">
+                    <div id="legendContent"></div>
+                </div>
+            </div>
+        </td>
+        <td valign="top">
+            <div id='queryResult'><h4>Klik p&aring; kortet</h4>
+                <p>N&aring;r du klikker p&aring; et punkt i kortet vises en kort beskrivelse og billede her.</p></div>
+        </td>
+    </tr>
+</table>
+<!-- base layers-->
+<div id="base-layers" data-toggle="buttons-radio">
+    <div>
+        <span><img class="img-rounded images-base-map"
+                   src="http://projects.mapcentia.com/vmus/assets/baselayer_thumbs/osm.png"></span>
+        <button class="btn btn-small active base-map-button" onclick="MapCentia.cloud.setBaseLayer('osm')">
+            Open Street Map
+        </button>
+    </div>
+    <div>
+        <span><img class="img-rounded images-base-map"
+                   src="http://projects.mapcentia.com/vmus/assets/baselayer_thumbs/hmb.png"></span>
+        <button class="btn btn-small base-map-button"
+                onclick="MapCentia.cloud.setBaseLayer('topo20_hoeje_maalebordsblade')">
+            H&oslash;je m&aring;lebordsblade
+        </button>
+    </div>
+    <div>
+        <span><img class="img-rounded images-base-map"
+                   src="http://projects.mapcentia.com/vmus/assets/baselayer_thumbs/lmb.png"></span>
+        <button class="btn btn-small base-map-button"
+                onclick="MapCentia.cloud.setBaseLayer('topo20_lave_maalebordsblade')">
+            Lave m&aring;lebordsblade
+        </button>
+    </div>
+    <div>
+        <span><img class="img-rounded images-base-map"
+                   src="http://projects.mapcentia.com/vmus/assets/baselayer_thumbs/orto.png"></span>
+        <button class="btn btn-small base-map-button" onclick="MapCentia.cloud.setBaseLayer('orto_foraar')">
+            Luftfoto
+        </button>
+    </div>
+</div>
+<!-- Alert -->
+<div id="alert" class="alert alert-info">
+    Du ramte ikke noget. Pr&oslash;v at zoome t&aelig;ttere p&aring;.
+</div>
+<script type="text/javascript" src="http://eu1.mapcentia.com/js/bootstrap/js/bootstrap.js"></script>
+<script type="text/javascript" src="http://eu1.mapcentia.com/js/jqote2/jquery.jqote2.js"></script>
+<script type="text/javascript" src="http://eu1.mapcentia.com/js/common.js"></script>
+<script>
+    var MapCentia = (function () {
+        var cloud, store, sogneStore, popup, osm, kms_skaermkort, orto_foraar, sogne, kommuner, topo20_hoeje_maalebordsblade, topo20_lave_maalebordsblade,
+                hostname = geocloud_host,
+                db = "vmus",
+                schema = "www",
+                metaData = null,
+                activeTileLayer = "master",
+                metaDataKeys = [],
+                metaDataKeysTitle = [],
+                imageDir = "http://projects.mapcentia.com/vmus/assets/pictures",
+                switchLayer = function (id) {
+                    if (id !== "sogne") {
+                        for (var i = 0; i < cloud.map.layers.length; i++) {
+                            if (cloud.map.layers[i].name !== "kommuner" && cloud.map.layers[i].isBaseLayer === false && cloud.map.layers[i].CLASS_NAME === "OpenLayers.Layer.WMS") {
+                                cloud.map.layers[i].setVisibility(false);
+                            }
+                        }
+                    }
+                    cloud.showLayer(id);
+                    activeTileLayer = id;
+                    try {
+                        popup.destroy();
+                    } catch (e) {
+                    }
+                    store.reset();
+                    addLegend();
+                    $("#time-line").fadeOut(400).delay(1000);
+                },
+                resetAllButtons = function () {
+                    $('.btn-layer').each(function (key, obj) {
+                        $(obj).removeClass("active");
+                    });
+                },
+                kmsLayer = {
+                    layerid: 1,
+                    type: "WMTS",
+                    name: "Skaermkort",
+                    url: "http://kortforsyningen.kms.dk/topo_skaermkort",
+                    params: {
+                        service: 'WMTS',
+                        version: '1.0.0',
+                        request: 'GetTile',
+                        format: 'image/jpeg',
+                        layer: 'dtk_skaermkort',
+                        style: 'default',
+                        BGCOLOR: '0xDCF0F9',
+                        matrixSet: 'View1',
+                        matrixIds: 'L00,L01,L02,L03,L04,L05,L06,L07,L08,L09,L10,L11',
+                        info_format: 'text/plain',
+                        transparent: true
+                    },
+                    options: {
+                        isBaseLayer: true,
+                        visibility: false,
+                        requestEncoding: 'kvp',
+                        layerid: 1
+                    }
+                },
+                styleMap = new OpenLayers.StyleMap({
+                    'default': {
+                        fillColor: "rgb(178, 34, 34)",
+                        fillOpacity: 0.9,
+                        strokeColor: "rgb(178, 34, 34)",
+                        strokeOpacity: 0.5,
+                        strokeWidth: 12,
+                        pointRadius: 10
+                    }
+                }),
+                startExt = [982328.16354289, 7693441.9121169, 1110742.3710441, 7757266.8307261],
+                maxExt = new OpenLayers.Bounds(850244.97868447, 7666039.2374803, 1267896.9011765, 7792924.7044161),
+                addLegend = function () {
+                    var param = 'l=' + cloud.getVisibleLayers();
+                    $.ajax({
+                        url: hostname + '/api/v1/legend/html/' + db + '/' + schema + '?' + param,
+                        dataType: 'jsonp',
+                        jsonp: 'jsonp_callback',
+                        success: function (response) {
+                            $('#legendContent').html(response.html);
+                        }
+                    });
+                };
+        cloud = new geocloud.map({
+            el: "map",
+            //controls : this.mapControls,
+            projection: "EPSG:3857",
+            //resolutions : new Array(0.8, 1.6, 3.2, 6.4, 12.8, 25.6, 51.2, 102.4, 204.8, 409.6, 819.2, 1638.4),
+            units: "m",
+            //maxResolution : (maxExt.top - maxExt.bottom) / 256,
+            // maxExtent : maxExt,
+            eventListeners: {
+                //"changelayer" : addLegend
+            }
+            //numZoomLevels : 12
+        });
+        //cloud.addWmtsLayer(kmsLayer);
+        cloud.map.setOptions({restrictedExtent: maxExt});
+        cloud.map.events.register("moveend", null, function () {
+            //console.log(cloud.getExtent())
+            //console.log(cloud.getZoom())
+        });
+        kms_skaermkort = cloud.addTileLayers({
+            layers: ["public.kms_skaermkort"],
+            db: "vmus",
+            isBaseLayer: true,
+            name: "kms_skaermkort"
+        })[0];
+        orto_foraar = cloud.addTileLayers({
+            layers: ["public.orto_foraar"],
+            db: "vmus",
+            isBaseLayer: true,
+            name: "orto_foraar"
+        })[0];
+
+        topo20_hoeje_maalebordsblade = cloud.addTileLayers({
+            layers: ["public.topo20_hoeje_maalebordsblade"],
+            db: "vmus",
+            isBaseLayer: true,
+            name: "topo20_hoeje_maalebordsblade"
+        })[0];
+
+        topo20_lave_maalebordsblade = cloud.addTileLayers({
+            layers: ["public.topo20_lave_maalebordsblade"],
+            db: "vmus",
+            isBaseLayer: true,
+            name: "topo20_lave_maalebordsblade"
+        })[0];
+
+        cloud.addBaseLayer(geocloud.OSM);
+        cloud.setBaseLayer(geocloud.OSM);
+        cloud.zoomToExtent(startExt);
+        store = new geocloud.geoJsonStore({
+            db: db,
+            styleMap: styleMap
+        });
+        sogneStore = new geocloud.geoJsonStore({
+            db: db
+
+        });
+        // Add the GeoJSON store to the map
+        cloud.addGeoJsonStore(store);
+        cloud.addGeoJsonStore(sogneStore);
+        /* Click controller */
+        cloud.clickController = OpenLayers.Class(OpenLayers.Control, {
+            defaultHandlerOptions: {
+                'single': true,
+                'double': false,
+                'pixelTolerance': 0,
+                'stopSingle': false,
+                'stopDouble': false
+            },
+            initialize: function (options) {
+                this.handlerOptions = OpenLayers.Util.extend({}, this.defaultHandlerOptions);
+                OpenLayers.Control.prototype.initialize.apply(this, arguments);
+                this.handler = new OpenLayers.Handler.Click(this, {
+                    'click': this.trigger
+                }, this.handlerOptions);
+            },
+            trigger: function (e) {
+                var coords = this.map.getLonLatFromViewPortPx(e.xy);
+                var waitPopup = new OpenLayers.Popup("wait", coords, new OpenLayers.Size(36, 36), "<div style='z-index:1000;'><img src='http://projects.mapcentia.com/vmus/assets/spinner/spinner.gif'></div>", null, true);
+                cloud.map.addPopup(waitPopup);
+                try {
+                    popup.destroy();
+                } catch (e) {
+                }
+                ;
+                var where;
+                (activeTileLayer !== "" && activeTileLayer !== "sogne") ? where = metaDataKeys[activeTileLayer].filter : where = null;
+                store.sql = "SELECT *,round(ST_Distance(ST_Transform(the_geom,3857), ST_GeomFromText('POINT(" + coords.lon + " " + coords.lat + ")',3857))) as afstand FROM kulturarvstjenesten.master WHERE round(ST_Distance(ST_Transform(the_geom,3857), ST_GeomFromText('POINT(" + coords.lon + " " + coords.lat + ")',3857))) < 3000 AND vis_paa_www=1 AND " + where + " ORDER BY afstand LIMIT 1";
+                sogneStore.sql = "SELECT * FROM kulturarvstjenesten.sogne WHERE ST_GeomFromText('POINT(" + coords.lon + " " + coords.lat + ")',3857) && ST_Transform(the_geom,3857) AND ST_Intersects(ST_GeomFromText('POINT(" + coords.lon + " " + coords.lat + ")',3857), ST_Transform(the_geom,3857))";
+                store.reset();
+                sogneStore.reset();
+                if (activeTileLayer === "sogne") {
+                    sogneStore.load()
+                    sogneStore.onLoad = function () {
+                        waitPopup.destroy();
+                        if (typeof (sogneStore.layer.features[0]) === "object") {
+                            var anchor = new OpenLayers.LonLat(sogneStore.layer.features[0].geometry.getCentroid().x, sogneStore.layer.features[0].geometry.getCentroid().y);
+                            $('#modal-fund').html($('#template-sogn').jqote(sogneStore.layer.features[0].data));
+                            $('#modal-fund').modal();
+                        } else {
+                            $("#alert").fadeIn(400).delay(1000).fadeOut(400);
+                        }
+                    }
+                } else {
+                    store.load()
+                    store.onLoad = function () {
+                        waitPopup.destroy();
+                        if (typeof (store.layer.features[0]) === "object") {
+                            $('#modal-fund').html($('#template-fund').jqote(store.layer.features[0].data));
+                            $("#queryResult").html('<div><h4 style="margin-top:0px">' + store.layer.features[0].data.navn + '</h4></div><div id="teaser-text">' + store.layer.features[0].data.intro_tekst + '</div><div><img class="img-rounded images-small" src="' + imageDir + '/' + store.layer.features[0].data.image1 + '"></div>')
+
+                            var from_px = ((store.layer.features[0].data.fra_tid + 3500) * 0.25);
+                            var to_px = ((store.layer.features[0].data.til_tid + 3500) * 0.25);
+                            var width_px = to_px - from_px + 10;
+                            $("#time").css("left", from_px + "px");
+                            $("#time").css("width", width_px + "px");
+                            $("#time-popover").css("left", width_px / 2 - 125 + "px");
+                            //$("#time-line").fadeIn(400).delay(1000);
+                            $("#periode").html("År " + store.layer.features[0].data.fra_tid + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;År " + store.layer.features[0].data.til_tid)
+                        } else {
+                            $("#alert").fadeIn(400).delay(1000).fadeOut(400);
+                            $("#time-line").fadeOut(400).delay(1000);
+                        }
+                    }
+                }
+            }
+        });
+        var click = new cloud.clickController();
+        cloud.map.addControl(click);
+        click.activate();
+
+        cloud.addTileLayers({
+            layers: ["www.master"],
+            db: "vmus",
+            name: "master",
+            tileCached: true,
+            visibility: true
+        })[0];
+
+        kommuner = cloud.addTileLayers({
+            layers: ["public.kommuner"],
+            db: "vmus",
+            name: "kommuner",
+            visibility: true
+        })[0];
+
+        addLegend();
+
+        sogne = cloud.addTileLayers({
+            layers: ["kulturarvstjenesten.sogne"],
+            db: "vmus",
+            name: "sogne",
+            visibility: false
+        })[0];
+        $("#sogn-btn").click(function () {
+            switchLayer("sogne");
+        })
+        var layers = {};
+        $.ajax({
+            url: hostname + '/api/v1/meta/' + db + '/' + schema,
+            async: false,
+            dataType: 'jsonp',
+            jsonp: 'jsonp_callback',
+            success: function (response) {
+                var base64name, cv, i;
+                metaData = response;
+                for (var i = 0; i < metaData.data.length; i++) {
+                    metaDataKeys[metaData.data[i].f_table_name] = metaData.data[i];
+                    (metaData.data[i].f_table_title) ? metaDataKeysTitle[metaData.data[i].f_table_title] = metaData.data[i] : null;
+                }
+
+                //console.log(metaDataKeysTitle);
+                var groups = [];
+                for (var i = 0; i < response.data.length; ++i) {
+                    groups[i] = response.data[i].layergroup;
+                }
+                var arr = array_unique(groups);
+                for (var u = 0; u < response.data.length; ++u) {
+                    if (response.data[u].baselayer) {
+                        var isBaseLayer = true;
+                    } else {
+                        var isBaseLayer = false;
+                    }
+                    layers[[response.data[u].f_table_schema + "." + response.data[u].f_table_name]] = cloud.addTileLayers({
+                        layers: [response.data[u].f_table_schema + "." + response.data[u].f_table_name],
+                        db: "vmus",
+                        isBaseLayer: isBaseLayer,
+                        tileCached: true,
+                        visibility: false,
+                        wrapDateLine: false,
+                        displayInLayerSwitcher: true,
+                        name: response.data[u].f_table_name
+                    });
+                }
+                for (i = 0; i < arr.length; ++i) {
+                    if (arr[i] && arr[i] !== "Master" && arr[i] !== "Default group") {
+                        var l = [];
+                        cv = ( typeof (metaDataKeysTitle[arr[i]]) === "object") ? metaDataKeysTitle[arr[i]].f_table_name : null;
+                        base64name = Base64.encode(arr[i]).replace(/=/g, "");
+                        $("#layers").append('<div id="group-' + base64name + '" class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#layers" href="#collapse' + base64name + '" onclick="MapCentia.resetAllButtons();MapCentia.switchLayer(\'' + cv + '\')"> ' + arr[i] + ' </a></div></div>');
+                        $("#group-" + base64name).append('<div id="collapse' + base64name + '" class="accordion-body collapse"></div>');
+                        for (var u = 0; u < response.data.length; ++u) {
+                            if (response.data[u].layergroup == arr[i]) {
+                                var text = (response.data[u].f_table_title === null || response.data[u].f_table_title === "") ? response.data[u].f_table_name : response.data[u].f_table_title;
+                                $("#collapse" + base64name).append('<div class="accordion-inner"><button type="button" class="btn btn-mini btn-layer" data-toggle="button" style="width:100px" id="' + response.data[u].f_table_name + '" onclick="MapCentia.switchLayer(this.id)">' + text + '</button></div>');
+                                l.push({
+                                    text: (response.data[u].f_table_title === null || response.data[u].f_table_title === "") ? response.data[u].f_table_name : response.data[u].f_table_title,
+                                    id: response.data[u].f_table_schema + "." + response.data[u].f_table_name,
+                                    leaf: true,
+                                    checked: false
+                                });
+                            }
+                        }
+                    }
+                }
+                $(function () {
+                    $("#layers-popover").popover({
+                        offset: 10,
+                        html: true,
+                        content: $("#layers")
+                    });
+                    $("#layers-popover").popover('show');
+                    $("#layers-popover").popover('hide');
+                    $("#base-layers-popover").popover({
+                        offset: 10,
+                        html: true,
+                        content: $("#base-layers")
+                    });
+                    $("#base-layers-popover").popover('show');
+                    $("#base-layers-popover").popover('hide');
+                })
+            }
+        });
+        return {
+            resetAllButtons: resetAllButtons,
+            switchLayer: switchLayer,
+            cloud: cloud
+        }
+    })();
+</script>
