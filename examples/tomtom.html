@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>TomTom</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+</body>
+<script src='http://cdn.eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=ol2'></script>
+<script>
+    (function () {
+        // Create a new map object in element with id 'map-div'
+        var db = "priber", map = new geocloud.map({
+            el: "map",
+            olControls: [
+                new OpenLayers.Control.LayerSwitcher(),
+                new OpenLayers.Control.Zoom(),
+                new OpenLayers.Control.Attribution(),
+                new OpenLayers.Control.TouchNavigation({
+                    dragPanOptions: {
+                        enableKinetic: true
+                    }
+                })
+            ]
+        });
+        // Add a base layers
+        map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
+        map.addBaseLayer("tomtom.autat2_nw", db);
+        map.addBaseLayer(geocloud.BINGROAD);
+        map.addBaseLayer(geocloud.OSM);
+        map.setBaseLayer("tomtom.autat2_nw");
+        //map.setBaseLayer(geocloud.BINGROAD);
+        // Create a GeoJSON store
+        var store = new geocloud.geoJsonStore({
+            db: db,
+            sql: "SELECT seq, id1 AS node, id2 AS edge, cost, b.the_geom FROM pgr_dijkstra('" +
+            "SELECT gid AS id," +
+            "source::integer," +
+            "target::integer," +
+            "_length %20%2B (frc/10)::double precision AS cost," +
+            "reverse_cost::double precision " +
+            "FROM tomtom.autat2_nw', 10370, 14283, false, true) a LEFT JOIN tomtom.autat2_nw b ON (a.id2 = b.gid)",
+            styleMap: new OpenLayers.StyleMap({
+                strokeWidth: 3,
+                strokeOpacity: 1,
+                strokeColor: "#0000FF"
+            })
+        });
+        // Add the store as a vector overlay
+        map.addGeoJsonStore(store);
+        // Fire the SQL
+        store.load();
+        // Define a callback for when the SQL returns
+        store.onLoad = function () {
+            // Zoom to vector layer
+            map.zoomToExtentOfgeoJsonStore(store);
+        }
+    })();
+</script>
+</html>
