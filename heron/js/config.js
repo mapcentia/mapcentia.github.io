@@ -523,7 +523,8 @@ MapCentia.init = function () {
                             queryWin.show();
                             var layers, hit = false, distance, db = "envimatix",
                                 event = new geocloud.clickEvent(e, MapCentia.gc2),
-                                coords = event.getCoordinate(), numOfRasters = 0, index = 0;;
+                                coords = event.getCoordinate(), numOfRasters = 0, index = 0;
+                            ;
                             $.each(qstore, function (index, st) {
                                 try {
                                     st.reset();
@@ -536,9 +537,9 @@ MapCentia.init = function () {
                             layers = MapCentia.gc2.getVisibleLayers().split(";");
                             // Count raster layers
                             $.each(layers, function (index, value) {
-                               // if (metaDataKeys[value.split(".")[1]].type === "RASTER") {
-                                    numOfRasters++;
-                               // }
+                                // if (metaDataKeys[value.split(".")[1]].type === "RASTER") {
+                                numOfRasters++;
+                                // }
                             });
                             Ext.getCmp("queryTabs").removeAll();
                             (function iter() {
@@ -818,6 +819,37 @@ MapCentia.init = function () {
                                             }
                                             poilayer.redraw();
                                         }
+                                    }, '-',
+
+                                        'Neighborhood ',
+                                    {
+                                        tooltip: "Select which pixel neighborhood for the mean value",
+                                        iconCls: 'icon-chart-curve',
+                                        xtype: "combo",
+                                        editable: false,
+                                        displayField: 'name',
+                                        valueField: 'value',
+                                        mode: 'local',
+                                        id: "neighborhood",
+                                        width: 60,
+                                        store: new Ext.data.JsonStore({
+                                            fields: ['name', 'value'],
+                                            data: [
+                                                {
+                                                    name: '3x3',
+                                                    value: '1'
+                                                }, {
+                                                    name: '9x9',
+                                                    value: '4'
+                                                }, {
+                                                    name: '19x19',
+                                                    value: '9'
+                                                }
+                                            ]
+                                        }),
+                                        triggerAction: "all",
+                                        allowBlank: false,
+                                        value: "1"
                                     }, '-',
                                     {
                                         text: "Plot graph",
@@ -1147,6 +1179,7 @@ MapCentia.init = function () {
                                 });
                                 var sql, f_geometry_column = metaDataKeys[layers[index].split(".")[1]].f_geometry_column;
                                 var unions = [];
+                                var neighborhood = Ext.getCmp("neighborhood").value;
                                 for (var i = 0; i < coords.length; i++) {
                                     unions.push(
                                         "SELECT * FROM (" +
@@ -1162,7 +1195,7 @@ MapCentia.init = function () {
                                         "," +
                                         "map as (" +
                                         "SELECT " +
-                                        "ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 4, 4) as newrast1 " +
+                                        "ST_MapAlgebra(rast, 1, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, " + neighborhood + ", " + neighborhood + ") as newrast1 " +
                                             //"ST_MapAlgebra(rast, 2, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast2," +
                                             //"ST_MapAlgebra(rast, 3, 'ST_Mean4ma(double precision[], integer[], text[])'::regprocedure, NULL, NULL, NULL, 1, 1) as newrast3 " +
                                         "from rastunion) " +
@@ -1383,7 +1416,19 @@ MapCentia.init = function () {
         {type: "zoomin"},
         {type: "zoomout"},
         {type: "zoomvisible"},
-        {type: "coordinatesearch", options: {onSearchCompleteZoom: 8}},
+        {
+            type: "coordinatesearch", options: {
+            onSearchCompleteZoom: 8,
+            showProjection: false,
+            hropts: [{
+                projEpsg: 'EPSG:4326',
+                fieldLabelX: 'Lon',
+                fieldLabelY: 'Lat',
+                fieldEmptyTextX: 'Enter Lon-coordinate...',
+                fieldEmptyTextY: 'Enter Lat-coordinate...'
+            }]
+        }
+        },
         {type: "-"},
         {type: "zoomprevious"},
         {type: "zoomnext"},
