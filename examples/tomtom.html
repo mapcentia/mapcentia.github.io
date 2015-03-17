@@ -39,10 +39,10 @@
         });
         // Add a base layers
         map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
-        map.addBaseLayer("tomtom.autat2_nw", db);
+        map.addBaseLayer("tomtom", db);
         map.addBaseLayer(geocloud.BINGROAD);
         map.addBaseLayer(geocloud.OSM);
-        map.setBaseLayer("tomtom.autat2_nw");
+        map.setBaseLayer("tomtom");
         //map.setBaseLayer(geocloud.BINGROAD);
         // Create a GeoJSON store
         var store = new geocloud.geoJsonStore({
