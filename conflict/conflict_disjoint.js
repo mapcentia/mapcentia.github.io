@@ -15,7 +15,7 @@ var cowi = (function () {
         (visible) ? cloudMap.map.getLayersByName(id)[0].setVisibility(true) : cloudMap.map.getLayersByName(id)[0].setVisibility(false);
         addLegend();
     };
-    var init_search = function (db, komKode, layers, bbox, callback, baseLayer) {
+    var init_search = function (db, komKode, layers, bbox, callback, baseLayer, useAreaWithAddress) {
         cloudMap = new mygeocloud_ol.map("map", db);
         cloudMap.addBaseLayer(baseLayer || "dtkSkaermkortDaempet");
         cloudMap.setBaseLayer(baseLayer || "dtkSkaermkortDaempet");
@@ -144,14 +144,18 @@ var cowi = (function () {
                             var regex = new RegExp('(' + s + ')', 'gi');
                             item = item.replace(regex, "<b>$1</b>");
                         }
-                    )
+                    );
                     return item;
                 },
                 items: 10
             });
             var showOnMap = function (gid) {
                 store.reset();
-                store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
+                if (useAreaWithAddress) {
+                    store.sql = "SELECT adresse.adgang.the_geom as a_the_geom,matrikel.jordstykke.the_geom as m_the_geom,ST_astext(adresse.adgang.the_geom) as a_wkt,ST_astext(matrikel.jordstykke.the_geom) as wkt FROM adresse.adgang, matrikel.jordstykke WHERE ST_intersects(matrikel.jordstykke.the_geom, adresse.adgang.the_geom) AND adresse.adgang.gid=" + gid;
+                } else {
+                    store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
+                }
                 store.load();
             };
             store = new geocloud.geoJsonStore({
@@ -211,9 +215,11 @@ var cowi = (function () {
                             if (item.toLowerCase().indexOf($.trim(s).toLowerCase()) === false) {
                                 flag = false;
                             }
-                            else flag = true;
+                            else {
+                                flag = true;
+                            }
                         }
-                    )
+                    );
                     return flag;
                 },
                 sorter: function (items) {
