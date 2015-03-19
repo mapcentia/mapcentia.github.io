@@ -20,22 +20,13 @@
 <body>
 <div id="map"></div>
 </body>
-<script src='http://cdn.eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=ol2'></script>
+<script src='http://192.168.33.10/api/v3/js/geocloud.php?maplib=ol2'></script>
 <script>
     (function () {
         // Create a new map object in element with id 'map-div'
-        var db = "priber", map = new geocloud.map({
+        var db = "mydb", map = new geocloud.map({
             el: "map",
-            olControls: [
-                new OpenLayers.Control.LayerSwitcher(),
-                new OpenLayers.Control.Zoom(),
-                new OpenLayers.Control.Attribution(),
-                new OpenLayers.Control.TouchNavigation({
-                    dragPanOptions: {
-                        enableKinetic: true
-                    }
-                })
-            ]
+            showLayerSwitcher: true
         });
         // Add a base layers
         map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
@@ -45,8 +36,9 @@
         map.setBaseLayer("tomtom");
         //map.setBaseLayer(geocloud.BINGROAD);
         // Create a GeoJSON store
-        var store = new geocloud.geoJsonStore({
+        var storeA = new geocloud.geoJsonStore({
             db: db,
+            name: "Route A",
             sql: "SELECT seq, id1 AS node, id2 AS edge, cost, b.the_geom FROM pgr_dijkstra('" +
             "SELECT gid AS id," +
             "source::integer," +
@@ -60,14 +52,32 @@
                 strokeColor: "#0000FF"
             })
         });
+        var storeB = new geocloud.geoJsonStore({
+            db: db,
+            name: "Route B",
+            sql: "SELECT seq, id1 AS node, id2 AS edge, cost, b.the_geom FROM pgr_dijkstra('" +
+            "SELECT gid AS id," +
+            "source::integer," +
+            "target::integer," +
+            "_length %20%2B (frc/10)::double precision AS cost," +
+            "reverse_cost::double precision " +
+            "FROM tomtom.autat2_nw', 14283, 4932, false, true) a LEFT JOIN tomtom.autat2_nw b ON (a.id2 = b.gid)",
+            styleMap: new OpenLayers.StyleMap({
+                strokeWidth: 3,
+                strokeOpacity: 1,
+                strokeColor: "#FF0000"
+            })
+        });
         // Add the store as a vector overlay
-        map.addGeoJsonStore(store);
+        map.addGeoJsonStore(storeA);
+        map.addGeoJsonStore(storeB);
         // Fire the SQL
-        store.load();
+        storeA.load();
+        storeB.load();
         // Define a callback for when the SQL returns
-        store.onLoad = function () {
+        storeA.onLoad = function () {
             // Zoom to vector layer
-            map.zoomToExtentOfgeoJsonStore(store);
+            map.zoomToExtentOfgeoJsonStore(storeA);
         }
     })();
 </script>
