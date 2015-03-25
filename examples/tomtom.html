@@ -15,70 +15,114 @@
             width: 100%;
             height: 100%;
         }
+
+        #coords {
+            position: absolute;
+            display: block;
+            z-index: 2;
+            background-color: #002a80;
+            top: 20px;
+            left: 50px;
+            padding: 10px;
+        }
+
+        #coords input {
+            margin-bottom: 10px;
+            width: 150px;
+        }
     </style>
 </head>
 <body>
 <div id="map"></div>
+<div id="coords">
+    <input type="text" id="c1" value="16.239874 48.213536"><br>
+    <input type="text" id="c2" value="16.4580934 48.2493524"><br>
+    <input type="text" id="c3" value="16.3738725 48.1783449"><br>
+    <input type="button" value="Go" onclick="go()">
+</div>
 </body>
 <script src='http://cdn.eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=ol2'></script>
 <script>
-    (function () {
-        // Create a new map object in element with id 'map-div'
-        var db = "priber", map = new geocloud.map({
-            el: "map",
-            showLayerSwitcher: true
-        });
-        // Add a base layers
-        map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
-        map.addBaseLayer("tomtom", db);
-        map.addBaseLayer(geocloud.BINGROAD);
-        map.addBaseLayer(geocloud.OSM);
-        map.setBaseLayer("tomtom");
-        //map.setBaseLayer(geocloud.BINGROAD);
-        // Create a GeoJSON store
-        var storeA = new geocloud.geoJsonStore({
-            db: db,
-            name: "Route A",
-            sql: "SELECT seq, id1 AS node, id2 AS edge, cost, b.the_geom FROM pgr_dijkstra('" +
-            "SELECT gid AS id," +
-            "source::integer," +
-            "target::integer," +
-            "_length %20%2B (frc/10)::double precision AS cost," +
-            "reverse_cost::double precision " +
-            "FROM tomtom.autat2_nw', 10370, 14283, false, true) a LEFT JOIN tomtom.autat2_nw b ON (a.id2 = b.gid)",
-            styleMap: new OpenLayers.StyleMap({
-                strokeWidth: 3,
-                strokeOpacity: 1,
-                strokeColor: "#0000FF"
-            })
-        });
-        var storeB = new geocloud.geoJsonStore({
-            db: db,
-            name: "Route B",
-            sql: "SELECT seq, id1 AS node, id2 AS edge, cost, b.the_geom FROM pgr_dijkstra('" +
-            "SELECT gid AS id," +
-            "source::integer," +
-            "target::integer," +
-            "_length %20%2B (frc/10)::double precision AS cost," +
-            "reverse_cost::double precision " +
-            "FROM tomtom.autat2_nw', 14283, 4932, false, true) a LEFT JOIN tomtom.autat2_nw b ON (a.id2 = b.gid)",
-            styleMap: new OpenLayers.StyleMap({
-                strokeWidth: 3,
-                strokeOpacity: 1,
-                strokeColor: "#FF0000"
-            })
-        });
-        // Add the store as a vector overlay
-        map.addGeoJsonStore(storeA);
-        map.addGeoJsonStore(storeB);
-        // Fire the SQL
-        storeA.load();
-        storeB.load();
-        // Define a callback for when the SQL returns
-        storeA.onLoad = function () {
-            // Zoom to vector layer
-            map.zoomToExtentOfgeoJsonStore(storeA);
+    // Create a new map object in element with id 'map-div'
+    var go, storeA, storeB, db = "priber", map = new geocloud.map({
+        el: "map",
+        showLayerSwitcher: true
+    });
+    // Add a base layers
+    map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
+    map.addBaseLayer("tomtom", db);
+    map.addBaseLayer(geocloud.BINGROAD);
+    map.addBaseLayer(geocloud.OSM);
+    map.setBaseLayer("tomtom");
+    map.zoomToExtent([1799113.3128597, 6134015.3582665, 1847345.0777009, 6149532.0750063]);
+
+    go = function () {
+        var getIds, ids = [], count = 0, distance = 0.1, coords = [$("#c1").val(), $("#c2").val(), $("#c3").val()],
+                store = new geocloud.geoJsonStore({
+                    db: db
+                });
+        try {
+            storeA.reset();
+            storeB.reset();
         }
-    })();
+        catch (e){}
+        store.onLoad = function () {
+            ids.push(store.geoJSON.features[0].properties.id);
+            if (count < coords.length) {
+                getIds();
+            } else { // Finish getting ids
+                storeA = new geocloud.geoJsonStore({
+                    db: db,
+                    name: "Route A",
+                    sql: "SELECT seq, id1 AS node, id2 AS edge, cost, b.the_geom FROM pgr_dijkstra('" +
+                    "SELECT gid AS id," +
+                    "source::integer," +
+                    "target::integer," +
+                    "_length %20%2B (frc/10)::double precision AS cost," +
+                    "reverse_cost::double precision " +
+                    "FROM tomtom.autat2_nw', " + ids[0] + ", " + ids[1] + ", false, true) a LEFT JOIN tomtom.autat2_nw b ON (a.id2 = b.gid)",
+                    styleMap: new OpenLayers.StyleMap({
+                        strokeWidth: 3,
+                        strokeOpacity: 1,
+                        strokeColor: "#0000FF"
+                    })
+                });
+                storeB = new geocloud.geoJsonStore({
+                    db: db,
+                    name: "Route B",
+                    sql: "SELECT seq, id1 AS node, id2 AS edge, cost, b.the_geom FROM pgr_dijkstra('" +
+                    "SELECT gid AS id," +
+                    "source::integer," +
+                    "target::integer," +
+                    "_length %20%2B (frc/10)::double precision AS cost," +
+                    "reverse_cost::double precision " +
+                    "FROM tomtom.autat2_nw', " + ids[1] + ", " + ids[2] + ", false, true) a LEFT JOIN tomtom.autat2_nw b ON (a.id2 = b.gid)",
+                    styleMap: new OpenLayers.StyleMap({
+                        strokeWidth: 3,
+                        strokeOpacity: 1,
+                        strokeColor: "#FF0000"
+                    })
+                });
+                // Add the store as a vector overlay
+                map.addGeoJsonStore(storeA);
+                map.addGeoJsonStore(storeB);
+                // Fire the SQLs
+                storeA.load();
+                storeB.load();
+                // Define a callback for when the SQL returns
+                storeA.onLoad = function () {
+                    // Zoom to vector layer
+                    // map.zoomToExtentOfgeoJsonStore(storeA);
+                }
+            }
+        };
+        getIds = function () {
+            store.sql = "SELECT id FROM tomtom.autat2_nw_vertices_pgr WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(" + coords[count] + ")',4326)) < " + distance +
+            " ORDER BY ST_Distance(the_geom, ST_GeomFromText('POINT(" + coords[count] + ")',4326)) LIMIT 1";
+            count = count + 1;
+            store.load()
+        };
+        getIds();
+    };
 </script>
 </html>
