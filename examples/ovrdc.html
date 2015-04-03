@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapcentia Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet'/>
+    <script src='http://cdn.us1.mapcentia.com/js/leaflet/leaflet.js'></script>
+    <script src='http://us1.mapcentia.com/api/v3/js/geocloud.js'></script>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        html, body, #map {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+
+    (function () {
+        // Create a new map object in element with id 'map' with the geocloud.js wrapper
+        // The property map.map is the native Leaflet object.
+
+        var map = new geocloud.map({
+            el: "map"
+        });
+
+        // Create a Leaflet layer and add it to map.map
+        var acetate = L.tileLayer('http://a{s}.acetate.geoiq.com/tiles/acetate-hillshading/{z}/{x}/{y}.png', {
+            attribution: '&copy;2012 Esri & Stamen, Data from OSM and Natural Earth',
+            subdomains: '0123',
+            maxZoom: 20,
+            maxNativeZoom: 17
+        }).addTo(map.map);
+
+        // Create a GeoJSON store which will fire a jsonp request. Don't defined a callback
+        // store.layer holds the native leaflet geojson-layer object.
+
+        var store = new geocloud.geoJsonStore({
+            // Set the database. The address is set from the origin of geocloud.js. In this case us1.mapcentia.com
+            db: "ovrdc",
+            // Only the SQL
+            sql: "SELECT * FROM public.btrail",
+            // Cache the result on the server in secs
+            lifetime: (3600 * 24)
+        });
+        // Fire the SQL
+        store.load();
+
+        // Add the vector layer to the map
+        map.addGeoJsonStore(store);
+
+        // Define a callback for when the SQL returns
+        store.onLoad = function () {
+            // Zoom to vector layer
+            map.zoomToExtentOfgeoJsonStore(this);
+        }
+    })();
+</script>
+</body>
+<!-- No need to load Jquery. Geocloud.js loads the lib if its not already has been.
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
+</html>
