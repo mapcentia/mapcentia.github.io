@@ -35,13 +35,14 @@
 <body>
 <div id="map"></div>
 <div id="coords">
-    <input type="text" id="c1" value="16.239874 48.213536"><br>
-    <input type="text" id="c2" value="16.4580934 48.2493524"><br>
-    <input type="text" id="c3" value="16.3738725 48.1783449"><br>
+    <input type="text" id="c1" value="12.72592 46.7012548"><br>
+    <input type="text" id="c2" value="13.930546 46.561595"><br>
+    <input type="text" id="c3" value="14.9368902 46.9533063"><br>
     <input type="button" value="Go" onclick="go()">
 </div>
 </body>
 <script src='http://cdn.eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=ol2'></script>
+<!--<script src='http://192.168.33.10/api/v3/js/geocloud.php?maplib=ol2'></script>-->
 <script>
     // Create a new map object in element with id 'map-div'
     var go, storeA, storeB, db = "priber", map = new geocloud.map({
@@ -50,11 +51,11 @@
     });
     // Add a base layers
     map.bingApiKey = "Avt2oTtuFcQ2rzuy41B5DGydLYOxpgZaxuHkc4Ktgu6sG_6y-Ja6ncptoxbelYdx";
-    map.addBaseLayer("tomtom", db);
+    map.addBaseLayer("tomtom2", db);
     map.addBaseLayer(geocloud.BINGROAD);
     map.addBaseLayer(geocloud.OSM);
-    map.setBaseLayer("tomtom");
-    map.zoomToExtent([1799113.3128597, 6134015.3582665, 1847345.0777009, 6149532.0750063]);
+    map.setBaseLayer("tomtom2");
+    map.zoomToExtent([1414594.82262458,5843994.23728396,1676939.77452083,5955767.04809975]);
 
     go = function () {
         var getIds, ids = [], count = 0, distance = 0.1, coords = [$("#c1").val(), $("#c2").val(), $("#c3").val()],
@@ -80,7 +81,7 @@
                     "target::integer," +
                     "_length %20%2B (frc/10)::double precision AS cost," +
                     "reverse_cost::double precision " +
-                    "FROM tomtom.autat2_nw', " + ids[0] + ", " + ids[1] + ", false, true) a LEFT JOIN tomtom.autat2_nw b ON (a.id2 = b.gid)",
+                    "FROM tomtom2.autat12_nw', " + ids[0] + ", " + ids[1] + ", false, true) a LEFT JOIN tomtom2.autat12_nw b ON (a.id2 = b.gid)",
                     styleMap: new OpenLayers.StyleMap({
                         strokeWidth: 3,
                         strokeOpacity: 1,
@@ -96,7 +97,7 @@
                     "target::integer," +
                     "_length %20%2B (frc/10)::double precision AS cost," +
                     "reverse_cost::double precision " +
-                    "FROM tomtom.autat2_nw', " + ids[1] + ", " + ids[2] + ", false, true) a LEFT JOIN tomtom.autat2_nw b ON (a.id2 = b.gid)",
+                    "FROM tomtom2.autat12_nw', " + ids[1] + ", " + ids[2] + ", false, true) a LEFT JOIN tomtom2.autat12_nw b ON (a.id2 = b.gid)",
                     styleMap: new OpenLayers.StyleMap({
                         strokeWidth: 3,
                         strokeOpacity: 1,
@@ -117,7 +118,7 @@
             }
         };
         getIds = function () {
-            store.sql = "SELECT id FROM tomtom.autat2_nw_vertices_pgr WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(" + coords[count] + ")',4326)) < " + distance +
+            store.sql = "SELECT id FROM tomtom2.autat12_nw_vertices_pgr WHERE ST_Distance(the_geom, ST_GeomFromText('POINT(" + coords[count] + ")',4326)) < " + distance +
             " ORDER BY ST_Distance(the_geom, ST_GeomFromText('POINT(" + coords[count] + ")',4326)) LIMIT 1";
             count = count + 1;
             store.load()
