@@ -119,7 +119,7 @@ mapcentia_lokalplaner = (function () {
                         grid.grid.getSelectionModel().each(function (rec) {
                             feature = rec.get('feature');
                         });
-                        var link = "http://plandk2.mapcentia.com/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + feature.attributes.planid;
+                        var link = defaults.host + "/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + feature.attributes.planid;
                         var record = grid.grid.getSelectionModel().getSelected();
                         window.open(link);
                     }
