@@ -18,6 +18,7 @@ var search = (function () {
             var typeFlag;
 
             store = new geocloud.geoJsonStore({
+                host: "http://eu1.mapcentia.com",
                 db: "dk",
                 sql: null,
                 onLoad: function () {
