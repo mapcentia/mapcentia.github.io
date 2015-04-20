@@ -20,14 +20,13 @@
     (function () {
         gc2map.init({
             db: 'mydb',
-            // layers: ['public.urban_areas'],
             zoom: [9.865, 55.58239999999999, 8],
             setBaseLayer: 'osm',
             width: '100%',
             height: '100%',
             schema: 'public',
             callBack: function (e) {
-                var tweetGroups = new L.MarkerClusterGroup({
+                var groups = new L.MarkerClusterGroup({
                     maxClusterRadius: 100,
                     iconCreateFunction: null,
                     spiderfyOnMaxZoom: true,
@@ -39,13 +38,9 @@
                     db: "trackunit",
                     sql: "SELECT * FROM trackunit.units",
                     lifetime: 3600,
-                    onLoad: function () {
-                        // Zoom to vector layer
-                        //e.zoomToExtentOfgeoJsonStore(store);
-                    },
                     pointToLayer: function (feature, latlng) {
-                        tweetGroups.addLayer(L.marker(latlng));
-                        return tweetGroups;
+                        groups.addLayer(L.marker(latlng));
+                        return groups;
                     }
                 });
                 e.addGeoJsonStore(store);
