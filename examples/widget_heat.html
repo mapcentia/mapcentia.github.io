@@ -20,7 +20,6 @@
     (function () {
         gc2map.init({
             db: 'mydb',
-            // layers: ['public.urban_areas'],
             zoom: [9.865, 55.58239999999999, 8],
             setBaseLayer: 'osm',
             width: '100%',
@@ -32,24 +31,20 @@
                     sql: "SELECT * FROM trackunit.units",
                     lifetime: 3600,
                     onLoad: function () {
-                        // Zoom to vector layer
-                        //e.zoomToExtentOfgeoJsonStore(store);
                         var points = [], features = store.geoJSON.features, temp;
                         for (var key in features) {
                             if (features.hasOwnProperty(key)) {
                                 features[key].geometry.coordinates.reverse();
                                 features[key].geometry.coordinates.push(features[key].properties.run1 + "")
-                                console.log(features[key].geometry.coordinates);
                                 points.push(features[key].geometry.coordinates)
                             }
                         }
-                        var heat = L.heatLayer(points,{
-                            blur: 50
+                        L.heatLayer(points,{
+                            blur: 40
                         }).addTo(e.map);
                     }
                 });
                 store.load();
-
             }
         });
     }())
