@@ -308,6 +308,12 @@ var cowi = (function () {
                                     $('#result-table').append("<tr><td></td><td><a target='_blank' href=" + value.properties.html + ">" + value.properties.plannr + "</a></td></tr>");
                                 });
                         }
+                        if (this.id.split('.')[1] === "delopland_view") {
+                            $.each(this.geoJSON.features,
+                                function (key, value) {
+                                    $('#result-table').append("<tr><td></td><td>" + value.properties.titel + " | " + value.properties.tekst + "</td></tr>");
+                                });
+                        }
                     }
                     count++;
                     if (count === arr.length) {
