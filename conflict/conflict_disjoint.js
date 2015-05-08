@@ -311,7 +311,7 @@ var cowi = (function () {
                         if (this.id.split('.')[1] === "delopland_view") {
                             $.each(this.geoJSON.features,
                                 function (key, value) {
-                                    $('#result-table').append("<tr><td></td><td>" + value.properties.titel + " | " + value.properties.tekst + "</td></tr>");
+                                    $('#result-table').append("<tr><td></td><td>" + value.properties.titel + "<br>" + value.properties.tekst + "</td></tr>");
                                 });
                         }
                     }
