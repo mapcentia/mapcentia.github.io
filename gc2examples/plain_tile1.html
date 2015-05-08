@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src='http://192.168.33.10//api/v3/js/geocloud.php?maplib=leaflet&loadcss=false'></script>
+</head>
+
+<body>
+<div style="width: 500px;height: 500px; position: relative" id="map"></div>
+</body>
+<script>
+    var gc2 = new geocloud.map({
+        el: "map"
+    });
+    // Add a base layer
+    gc2.addBaseLayer("osm");
+    // Set a base layer active
+    gc2.setBaseLayer("osm");
+    var layers = gc2.addTileLayers({
+        db: "mydb",
+        layers: ['public.earthquakes1970']
+    });
+    gc2.map.setView([0, 0], 1);
+</script>
+</html>
