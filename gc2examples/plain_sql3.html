@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src='http://eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false'></script>
+</head>
+<body>
+<div style="width: 500px;height: 500px; position: relative" id="map"></div>
+</body>
+<script>
+    // Create a new map object in element with id 'map-div'
+    var map = new geocloud.map({el: "map"});
+
+    map.addBaseLayer(geocloud.OSM);
+
+    map.setBaseLayer(geocloud.OSM);
+
+    // Create a GeoJSON store with a SELECT query
+    var store = new geocloud.sqlStore({
+        // Use GeoCloud 'mydb'
+        db: "mydb_eu",
+
+        // Set the SQL
+        sql: "SELECT * FROM public.ne_50m_admin_0_countries_lakes WHERE region_un='Africa'",
+
+        // Cache the JSON on the server
+        lifetime: 9999999,
+
+        // Define a callback for when the SQL returns
+        onLoad: function () {
+            // Zoom to vector layer
+            map.zoomToExtentOfgeoJsonStore(this);
+        },
+
+        // Define style map with dynamic fillColor
+        styleMap: function (feature) {
+            return {
+                fillColor: getColor(feature.properties.pop_est),
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7
+            }
+        }
+    });
+
+    // Define a function for returning colors
+    function getColor(d) {
+        return d > 30000000 ? '#800026' :
+                d > 25000000 ? '#BD0026' :
+                        d > 20000000 ? '#E31A1C' :
+                                d > 15000000 ? '#FC4E2A' :
+                                        d > 10000000 ? '#FD8D3C' :
+                                                d > 5000000 ? '#FEB24C' :
+                                                        d > 1000000 ? '#FED976' :
+                                                                '#FFEDA0';
+    }
+    // Add the store as a vector overlay
+    map.addGeoJsonStore(store);
+
+    // Fire the SQL
+    store.load();
+</script>
+</html>
