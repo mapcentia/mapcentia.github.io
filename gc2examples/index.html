@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <style>
+        .row > div > a:nth-child(1) {
+
+        }
+
+        .row > div > div > a:nth-child(2) {
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="jumbotron">
+        <h1>Hello, world!</h1>
+
+        <p>The GC2 API is a thin wrapper around Leaflet. Its makes it easy to initiate a Leaflet map with tile and vector overlays from a GC2 server. Also it defines commonly used base layers from providers like OSM, Google Maps, Bing Maps, Here Maps and Stamen.</p>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h3>Basic tile map</h3>
+
+            <p>Basic example. Map with a base layer and a tile overlay. An tile overlay can be refereed to as [schema].[table]</p>
+
+            <div>
+                <a href="plain_tile1.html">Show me</a>
+                <a target="_blank"
+                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/plain_tile1.html">Source</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h3>Map with multiple base layers and tile overlays</h3>
+
+            <p>Map with multiple base layers and tile overlays with custom titles. The API define several base layers. If Google Maps are used, the API will asynchronously load the Google Maps API.</p>
+
+            <div>
+                <a href="plain_tile2.html" role="button">Show me</a>
+                <a target="_blank"
+                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/plain_tile1.html"
+                   role="button">Source</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h3>Basic vector map</h3>
+
+            <p>Map with vector overlay from a SQL store. The store loads data as GeoJSON defined by a SELECT query.</p>
+
+            <div>
+                <a href="plain_sql1.html" role="button">Show me</a>
+                <a target="_blank"
+                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/plain_sql1.html"
+                   role="button">Source</a>
+            </div>
+
+        </div>
+        <div class="col-md-3">
+            <h3>Map with custom Awesome Markers and pop-up</h3>
+
+            <p>Use Awesome Markers instead of the Leaflet default markers. Also bind pop-ups to the markers and cache the query on the server</p>
+
+            <div>
+                <a href="plain_sql2.html" role="button">Show me</a>
+                <a target="_blank"
+                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/plain_sql2.html"
+                   role="button">Source</a>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <h3>Map with styled overlay</h3>
+
+            <p>Load polygon vectors from a SQL store and add custom classified style map.</p>
+            <div>
+            <a href="plain_sql3.html" role="button">Show me</a>
+
+            <a target="_blank"
+               href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/plain_sql3.html"
+               role="button">Source</a>
+                </div>
+        </div>
+        <div class="col-md-3">
+            <h3>Plain map with async loading</h3>
+
+            <p>The GC2 API, Leaflet and all other scripts and stylesheets can be loaded asynchronously.</p>
+            <div>
+            <a href="plain_async.html" role="button">Show me</a>
+            <a target="_blank"
+               href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/plain_sql3.html"
+               role="button">Source</a>
+    </div>
+        </div>
+    </div>
+
+</div>
+</div>
+</body>
+</html>

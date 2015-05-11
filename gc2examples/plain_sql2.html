@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src='http://eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false'></script>
+</head>
+<body>
+<div style="width: 500px;height: 500px; position: relative" id="map"></div>
+</body>
+<script>
+    // Initiate a geocloud object
+    var gc2 = new geocloud.map({
+        el: "map"
+    });
+
+    // Add a base layer
+    gc2.addBaseLayer("osm");
+
+    // Set a base layer active
+    gc2.setBaseLayer("osm");
+
+    // Create a GeoJSON store with a SELECT query
+    var store = new geocloud.geoJsonStore({
+        db: "mydb_eu",
+        sql: "SELECT * FROM public.earthquakes1970 WHERE magnitude > 8",
+
+        // Cache the SELECT query on the server for an hour
+        lifetime: 3600,
+
+        // Bind a popup to each point
+        onEachFeature: function (feature, layer) {
+            layer.bindPopup(feature.properties['name'] + "<br><i>Magnitude: " + feature.properties['magnitude'] + "</i>");
+        },
+
+        // Make Awesome Markers instead of simple vector point features
+        pointToLayer: function (feature, latlng) {
+            return L.marker(latlng, {
+                zIndexOffset: 10000,
+                icon: L.AwesomeMarkers.icon({
+                            icon: 'star',
+                            markerColor: 'blue',
+                            prefix: 'fa'
+                        }
+                )
+            });
+        }
+    });
+
+    // Add the store as a vector overlay
+    gc2.addGeoJsonStore(store);
+
+    // Define a callback for when the SQL returns
+    store.onLoad = function () {
+
+        // Zoom to vector layer
+        gc2.zoomToExtentOfgeoJsonStore(this);
+    };
+
+    // Run the SQL and load the data
+    store.load();
+</script>
+</html>

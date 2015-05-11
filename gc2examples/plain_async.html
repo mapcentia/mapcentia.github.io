@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+<div>
+    <p>No scripts are loaded. Start loading by pressing the button.</p>
+    <button onclick="loadAPI()">Go!</button>
+</div>
+<div style="width: 500px;height: 500px; position: relative" id="map"></div>
+</body>
+<script>
+    // Define a callback function
+    window.go = function () {
+        var gc2 = new geocloud.map({
+            el: "map"
+        });
+
+        // Add a base layer
+        gc2.addBaseLayer("googleHybrid");
+
+        // Set a base layer active
+        gc2.setBaseLayer("googleHybrid");
+        var layers = gc2.addTileLayers({
+            db: "mydb",
+            layers: ['public.earthquakes1970']
+        });
+
+        // Set the view using the native Leaflet object
+        gc2.map.setView([0, 0], 1);
+    };
+
+    // Function for asynchronous loading of scripts
+    var loadAPI = function () {
+        var js = document.createElement("script");
+        js.type = "text/javascript";
+        js.src = "http://192.168.33.10/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false&callback=go";
+        document.getElementsByTagName("head")[0].appendChild(js);
+    }
+</script>
+
+</html>

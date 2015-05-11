@@ -1,23 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src='http://eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false'></script>
+    <script src='http://192.168.33.10/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false'></script>
 </head>
 <body>
 <div style="width: 500px;height: 500px; position: relative" id="map"></div>
 </body>
 <script>
+    // Initiate a geocloud object
     var gc2 = new geocloud.map({
         el: "map"
     });
     // Add a base layer
     gc2.addBaseLayer("osm");
-    // Set a base layer active
+
+    // Set the base layer active
     gc2.setBaseLayer("osm");
+
+    // Add tile layer from db
     var layers = gc2.addTileLayers({
-        db: "mydb_eu",
+        db: "mydb",
         layers: ['public.earthquakes1970']
     });
+
+    // Access the native Leaflet map object
     gc2.map.setView([0, 0], 1);
 </script>
 </html>
