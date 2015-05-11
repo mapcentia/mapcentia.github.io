@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src='http://192.168.33.10/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false'></script>
+</head>
+<body>
+<div style="width: 500px;height: 500px; position: relative" id="map"></div>
+</body>
+<script>
+    // Initiate a geocloud object
+    var gc2 = new geocloud.map({
+        el: "map"
+    });
+    // Add a base layer
+    gc2.addBaseLayer("osm");
+
+    // Set a base layer active
+    gc2.setBaseLayer("osm");
+
+    // Access the native Leaflet map object
+    gc2.map.setView([0, 0], 2);
+
+    // Create a MarkerClusterGroup
+    var groups = new L.MarkerClusterGroup({});
+
+    // Create a GeoJSON store with a SELECT query
+    var store = new geocloud.geoJsonStore({
+        db: "mydb",
+        sql: "SELECT * FROM public.earthquakes1970 WHERE magnitude > 6",
+        name: "gh",
+        // For each point create a marker with pop-up and add it to the MarkerClusterGroup
+        pointToLayer: function (feature, latlng) {
+            groups.addLayer(L.marker(latlng)
+                    .bindPopup(feature.properties['name'] + "<br><i>Magnitude: " + feature.properties['magnitude'] + "</i>"));
+            return groups;
+        }
+    });
+
+    // Add the store as a vector overlay
+    gc2.addGeoJsonStore(store);
+
+    // Run the SQL and load data
+    store.load();
+</script>
+</html>
