@@ -29,16 +29,14 @@
         sql: "SELECT * FROM public.earthquakes1970 WHERE magnitude > 6",
         name: "Earthquakes",
 
-        // For each point create a marker with pop-up and add it to the MarkerClusterGroup
-        pointToLayer: function (feature, latlng) {
-            groups.addLayer(L.marker(latlng)
-                    .bindPopup(feature.properties['name'] + "<br><i>Magnitude: " + feature.properties['magnitude'] + "</i>"));
-            return groups;
+        // Define a callback for when the SQL returns
+        onLoad: function () {
+
+            // Add store as heatmap, with property "magnitude" as weight with factor 500.
+            // IMPORTANT You must add a heatmap in the onLoad callback
+            gc2.addHeatMap(this, "magnitude", 500);
         }
     });
-
-    // Add the store as a vector overlay
-    gc2.addGeoJsonStore(store);
 
     // Run the SQL and load data
     store.load();
