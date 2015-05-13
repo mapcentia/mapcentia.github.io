@@ -41,7 +41,8 @@
     <input type="button" value="Go" onclick="go()">
 </div>
 </body>
-<script src='http://cdn.eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=ol2'></script>
+<script src='http://193.77.70.94//api/v3/js/geocloud.php?maplib=ol2'></script>
+<!--<script src='http://eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=ol2'></script>-->
 <!--<script src='http://192.168.33.10/api/v3/js/geocloud.php?maplib=ol2'></script>-->
 <script>
     // Create a new map object in element with id 'map-div'
@@ -54,7 +55,9 @@
     map.addBaseLayer("tomtom2", db);
     map.addBaseLayer(geocloud.BINGROAD);
     map.addBaseLayer(geocloud.OSM);
+
     map.setBaseLayer("tomtom2");
+
     map.zoomToExtent([1414594.82262458,5843994.23728396,1676939.77452083,5955767.04809975]);
 
     go = function () {
