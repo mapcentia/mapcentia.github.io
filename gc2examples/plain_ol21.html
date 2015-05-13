@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="http://eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=ol2&loadcss=false" type="text/javascript"></script>
+</head>
+<body>
+<div style="width: 500px;height: 500px; position: relative" id="map"></div>
+</body>
+<script>
+    // Initiate a geocloud object
+    var gc2 = new geocloud.map({
+        el: "map",
+        showLayerSwitcher: true
+    });
+
+
+    // Add a base layers
+    gc2.addBaseLayer("osm");
+    gc2.addBaseLayer("mapQuestOSM");
+    gc2.addBaseLayer("addMapQuestAerial");
+    gc2.addBaseLayer("googleStreets");
+    gc2.addBaseLayer("googleHybrid");
+    gc2.addBaseLayer("googleSatellite");
+    gc2.addBaseLayer("googleTerrain");
+    gc2.addBaseLayer("bingRoad");
+    gc2.addBaseLayer("bingAerialWithLabels");
+    gc2.addBaseLayer("bingAerial");
+    gc2.addBaseLayer("hereNormalDayGrey");
+    gc2.addBaseLayer("hereNormalNightGrey");
+    gc2.addBaseLayer("stamenToner");
+    gc2.addBaseLayer("stamenTonerLite");
+    gc2.addBaseLayer("mapBoxNaturalEarth");
+
+    // Set a base layer active
+    gc2.setBaseLayer("stamenTonerLite");
+
+    // Add tile baselayer from db
+    gc2.addTileLayers({
+        db: "mydb_eu",
+        layers: ['public.ne_50m_admin_0_countries_lakes'],
+        isBaseLayer: true,
+        visibility: false,
+	type: "tms",
+        // Add custom layer name
+        names: ['My own base layer']
+    });
+
+    // Add tile overlays from db
+    gc2.addTileLayers({
+        db: "mydb_eu",
+        layers: ['public.earthquakes1970'],
+
+        // Add custom layer name
+        names: ['Earthquakes (tiles)']
+    });
+
+    // Create a GeoJSON store with a SELECT query
+    var store = new geocloud.geoJsonStore({
+        db: "mydb_eu",
+        sql: "SELECT * FROM public.earthquakes1970 WHERE magnitude > 8",
+        name: "Earthquakes (vectors)",
+
+        // Cache the SELECT query on the server for an hour
+        lifetime: 3600
+    });
+
+    // Add the store as a vector overlay
+    gc2.addGeoJsonStore(store);
+
+    // Define a callback for when the SQL returns
+    store.onLoad = function () {
+
+        // Zoom to vector layer
+        //gc2.zoomToExtentOfgeoJsonStore(this);
+    };
+
+    // Run the SQL and load the data
+    store.load();
+
+    // Access the native OL2 map object
+    gc2.map.zoomTo(1);
+</script>
+</html>

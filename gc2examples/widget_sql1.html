@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src='http:///eu1.mapcentia.com/apps/widgets/gc2map/js/gc2map.js'></script>
+</head>
+<body>
+<div style="position:absolute"></div>
+</body>
+<script>
+    (function () {
+        gc2map.init({
+            db: 'mydb_eu',
+            layers: ['public.ne_50m_urban_areas'],
+            zoom: [0,0,1],
+            setBaseLayer: 'googleSatellite',
+            width: '500px',
+            height: '500px',
+
+            // Define a callback for when the widget is ready
+            // The geocloud object and the widget is passed
+            callBack: function (m, w) {
+
+                // m.map is the native Leaflet object
+
+                // Create a GeoJSON store with a SELECT query
+                var store = new geocloud.sqlStore({
+                    db: "mydb_eu",
+                    sql: "SELECT * FROM public.earthquakes1970 WHERE magnitude > 8",
+
+                    // Bind a popup to each point
+                    onEachFeature: function (feature, layer) {
+                        layer.bindPopup(feature.properties['magnitude']);
+                    },
+
+                    // Make markers instead of simple vector point features
+                    pointToLayer: function (feature, latlng) {
+                        return L.marker(latlng);
+                    }
+                });
+
+                // Add the store as a vector overlay
+                m.addGeoJsonStore(store);
+
+                // Define a callback for when the SQL returns
+                store.onLoad = function () {
+
+                    // Zoom to vector layer
+                    m.zoomToExtentOfgeoJsonStore(this);
+                };
+
+                // Run the SQL and load data
+                store.load();
+            }
+        });
+    }())
+</script>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src='http://eu1.mapcentia.com/apps/widgets/gc2map/js/gc2map.js'></script>
+</head>
+<body>
+<div></div>
+<p>No tile layers are loaded. Start loading by pressing the button.</p>
+<button id="add">Add layers</button>
+<button id="remove">Remove layers</button>
+<script>
+    var widget = gc2map.init({
+        db: 'mydb_eu',
+        zoom: [16.33401497513694, 48.1742673126352, 3],
+        baseLayers: [{"id": "osm", "name": "osm"}, {id: "googleStreets", "name": "Google Streets"}],
+        setBaseLayer: 'osm',
+        width: '500px',
+        height: '300px',
+
+        // Define a callback for when the widget is ready
+        // The geocloud object and the widget is passed
+        callBack: function (m, w) {
+
+            // m is the geocloud object
+            // m.map is the native Leaflet object
+            // w is the widget object
+
+	    w.showLegend();
+
+            // Add and remove tiles on map. Use addTiles method on the widget object, so legend is loaded.
+            $("#add").on("click", function () {
+                w.addTiles(['public.earthquakes1970'])
+            });
+	     $("#remove").on("click", function () {
+                w.removeTiles(['public.earthquakes1970'])
+            })
+        }
+    });
+</script>
+</body>
+</html>

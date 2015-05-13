@@ -34,7 +34,6 @@
         // Make Awesome Markers instead of simple vector point features
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {
-                zIndexOffset: 10000,
                 icon: L.AwesomeMarkers.icon({
                             icon: 'star',
                             markerColor: 'blue',

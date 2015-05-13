@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src='http://192.168.33.10/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false'></script>
+    <script src='http://eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false'></script>
 </head>
 <body>
 <div style="width: 500px;height: 500px; position: relative" id="map"></div>
@@ -18,8 +18,8 @@
     gc2.setBaseLayer("osm");
 
     // Add tile layer from db
-    var layers = gc2.addTileLayers({
-        db: "mydb",
+    gc2.addTileLayers({
+        db: "mydb_eu",
         layers: ['public.earthquakes1970']
     });
 

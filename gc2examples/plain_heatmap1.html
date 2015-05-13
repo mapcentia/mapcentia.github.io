@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script src='http://192.168.33.10/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false'></script>
+    <script src='http://eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false'></script>
 </head>
 <body>
 <div style="width: 500px;height: 500px; position: relative" id="map"></div>
@@ -20,21 +20,18 @@
     // Access the native Leaflet map object
     gc2.map.setView([0, 0], 2);
 
-    // Create a MarkerClusterGroup
-    var groups = new L.MarkerClusterGroup({});
-
     // Create a GeoJSON store with a SELECT query
     var store = new geocloud.sqlStore({
-        db: "mydb",
-        sql: "SELECT * FROM public.earthquakes1970 WHERE magnitude > 6",
+        db: "mydb_eu",
+        sql: "SELECT * FROM public.earthquakes1970 WHERE magnitude > 3",
         name: "Earthquakes",
 
         // Define a callback for when the SQL returns
         onLoad: function () {
 
-            // Add store as heatmap, with property "magnitude" as weight with factor 500.
+            // Add store as heatmap, with property "magnitude" as weight with factor 500 and a config object for the plugin.
             // IMPORTANT You must add a heatmap in the onLoad callback
-            gc2.addHeatMap(this, "magnitude", 500);
+            gc2.addHeatMap(this, "magnitude", 500, {blur: 40});
         }
     });
 

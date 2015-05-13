@@ -4,7 +4,7 @@
 </head>
 <body>
 <div>
-    <p>No scripts are loaded. Start loading by pressing the button.</p>
+    <p>No scripts or stylesheets are loaded. Start loading by pressing the button.</p>
     <button onclick="loadAPI()">Go!</button>
 </div>
 <div style="width: 500px;height: 500px; position: relative" id="map"></div>
@@ -21,9 +21,12 @@
 
         // Set a base layer active
         gc2.setBaseLayer("googleHybrid");
-        var layers = gc2.addTileLayers({
-            db: "mydb",
-            layers: ['public.earthquakes1970']
+
+        // Add tile layer from db
+        gc2.addTileLayers({
+            db: "mydb_eu",
+            layers: ['public.earthquakes1970'],
+            names: ['Earthquakes']
         });
 
         // Set the view using the native Leaflet object
@@ -34,7 +37,7 @@
     var loadAPI = function () {
         var js = document.createElement("script");
         js.type = "text/javascript";
-        js.src = "http://192.168.33.10/api/v3/js/geocloud.php?maplib=leaflet&loadcss=false&callback=go";
+        js.src = "http://eu1.mapcentia.com/api/v3/js/geocloud.php?maplib=leaflet&callback=go";
         document.getElementsByTagName("head")[0].appendChild(js);
     }
 </script>
