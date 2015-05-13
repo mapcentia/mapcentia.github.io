@@ -2,6 +2,7 @@ var cowi = (function () {
     var layerObj = {"name": {}, "url": {}},
         cloudMap,
         addLegend,
+        hostname = "http://cowi.mapcentia.com",
         callback = function (obj) {
             for (var i = 0; i < obj.data.length; i++) {
                 layerObj.name[obj.data[i].f_table_name] = obj.data[i].f_table_title;
@@ -55,18 +56,25 @@ var cowi = (function () {
                 "weight": 5,
                 "opacity": 0.65
             };
-            document.write('<script src="http://beta.mygeocloud.cowi.webhouse.dk/controller/tables/' + db + '/getallrecords/settings.geometry_columns_view?jsonp_callback=cowi.callback"><\/script>');
+            $.ajax({
+                url: hostname + '/api/v1/meta/' + db,
+                dataType: 'jsonp',
+                jsonp: 'jsonp_callback',
+                success: function (obj) {
+                    for (var i = 0; i < obj.data.length; i++) {
+                        layerObj.name[obj.data[i].f_table_name] = obj.data[i].f_table_title;
+                        layerObj.url[obj.data[i].f_table_name] = obj.data[i].meta_url;
+                    }
+                }
+            });
             addLegend = function () {
-                var hostname = "http://alpha.mygeocloud.cowi.webhouse.dk";
-                var layers = cloudMap.getVisibleLayers();
-                var param = 'layers=' + layers + '&type=text&lan=';
                 $.ajax({
-                    url: hostname + '/apps/viewer/servers/legend/' + db + '?' + param,
+                    url: hostname + '/api/v1/legend/html/' + db,
+                    data: 'l=' + cloudMap.getVisibleLayers(),
                     dataType: 'jsonp',
                     jsonp: 'jsonp_callback',
                     success: function (response) {
                         $('#legendContent').html(response.html);
-
                     }
                 });
             };
