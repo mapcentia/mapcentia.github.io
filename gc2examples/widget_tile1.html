@@ -2,17 +2,27 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <script src='http://eu1.mapcentia.com/apps/widgets/gc2map/js/gc2map.js'></script>
+    <script src='http:///eu1.mapcentia.com/apps/widgets/gc2map/js/gc2map.js'></script>
 </head>
 <body>
+
+<!--
+The widget will be rendered in the div just before the script.
+You can also render to a specified div id with the 'key' property.
+-->
 <div></div>
 <script>
     (function () {
         gc2map.init({
             db: 'mydb_eu',
+
             // Initiate with tiles form db
             layers: ['public.earthquakes1970'],
             zoom: [0, 0, 1],
+
+            // Render to this div instead of the one just before the script
+            // key: 'my-div',
+
             // By default the widget will enable the baselayers specified in the GC2 server configuration
             setBaseLayer: 'osm',
             width: '500px',
@@ -21,6 +31,7 @@
 
             // Define a callback for when the widget is ready
             // The geocloud object and the widget is passed
+
             callBack: function (m, w) {
 
                 // m is the geocloud object

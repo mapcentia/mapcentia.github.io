@@ -10,8 +10,8 @@
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <style>
-        .row > div > a:nth-child(1) {
-
+        .head {
+            margin-bottom: 30px;
         }
 
         .row > div > div > a:nth-child(2) {
@@ -56,11 +56,11 @@
     <div class="jumbotron">
         <h1>GC2 JavaScript API</h1>
 
-        <p>The GC2 JavaScript API is a thin wrapper around Leaflet. Its makes it easy to initiate a Leaflet map with tile and vector overlays from a GC2 server. Also it defines commonly used base layers from providers like OSM, Google Maps, Bing Maps, Here Maps and Stamen.</p>
+        <p>The GC2 JavaScript API is a thin wrapper around Leaflet. Its makes it easy to initiate a Leaflet map with tile and vector overlays from a GC2 server. Also it defines commonly used base layers from providers like OSM, Google, Bing, HERE, Yandex and Stamen.</p>
 
-        <p>The GC2 Widget is a ready-for-use embeddable widget for web-pages. Its adds legend and click-info to the map. The widget can be extended through the GC2 JavaScript API.</p>
+        <p>The GC2 Widget is a ready-for-use embeddable widget for web-pages. Its adds legend and click-info to the map and have i18n support. It loads the layer meta data from the GC2 server and uses the titles, click-info setups etc. The widget can be extended through the GC2 JavaScript API.</p>
     </div>
-    <div class="row">
+    <div class="row head">
         <div class="col-md-3">
             <a name="api"></a>
             <h2>JavaScript API</h2>
@@ -86,7 +86,7 @@
             <div>
                 <a href="plain_tile2.html" role="button">Show me</a>
                 <a target="_blank"
-                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/plain_tile1.html"
+                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/plain_tile2.html"
                    role="button">Source</a>
             </div>
         </div>
@@ -180,7 +180,7 @@
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row head">
         <div class="col-md-3">
             <a name="widget"></a>
             <h2>JavaScript Widget</h2>
@@ -190,12 +190,45 @@
         <div class="col-md-3">
             <h4>Basic widget</h4>
 
-            <p>Basic example. Map with a base layer and a tile overlay. An tile overlay can be refereed to as [schema].[table]</p>
+            <p>Basic example. With one tile layer and default base layers of the GC2 server</p>
 
             <div>
-                <a href="plain_tile1.html">Show me</a>
+                <a href="widget_tile1.html">Show me</a>
                 <a target="_blank"
-                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/plain_tile1.html">Source</a>
+                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/widget_tile1.html">Source</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h4>Widget with a custom base layer set</h4>
+
+            <p>Widget with multiple tile layers and custom set of base layers.</p>
+
+            <div>
+                <a href="widget_tile2.html">Show me</a>
+                <a target="_blank"
+                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/widget_tile2.html">Source</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h4>Widget with asynchronously loaded layers</h4>
+
+            <p>Adding of tile layers after the widget is ready.</p>
+
+            <div>
+                <a href="widget_tile3.html">Show me</a>
+                <a target="_blank"
+                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/widget_tile3.html">Source</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h4>Multiple Widgets on same web page</h4>
+
+            <p>Each widget is encapsulated, so its safe to have more that one on each page.</p>
+
+            <div>
+                <a href="widget_multiple1.html">Show me</a>
+                <a target="_blank"
+                   href="https://github.com/mapcentia/mapcentia.github.io/blob/master/gc2examples/widget_multiple1.html">Source</a>
             </div>
         </div>
 

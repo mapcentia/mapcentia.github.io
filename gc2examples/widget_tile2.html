@@ -11,14 +11,16 @@
         gc2map.init({
             db: 'mydb_eu',
             // Initiate with tiles form db
+
             layers: ['public.earthquakes1970', 'public.ne_50m_urban_areas'],
             zoom: [0, 0, 1],
+
             // Setting available base layers
             baseLayers: [{"id": "osm", "name": "OSM"}, {id: "googleStreets", "name":"Google Streets"}, {id: "yandexMap", "name":"Yandex Map"}, {id: "bingRoad", "name":"Bing Road"},{id: "hereNormalNightGrey", "name":"HERE Normal Night Grey"},{id: "public.ne_50m_admin_0_countries_lakes", "name":"Countries (local)"}],
             setBaseLayer: 'hereNormalNightGrey',
             width: '500px',
             height: '500px',
-            infoText: 'Click on a feature for info',
+            infoText: 'Custom set of base layers',
 
             callBack: function (m, w) {
 
