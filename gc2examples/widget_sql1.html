@@ -21,7 +21,12 @@
             // The geocloud object and the widget is passed
             callBack: function (m, w) {
 
+                // m is the geocloud object
                 // m.map is the native Leaflet object
+                // w is the widget object
+
+                // Access the native Leaflet map object
+                m.map.setView([0, -90], 3);
 
                 // Create a GeoJSON store with a SELECT query
                 var store = new geocloud.sqlStore({
@@ -45,8 +50,7 @@
                 // Define a callback for when the SQL returns
                 store.onLoad = function () {
 
-                    // Zoom to vector layer
-                    m.zoomToExtentOfgeoJsonStore(this);
+                    // Pass
                 };
 
                 // Run the SQL and load data
