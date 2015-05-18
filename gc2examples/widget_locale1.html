@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Widget with forced locale</title>
+    <script src="http://eu1.mapcentia.com/apps/widgets/gc2map/js/gc2map.js"></script>
+</head>
+<body>
+
+<!--
+The widget will be rendered in the div just before the script.
+You can also render to a specified div id with the 'key' property.
+-->
+<div></div>
+<script>
+    (function () {
+        gc2map.init({
+            db: 'mydb_eu',
+
+            // Initiate with tiles form db
+            layers: ['public.earthquakes1970'],
+            zoom: [90, 50, 2],
+            baseLayers: [{id: "yandexMap", "name":"Yandex Map"},{id: "yandexSatellite", "name":"Yandex Satellite"}, {id: "yandexHybrid", "name":"Yandex Hybrid"}],
+
+
+            // Locale setting
+            locale: 'ru_RU',
+
+            // Render to this div instead of the one just before the script
+            // key: 'my-div',
+
+            // By default the widget will enable the baselayers specified in the GC2 server configuration
+            setBaseLayer: 'yandexMap',
+            width: '500px',
+            height: '500px',
+            infoText: 'Force the locale to ru_RU',
+
+            // Define a callback for when the widget is ready
+            // The geocloud object and the widget is passed
+
+            callBack: function (m, w) {
+
+                // m is the geocloud object
+                // m.map is the native Leaflet object
+                // w is the widget object
+            }
+        });
+    }())
+</script>
+</body>
+</html>
