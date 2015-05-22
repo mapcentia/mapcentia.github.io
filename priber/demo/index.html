@@ -3,6 +3,7 @@
     <title>Leaflet Example</title>
     <meta charset="utf-8">
     <script src="http://eu1.mapcentia.com/api/v3/js/geocloud.php"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
 </head>
 <body>
 <input type="text" id='a1' value="Copenhagen">
@@ -69,6 +70,16 @@
                             textNode = document.createTextNode(arr[i].display_name);
                             node.appendChild(textNode);
                             document.getElementById("list").appendChild(node);
+
+                            // Add a marker
+                            L.marker([arr[i].lat, arr[i].lon], {
+                                icon: L.AwesomeMarkers.icon({
+                                            icon: 'truck',
+                                            markerColor: 'blue',
+                                            prefix: 'fa'
+                                        }
+                                )
+                            }).addTo(gc2.map);
                         }
                     }
                 }
