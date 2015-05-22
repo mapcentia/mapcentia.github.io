@@ -1,0 +1,144 @@
+<html>
+<head>
+    <title>Leaflet Example</title>
+    <meta charset="utf-8">
+    <script src="http://eu1.mapcentia.com/api/v3/js/geocloud.php"></script>
+</head>
+<body>
+<input type="text" id='a1' value="Copenhagen">
+<input type="button" value="<- Add the via point from a place"
+       onclick="routeToMap.getCoordFromAddresse(document.getElementById('a1').value)">
+<ol id="list"></ol>
+<input type="button" value="Get route" onclick="routeToMap.getRoute()">
+<br>
+
+<div style="width: 500px;height: 500px; position: relative" id="map"></div>
+</body>
+<script>
+    var routeToMap = (function () {
+        "use strict";
+        var gc2, decode, getCoordFromAddresse, getRoute, viaPoints = [];
+
+        // Initiate a geocloud object
+        gc2 = new geocloud.map({
+            el: "map"
+        });
+
+        // Add a base layers
+        gc2.addBaseLayer("osm");
+        gc2.addBaseLayer("mapQuestOSM");
+        gc2.addBaseLayer("addMapQuestAerial");
+        gc2.addBaseLayer("googleStreets");
+        gc2.addBaseLayer("googleHybrid");
+        gc2.addBaseLayer("googleSatellite");
+        gc2.addBaseLayer("googleTerrain");
+        gc2.addBaseLayer("bingRoad");
+        gc2.addBaseLayer("bingAerialWithLabels");
+        gc2.addBaseLayer("bingAerial");
+        gc2.addBaseLayer("hereNormalDayGrey");
+        gc2.addBaseLayer("hereNormalNightGrey");
+        gc2.addBaseLayer("stamenToner");
+        gc2.addBaseLayer("stamenTonerLite");
+        gc2.addBaseLayer("yandexMap");
+        gc2.addBaseLayer("yandexSatellite");
+        gc2.addBaseLayer("yandexHybrid");
+        gc2.addBaseLayer("yandexPublicMap");
+        gc2.addBaseLayer("yandexPublicMapHybrid");
+        gc2.addBaseLayer("mapBoxNaturalEarth");
+
+        // Set a base layer active
+        gc2.setBaseLayer("mapQuestOSM");
+
+        // Access the native Leaflet map object
+        gc2.map.setView([0, 0], 2);
+
+        // Geocoding with Nominatim
+        getCoordFromAddresse = function (address) {
+            $.ajax({
+                url: 'https://nominatim.openstreetmap.org/search?format=json&q=' + address,
+                dataType: 'jsonp',
+                contentType: "application/json; charset=utf-8",
+                scriptCharset: "utf-8",
+                jsonp: 'json_callback',
+                success: function (arr) {
+                    var i, node, textNode;
+                    for (i = 0; i < arr.length; i = i + 1) {
+                        if (i === 0) { // Kun det først resultat
+                            viaPoints.push(arr[i].lat + "," + arr[i].lon);
+                            node = document.createElement("li");
+                            textNode = document.createTextNode(arr[i].display_name);
+                            node.appendChild(textNode);
+                            document.getElementById("list").appendChild(node);
+                        }
+                    }
+                }
+            });
+        };
+
+        // Routing with OSRM
+        getRoute = function () {
+            $.ajax({
+                url: 'https://router.project-osrm.org/viaroute?z=17&output=json&loc=' + viaPoints.join("&loc="),
+                jsonp: "jsonp",
+                contentType: "application/json; charset=utf-8",
+                scriptCharset: "utf-8",
+                cache: true, // IMPORTANT. The cache busting param is not accepted by OSRM
+                success: function (response) {
+                    var geojson, layer, style;
+                    style = {
+                        "color": "#ff7800",
+                        "weight": 5,
+                        "opacity": 0.65
+                    };
+                    geojson = decode(response.route_geometry, 6);
+                    layer = L.geoJson(geojson, style).addTo(gc2.map);
+                    gc2.map.fitBounds(layer.getBounds());
+                }
+            });
+        };
+
+        // Decode and make geojson from OSRM data
+        decode = function (encoded, precision) {
+            precision = Math.pow(10, -precision);
+            var len = encoded.length, index = 0, lat = 0, lng = 0, array = [], geojson, dlat, dlng;
+            while (index < len) {
+                var b, shift = 0, result = 0;
+                do {
+                    b = encoded.charCodeAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+                lat += dlat;
+                shift = 0;
+                result = 0;
+                do {
+                    b = encoded.charCodeAt(index++) - 63;
+                    result |= (b & 0x1f) << shift;
+                    shift += 5;
+                } while (b >= 0x20);
+                dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+                lng += dlng;
+                array.push([lng * precision, lat * precision]);
+            }
+            geojson = {
+                "type": "FeatureCollection",
+                "features": [{
+                    "geometry": {
+                        "type": "MultiLineString",
+                        "coordinates": [array]
+                    },
+                    "type": "Feature",
+                    "properties": {"gid": 1}
+                }]
+            };
+            return geojson;
+        };
+        return {
+            getCoordFromAddresse: getCoordFromAddresse,
+            getRoute: getRoute
+        }
+
+    })();
+</script>
+</html>
