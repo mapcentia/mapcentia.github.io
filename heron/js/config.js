@@ -1268,7 +1268,7 @@ MapCentia.init = function () {
                                                 items: [
                                                     {
                                                         xtype: "textfield",
-                                                        name: 'strm',
+                                                        name: 'lld',
                                                         //emptyText
                                                         allowBlank: false,
                                                         width: 150
@@ -1295,7 +1295,7 @@ MapCentia.init = function () {
                                                         }
                                                         strmStore = new geocloud.geoJsonStore({
                                                             db: "envimatix",
-                                                            sql: "SELECT * FROM test2.ab_sec_gcswgs84 WHERE strm='" + values.strm + "'",
+                                                            sql: "SELECT * FROM test2.shp_all WHERE lld='" + values.lld + "'",
                                                             styleMap: new OpenLayers.StyleMap({
                                                                 "default": new OpenLayers.Style({
                                                                         fillColor: "#000000",
