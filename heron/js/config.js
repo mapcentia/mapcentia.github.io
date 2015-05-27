@@ -836,6 +836,10 @@ MapCentia.init = function () {
                                             fields: ['name', 'value'],
                                             data: [
                                                 {
+                                                    name: '1x1',
+                                                    value: '0'
+                                                },
+                                                {
                                                     name: '3x3',
                                                     value: '1'
                                                 }, {
@@ -849,7 +853,7 @@ MapCentia.init = function () {
                                         }),
                                         triggerAction: "all",
                                         allowBlank: false,
-                                        value: "1"
+                                        value: "0"
                                     }, '-',
                                     {
                                         text: "Plot graph",
@@ -1111,7 +1115,7 @@ MapCentia.init = function () {
                                                                         majorUnit: Math.ceil((max - min) / comboData.length * 1000) / 1000
                                                                     }),
                                                                     xAxis: new Ext.chart.NumericAxis({
-                                                                        minimum: 0.8,
+                                                                        minimum: 1,
                                                                         maximum: comboData.length,
                                                                         roundMajorUnit: true,
                                                                         majorUnit: 1
