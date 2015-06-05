@@ -319,9 +319,7 @@ var cowi = (function () {
                 var count = 0;
                 var arr = layers;
                 var srid = (type === "draw") ? "900913" : "25832";
-
-                console.log(srid);
-
+                
                 $("#result-table").empty();
                 try {
                     callback();
