@@ -50,6 +50,118 @@ var cowi = (function () {
                 };
             }
 
+            var storeDraw = new mygeocloud_ol.geoJsonStore("dk", {
+                styleMap: new OpenLayers.StyleMap({
+                    "default": new OpenLayers.Style(null, {
+                        rules: [
+                            new OpenLayers.Rule({
+                                symbolizer: {
+                                    "Point": {
+                                        pointRadius: 5,
+                                        graphicName: "square",
+                                        fillColor: "white",
+                                        fillOpacity: 0.25,
+                                        strokeWidth: 2,
+                                        strokeOpacity: 1,
+                                        strokeColor: "#0000FF"
+                                    },
+                                    "Polygon": {
+                                        strokeWidth: 3,
+                                        strokeOpacity: 1,
+                                        strokeColor: "#0000FF"
+                                    }
+                                }
+                            })
+                        ]
+                    }),
+                    "select": new OpenLayers.Style({
+                        strokeColor: "#00ccff",
+                        strokeWidth: 4
+                    }),
+                    "temporary": new OpenLayers.Style(null, {
+                        rules: [
+                            new OpenLayers.Rule({
+                                symbolizer: {
+                                    "Point": {
+                                        pointRadius: 5,
+                                        graphicName: "square",
+                                        fillColor: "white",
+                                        fillOpacity: 0.25,
+                                        strokeWidth: 1,
+                                        strokeOpacity: 1,
+                                        strokeColor: "#333333"
+                                    },
+                                    "Polygon": {
+                                        strokeWidth: 3,
+                                        strokeOpacity: 1,
+                                        strokeColor: "#00ccff"
+                                    }
+                                }
+                            })
+                        ]
+                    })
+                })});
+            cloudMap.addGeoJsonStore(storeDraw);
+            $("#flade").click(function () {
+                storeDraw.pointControl.deactivate();
+                storeDraw.layer.destroyFeatures();
+                storeDraw.polygonControl.activate();
+            });
+            $("#punkt").click(function () {
+                storeDraw.polygonControl.deactivate();
+                storeDraw.layer.destroyFeatures();
+                storeDraw.pointControl.activate();
+            });
+            $("#stop").click(function () {
+                storeDraw.pointControl.deactivate();
+                storeDraw.polygonControl.deactivate();
+                storeDraw.layer.destroyFeatures();
+            });
+            storeDraw.layer.events.on({
+                sketchcomplete: function (e) {
+                    if (storeDraw.layer.features.length > 0) {
+                        storeDraw.layer.destroyFeatures();
+                        if (storeDraw.polygonControl.active) {
+                            storeDraw.polygonControl.deactivate();
+                            storeDraw.polygonControl.activate();
+                        }
+                        if (storeDraw.pointControl.active) {
+                            storeDraw.pointControl.deactivate();
+                            storeDraw.pointControl.activate();
+                        }
+                    }
+                },
+                featureadded: function (feature) {
+                    var wkt;
+                    var format = new OpenLayers.Format.WKT;
+                    var g = new OpenLayers.Format.WKT;
+                    try {
+                        wkt = g.write(feature);
+                    }
+                    catch (e) {
+                    }
+                    try {
+                        wkt = g.write(feature.feature);
+                    }
+                    catch (e) {
+                    }
+                    try {
+                        wkt = g.write(feature.layer.features);
+                    }
+                    catch (e) {
+                    }
+                    try {
+                        if (feature.features.length > 0) {
+                            wkt = g.write(feature.features);
+                        }
+                        else wkt = "";
+                    }
+                    catch (e) {
+                    }
+                    conflict(wkt, "draw");
+                }
+            });
+
             $("#result").append("<div id='spinner' style='display:none'><img src='http://mapcentia.github.io/conflict/ajax-loader.gif'></div>");
             var style = {
                 "color": "#ff0000",
@@ -206,6 +318,10 @@ var cowi = (function () {
             var conflict = function (wkt, type) {
                 var count = 0;
                 var arr = layers;
+                var srid = (type === "draw") ? "900913" : "25832";
+
+                console.log(srid);
+
                 $("#result-table").empty();
                 try {
                     callback();
@@ -213,13 +329,15 @@ var cowi = (function () {
                 catch (e) {
                 }
 
+
+
                 // Lp search
                 var storeLp = new mygeocloud_ol.geoJsonStore("dk");
                 if (type === "jordstykke") {
-                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832),-5))";
+                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom, ST_transform(ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "')," + srid + "),-5),25832))";
                 }
                 else {
-                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
+                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects(the_geom, ST_transform(ST_SetSRID(ST_geomfromtext('" + wkt + "')," + srid + "),25832))";
 
                 }
                 storeLp.load();
@@ -239,7 +357,7 @@ var cowi = (function () {
                 $("#spinner").show();
                 for (var i = 0; i < arr.length; i++) {
                     store[i] = new mygeocloud_ol.geoJsonStore(db);
-                    store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects(the_geom,ST_SetSRID(ST_geomfromtext('" + wkt + "'),25832))";
+                    store[i].sql = "SELECT * FROM " + arr[i] + " WHERE ST_intersects(the_geom, ST_transform(ST_SetSRID(ST_geomfromtext('" + wkt + "')," + srid + "),25832))";
                     store[i].sql += (arr[i].split('.')[1] === "kpplandk2_view") ? " AND (status = 'forslag' OR status = 'vedtaget')" : "";
                     store[i].id = arr[i];
                     store[i].load();
