@@ -14,7 +14,18 @@ var cowi = (function () {
             addLegend();
         },
         init_search = function (db, komKode, layers, bbox, callback, baseLayer) {
-            cloudMap = new mygeocloud_ol.map("map", db);
+            cloudMap = new mygeocloud_ol.map("map", db, {
+                controls: [
+                    new OpenLayers.Control.Navigation(),
+                    //new OpenLayers.Control.PanZoomBar(),
+                    //new OpenLayers.Control.LayerSwitcher(),
+                    //new OpenLayers.Control.PanZoom(),
+                    new OpenLayers.Control.Attribution(),
+                    new OpenLayers.Control.Zoom(),
+                    new OpenLayers.Control.TouchNavigation({
+                        dragPanOptions: {enableKinetic: true}
+                    })]
+            });
             cloudMap.addBaseLayer(baseLayer || "dtkSkaermkortDaempet");
             cloudMap.setBaseLayer(baseLayer || "dtkSkaermkortDaempet");
 
@@ -319,7 +330,7 @@ var cowi = (function () {
                 var count = 0;
                 var arr = layers;
                 var srid = (type === "draw") ? "900913" : "25832";
-                
+
                 $("#result-table").empty();
                 try {
                     callback();
