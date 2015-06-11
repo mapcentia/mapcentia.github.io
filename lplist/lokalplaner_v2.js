@@ -12,7 +12,18 @@ mapcentia_lokalplaner = (function () {
         },
         loadMessage = Ext.MessageBox,
         init = function (conf) {
-            var prop, grid, columns = conf.cm, cloud = new mygeocloud_ol.map("map", "dk"), store, defaults;
+            var prop, grid, columns = conf.cm, cloud = new mygeocloud_ol.map("map", "dk", {
+                controls: [
+                    new OpenLayers.Control.Navigation(),
+                    //new OpenLayers.Control.PanZoomBar(),
+                    //new OpenLayers.Control.LayerSwitcher(),
+                    //new OpenLayers.Control.PanZoom(),
+                    new OpenLayers.Control.Attribution(),
+                    new OpenLayers.Control.Zoom(),
+                    new OpenLayers.Control.TouchNavigation({
+                        dragPanOptions: {enableKinetic: true}
+                    })]
+            }), store, defaults;
 
             defaults = {
                 gridHeight: 300,
@@ -99,7 +110,13 @@ mapcentia_lokalplaner = (function () {
                     selectControl: selectControl,
                     height: defaults.gridHeight,
                     listeners: {
-                        rowdblclick: function () {
+                        rowdblclick: function (e) {
+                            grid.grid.getSelectionModel().each(function (rec) {
+                                    var feature = rec.get('feature');
+                                    var link = defaults.host + "/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + feature.attributes.planid;
+                                    window.open(link);
+                                }
+                            );
                         }
                     }
                 });
