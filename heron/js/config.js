@@ -437,6 +437,7 @@ MapCentia.init = function () {
     };
 
     Heron.options.map.toolbar = [
+        {type: "scale", options: {width: 110}},
         {
             type: "any",
             options: {
@@ -821,7 +822,7 @@ MapCentia.init = function () {
                                         }
                                     }, '-',
 
-                                        'Neighborhood ',
+                                    'Neighborhood ',
                                     {
                                         tooltip: "Select which pixel neighborhood for the mean value",
                                         iconCls: 'icon-chart-curve',
@@ -1441,7 +1442,169 @@ MapCentia.init = function () {
         {type: "measurelength", options: {geodesic: true}},
         {type: "measurearea", options: {geodesic: true}},
         {type: "-"},
-        {type: "addbookmark"}
+        {type: "addbookmark"},
+        {type: "-"},
+        {type: "addbookmark"},
+        {
+            type: "oleditor",
+            options: {
+                pressed: false,
+                // Options for OLEditor
+                olEditorOptions: {
+                    activeControls: ['UploadFeature', 'DownloadFeature', 'Separator', 'Navigation', 'SnappingSettings', /*'CADTools',*/ 'Separator', 'DeleteAllFeatures', 'DeleteFeature', 'DragFeature', 'SelectFeature', 'Separator', 'DrawHole', 'ModifyFeature', 'Separator'],
+                    featureTypes: ['text', 'regular', 'polygon', 'path', 'point'],
+                    language: 'en',
+                    DownloadFeature: {
+                        url: Heron.globals.serviceUrl,
+                        formats: [
+                            {
+                                name: 'Well-Known-Text (WKT)',
+                                fileExt: '.wkt',
+                                mimeType: 'text/plain',
+                                formatter: 'OpenLayers.Format.WKT'
+                            },
+                            {
+                                name: 'Geographic Markup Language - v2 (GML2)',
+                                fileExt: '.gml',
+                                mimeType: 'text/xml',
+                                formatter: new OpenLayers.Format.GML.v2({
+                                    featureType: 'oledit',
+                                    featureNS: 'http://geops.de'
+                                })
+                            },
+                            {
+                                name: 'GeoJSON',
+                                fileExt: '.json',
+                                mimeType: 'text/plain',
+                                formatter: 'OpenLayers.Format.GeoJSON'
+                            },
+                            {
+                                name: 'GPS Exchange Format (GPX)',
+                                fileExt: '.gpx',
+                                mimeType: 'text/xml',
+                                formatter: 'OpenLayers.Format.GPX',
+                                fileProjection: new OpenLayers.Projection('EPSG:4326')
+                            },
+                            {
+                                name: 'Keyhole Markup Language (KML)',
+                                fileExt: '.kml',
+                                mimeType: 'text/xml',
+                                formatter: 'OpenLayers.Format.KML',
+                                fileProjection: new OpenLayers.Projection('EPSG:4326')
+                            },
+                            {
+                                name: 'ESRI Shapefile (zipped, Google projection)',
+                                fileExt: '.zip',
+                                mimeType: 'application/zip',
+                                formatter: 'OpenLayers.Format.GeoJSON',
+                                targetFormat: 'ESRI Shapefile',
+                                fileProjection: new OpenLayers.Projection('EPSG:900913')
+                            },
+                            {
+                                name: 'ESRI Shapefile (zipped, WGS84)',
+                                fileExt: '.zip',
+                                mimeType: 'application/zip',
+                                formatter: 'OpenLayers.Format.GeoJSON',
+                                targetFormat: 'ESRI Shapefile',
+                                fileProjection: new OpenLayers.Projection('EPSG:4326')
+                            }
+                            //{name: 'OGC GeoPackage (Google projection)', fileExt: '.gpkg', mimeType: 'application/binary', formatter: 'OpenLayers.Format.GeoJSON', targetFormat: 'GPKG', fileProjection: new OpenLayers.Projection('EPSG:     ')},
+                            //{name: 'OGC GeoPackage (WGS84)', fileExt: '.gpkg', mimeType: 'application/binary', formatter: 'OpenLayers.Format.GeoJSON', targetFormat: 'GPKG', fileProjection: new OpenLayers.Projection('EPSG:4326')}
+
+                        ],
+                        fileProjection: new OpenLayers.Projection('EPSG:4326')
+                    },
+                    UploadFeature: {
+                        url: Heron.globals.serviceUrl,
+                        formats: [
+                            {
+                                name: 'Well-Known-Text (WKT)',
+                                fileExt: '.wkt',
+                                mimeType: 'text/plain',
+                                formatter: 'OpenLayers.Format.WKT'
+                            },
+                            {
+                                name: 'Geographic Markup Language - v2 (GML2)',
+                                fileExt: '.gml',
+                                mimeType: 'text/xml',
+                                formatter: 'OpenLayers.Format.GML'
+                            },
+                            {
+                                name: 'GeoJSON',
+                                fileExt: '.json',
+                                mimeType: 'text/plain',
+                                formatter: 'OpenLayers.Format.GeoJSON'
+                            },
+                            {
+                                name: 'GPS Exchange Format (GPX)',
+                                fileExt: '.gpx',
+                                mimeType: 'text/xml',
+                                formatter: 'OpenLayers.Format.GPX',
+                                fileProjection: new OpenLayers.Projection('EPSG:4326')
+                            },
+                            {
+                                name: 'Keyhole Markup Language (KML)',
+                                fileExt: '.kml',
+                                mimeType: 'text/xml',
+                                formatter: 'OpenLayers.Format.KML',
+                                fileProjection: new OpenLayers.Projection('EPSG:4326')
+                            },
+                            {
+                                name: 'CSV (with X,Y in WGS84)',
+                                fileExt: '.csv',
+                                mimeType: 'text/plain',
+                                formatter: 'OpenLayers.Format.GeoJSON',
+                                fileProjection: new OpenLayers.Projection('EPSG:4326')
+                            },
+                            {
+                                name: 'ESRI Shapefile (zipped, Google projection)',
+                                fileExt: '.zip',
+                                mimeType: 'text/plain',
+                                formatter: 'OpenLayers.Format.GeoJSON',
+                                fileProjection: new OpenLayers.Projection('EPSG:900913')
+                            },
+                            {
+                                name: 'ESRI Shapefile (zipped, WGS84)',
+                                fileExt: '.zip',
+                                mimeType: 'text/plain',
+                                formatter: 'OpenLayers.Format.GeoJSON',
+                                fileProjection: new OpenLayers.Projection('EPSG:4326')
+                            }
+                            //{name: 'OGC GeoPackage (Google projection)', fileExt: '.gpkg', mimeType: 'text/plain', formatter: 'OpenLayers.Format.GeoJSON', fileProjection: new OpenLayers.Projection('EPSG:900913')},
+                            //{name: 'OGC GeoPackage (1 layer, WGS84)', fileExt: '.gpkg', mimeType: 'text/plain', formatter: 'OpenLayers.Format.GeoJSON', fileProjection: new OpenLayers.Projection('EPSG:4326')}
+
+                        ],
+                        fileProjection: new OpenLayers.Projection('EPSG:4326')
+                    }
+                }
+            }
+        },
+        {type: "-"},
+        {
+            type: "printdialog", options: {
+            url: window.gc2Options.geoserverHost + '/geoserver/pdf',
+            windowWidth: 360
+            // , showTitle: true
+            // , mapTitle: 'My Header - Print Dialog'
+            // , mapTitleYAML: "mapTitle"		// MapFish - field name in config.yaml - default is: 'mapTitle'
+            // , showComment: true
+            // , mapComment: 'My Comment - Print Dialog'
+            // , mapCommentYAML: "mapComment"	// MapFish - field name in config.yaml - default is: 'mapComment'
+            // , showFooter: true
+            , mapFooter: 'My Footer - Print Dialog'
+            // , mapFooterYAML: "mapFooter"	    // MapFish - field name in config.yaml - default is: 'mapFooter'
+            // , printAttribution: true         // Flag for printing the attribution
+            // , mapAttribution: null           // Attribution text or null = visible layer attributions
+            // , mapAttributionYAML: "mapAttribution" // MapFish - field name in config.yaml - default is: 'mapAttribution'
+            , showOutputFormats: true
+            // , showRotation: true
+            // , showLegend: true
+            // , showLegendChecked: true
+            , mapLimitScales: false
+            , mapPreviewAutoHeight: true // Adapt height of preview map automatically, if false mapPreviewHeight is used.
+            // , mapPreviewHeight: 400
+        }
+        }
     ];
 
     Heron.layout = {
@@ -1456,6 +1619,7 @@ MapCentia.init = function () {
                 xtype: 'panel',
                 id: 'hr-menu-left-container',
                 layout: 'accordion',
+                split: true,
                 region: "west",
                 width: 240,
                 collapsible: true,
@@ -1543,7 +1707,6 @@ MapCentia.init = function () {
                     {
                         xtype: 'hr_mappanel',
                         id: 'hr-map',
-                        title: '&nbsp;',
                         region: 'center',
                         collapsible: false,
                         border: false,
