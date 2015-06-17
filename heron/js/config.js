@@ -312,7 +312,7 @@ MapCentia.setup = function () {
 MapCentia.init = function () {
     "use strict";
     OpenLayers.Util.onImageLoadErrorColor = "transparent";
-    OpenLayers.ProxyHost = "/cgi/proxy.cgi?url=";
+    OpenLayers.ProxyHost = "http://eu1.mapcentia.com/cgi/proxy.cgi?url=";
     //OpenLayers.DOTS_PER_INCH = 25.4 / 0.28;
 
     Ext.BLANK_IMAGE_URL = 'http://cdnjs.cloudflare.com/ajax/libs/extjs/3.4.1-1/resources/images/default/s.gif';
@@ -1582,7 +1582,7 @@ MapCentia.init = function () {
         {type: "-"},
         {
             type: "printdialog", options: {
-            url: window.gc2Options.geoserverHost + '/geoserver/pdf',
+            url: "http://eu1.mapcentia.com:8888" + '/geoserver/pdf',
             windowWidth: 360
             // , showTitle: true
             // , mapTitle: 'My Header - Print Dialog'
