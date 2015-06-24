@@ -15,17 +15,26 @@ Ext.namespace("Heron.options.center");
 Ext.namespace("Heron.options.zoom");
 Ext.namespace("Heron.options.layertree");
 Ext.chart.Chart.CHART_URL = 'http://eu1.mapcentia.com/js/ext/resources/charts.swf';
-var metaData, metaDataKeys = [], metaDataKeysTitle = [], click, poilayer, qstore = [], queryWin, strmStore, searchWin, placeMarkers, placePopup;
+var metaData, metaDataKeys = [], metaDataKeysTitle = [], click, poilayer, qstore = [], queryWin, strmStore, searchWin, placeMarkers, placePopup,
+    host = "http://52.5.194.127";
 MapCentia.setup = function () {
     "use strict";
     Heron.globals.metaReady = false;
     Heron.globals.serviceUrl = '/cgi/heron.cgi';
-    var uri = window.location.pathname.split("/"),
-        host = "http://us1.mapcentia.com",
-        db = "envimatix",
-        schema = "test2",
-        url = host + '/wms/' + db + '/tilecache/' + schema;
 
+    var urlVars = (function getUrlVars() {
+            var mapvars = {};
+            window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi, function (m, key, value) {
+                mapvars[key] = value;
+            });
+            return mapvars;
+        }()), uri = window.location.pathname.split("/"),
+        db = "envimatix",
+        schema = urlVars.s,
+        url = host + '/wms/' + db + '/tilecache/' + schema;
+    if (!schema) {
+        alert("Please add a schema to the URL.")
+    }
     $.ajax({
         url: host + '/api/v1/setting/' + db,
         dataType: 'jsonp',
@@ -525,7 +534,6 @@ MapCentia.init = function () {
                             var layers, hit = false, distance, db = "envimatix",
                                 event = new geocloud.clickEvent(e, MapCentia.gc2),
                                 coords = event.getCoordinate(), numOfRasters = 0, index = 0;
-                            ;
                             $.each(qstore, function (index, st) {
                                 try {
                                     st.reset();
@@ -553,6 +561,7 @@ MapCentia.init = function () {
                                 var versioning = metaDataKeys[layers[index].split(".")[1]].versioning;
                                 var fieldConf = Ext.decode(metaDataKeys[layers[index].split(".")[1]].fieldconf);
                                 qstore[index] = new geocloud.sqlStore({
+                                    host: host,
                                     db: db,
                                     id: index,
                                     styleMap: new OpenLayers.StyleMap({
@@ -900,6 +909,7 @@ MapCentia.init = function () {
                             var layerTitel = metaDataKeys[layers[index].split(".")[1]].f_table_title || metaDataKeys[layers[index].split(".")[1]].f_table_name;
                             if (geoType === "RASTER") {
                                 qstore[index] = new geocloud.sqlStore({
+                                    host: host,
                                     db: db,
                                     id: index,
                                     jsonp: false,
