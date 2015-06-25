@@ -14,6 +14,10 @@ Ext.namespace("Heron.options.wfs");
 Ext.namespace("Heron.options.center");
 Ext.namespace("Heron.options.zoom");
 Ext.namespace("Heron.options.layertree");
+Ext.namespace("Heron.options.extentrestrict");
+Ext.namespace("Heron.options.zoomrestrict");
+Ext.namespace("Heron.options.map.resolutions");
+
 Ext.chart.Chart.CHART_URL = 'http://eu1.mapcentia.com/js/ext/resources/charts.swf';
 var metaData, metaDataKeys = [], metaDataKeysTitle = [], click, poilayer, qstore = [], queryWin, strmStore, searchWin, placeMarkers, placePopup,
     host = "http://52.5.194.127";
@@ -21,6 +25,10 @@ MapCentia.setup = function () {
     "use strict";
     Heron.globals.metaReady = false;
     Heron.globals.serviceUrl = '/cgi/heron.cgi';
+    Heron.options.resolutions = [156543.033928, 78271.516964, 39135.758482, 19567.879241, 9783.9396205,
+        4891.96981025, 2445.98490513, 1222.99245256, 611.496226281, 305.748113141, 152.87405657,
+        76.4370282852, 38.2185141426, 19.1092570713, 9.55462853565, 4.77731426782, 2.38865713391,
+        1.19432856696, 0.597164283478, 0.298582141739, 0.1492910708695, 0.07464553543475];
 
     var urlVars = (function getUrlVars() {
             var mapvars = {};
@@ -40,21 +48,39 @@ MapCentia.setup = function () {
         dataType: 'jsonp',
         jsonp: 'jsonp_callback',
         success: function (response) {
-            if (typeof response.data.extents === "object") {
-                if (typeof response.data.center[schema] === "object") {
-                    Heron.options.zoom = response.data.zoom[schema];
-                    Heron.options.center = response.data.center[schema];
-                }
+            if (typeof response.data.zoom !== "undefined" && typeof response.data.zoom[schema] !== "undefined") {
+                Heron.options.zoom = response.data.zoom[schema];
+            } else {
+                Heron.options.zoom = null;
+            }
+
+            if (typeof response.data.center !== "undefined" && typeof response.data.center[schema] !== "undefined") {
+                Heron.options.center = response.data.center[schema];
+            } else {
+                Heron.options.center = null;
+            }
+
+            if (typeof response.data.extentrestricts !== "undefined" && typeof response.data.extentrestricts[schema] !== "undefined") {
+                Heron.options.extentrestrict = response.data.extentrestricts[schema];
+            } else {
+                Heron.options.extentrestrict = null;
+            }
+            if (typeof response.data.zoomrestricts !== "undefined" && typeof response.data.zoomrestricts[schema] !== "undefined") {
+                Heron.options.zoomrestrict = response.data.zoomrestricts[schema];
+            } else {
+                Heron.options.zoomrestrict = null;
             }
             Heron.options.map.settings = {
                 projection: 'EPSG:900913',
                 displayProjection: new OpenLayers.Projection("EPSG:4326"),
                 units: 'm',
                 maxExtent: '-20037508.34, -20037508.34, 20037508.34, 20037508.34',
-                center: Heron.options.center,
-                maxResolution: 'auto',
+                restrictedExtent: Heron.options.extentrestrict,
+                center: Heron.options.center || [0, 0],
+                numZoomLevels: 22,
+                maxResolution: Heron.options.resolutions,
                 xy_precision: 5,
-                zoom: Heron.options.zoom + 1, // Why?
+                zoom: Heron.options.zoom + 1 || 1, // Why?
                 theme: null,
                 permalinks: {
                     /** The prefix to be used for parameters, e.g. map_x, default is 'map' */
