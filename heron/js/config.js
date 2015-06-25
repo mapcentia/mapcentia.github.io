@@ -33,7 +33,7 @@ MapCentia.setup = function () {
         schema = urlVars.s,
         url = host + '/wms/' + db + '/tilecache/' + schema;
     if (!schema) {
-        alert("Please add a schema to the URL.")
+        alert("Please add a schema to the URL.");
     }
     $.ajax({
         url: host + '/api/v1/setting/' + db,
@@ -559,6 +559,7 @@ MapCentia.init = function () {
                                 var geoType = metaDataKeys[layers[index].split(".")[1]].type;
                                 var layerTitel = metaDataKeys[layers[index].split(".")[1]].f_table_title || metaDataKeys[layers[index].split(".")[1]].f_table_name;
                                 var versioning = metaDataKeys[layers[index].split(".")[1]].versioning;
+                                var layerGroup = metaDataKeys[layers[index].split(".")[1]].layergroup;
                                 var fieldConf = Ext.decode(metaDataKeys[layers[index].split(".")[1]].fieldconf);
                                 qstore[index] = new geocloud.sqlStore({
                                     host: host,
@@ -605,7 +606,7 @@ MapCentia.init = function () {
                                             });
                                             Ext.getCmp("queryTabs").add(
                                                 {
-                                                    title: layerTitel,
+                                                    title: layerGroup + " " + layerTitel,
                                                     layout: "fit",
                                                     border: false,
                                                     items: [
@@ -906,6 +907,7 @@ MapCentia.init = function () {
                             var srid = metaDataKeys[layers[index].split(".")[1]].srid;
                             var pkey = metaDataKeys[layers[index].split(".")[1]].pkey;
                             var geoType = metaDataKeys[layers[index].split(".")[1]].type;
+                            var layerGroup = metaDataKeys[layers[index].split(".")[1]].layergroup;
                             var layerTitel = metaDataKeys[layers[index].split(".")[1]].f_table_title || metaDataKeys[layers[index].split(".")[1]].f_table_name;
                             if (geoType === "RASTER") {
                                 qstore[index] = new geocloud.sqlStore({
@@ -969,19 +971,19 @@ MapCentia.init = function () {
                                             min = min - (diff / 20);
                                             mins.push(min);
                                             maxs.push(max);
-                                            layerTitles.push(layerTitel);
+                                            layerTitles.push(layerGroup + " " + layerTitel);
                                             store.sort('num', 'ASC');
                                             stores.push(data);
                                             Ext.getCmp("queryTabs").add(
                                                 {
-                                                    title: layerTitel,
+                                                    title: layerGroup + " " + layerTitel,
                                                     layout: "fit",
                                                     border: false,
                                                     items: [
                                                         {
                                                             xtype: "panel",
                                                             layout: "fit",
-                                                            id: layerTitel,
+                                                            id: layerGroup + " " + layerTitel,
                                                             border: false,
                                                             items: [
                                                                 {
