@@ -48,25 +48,27 @@ MapCentia.setup = function () {
         dataType: 'jsonp',
         jsonp: 'jsonp_callback',
         success: function (response) {
-            if (typeof response.data.zoom !== "undefined" && typeof response.data.zoom[schema] !== "undefined") {
-                Heron.options.zoom = response.data.zoom[schema];
+            var firstSchema = schema.split(",").length > 1 ? schema.split(",")[0] : schema;
+
+            if (typeof response.data.zoom !== "undefined" && typeof response.data.zoom[firstSchema] !== "undefined") {
+                Heron.options.zoom = response.data.zoom[firstSchema];
             } else {
                 Heron.options.zoom = null;
             }
 
-            if (typeof response.data.center !== "undefined" && typeof response.data.center[schema] !== "undefined") {
-                Heron.options.center = response.data.center[schema];
+            if (typeof response.data.center !== "undefined" && typeof response.data.center[firstSchema] !== "undefined") {
+                Heron.options.center = response.data.center[firstSchema];
             } else {
                 Heron.options.center = null;
             }
 
-            if (typeof response.data.extentrestricts !== "undefined" && typeof response.data.extentrestricts[schema] !== "undefined") {
-                Heron.options.extentrestrict = response.data.extentrestricts[schema];
+            if (typeof response.data.extentrestricts !== "undefined" && typeof response.data.extentrestricts[firstSchema] !== "undefined") {
+                Heron.options.extentrestrict = response.data.extentrestricts[firstSchema];
             } else {
                 Heron.options.extentrestrict = null;
             }
-            if (typeof response.data.zoomrestricts !== "undefined" && typeof response.data.zoomrestricts[schema] !== "undefined") {
-                Heron.options.zoomrestrict = response.data.zoomrestricts[schema];
+            if (typeof response.data.zoomrestricts !== "undefined" && typeof response.data.zoomrestricts[firstSchema] !== "undefined") {
+                Heron.options.zoomrestrict = response.data.zoomrestricts[firstSchema];
             } else {
                 Heron.options.zoomrestrict = null;
             }
@@ -1337,8 +1339,9 @@ MapCentia.init = function () {
                                                         catch (e) {
                                                         }
                                                         strmStore = new geocloud.geoJsonStore({
+                                                            host: host,
                                                             db: "envimatix",
-                                                            sql: "SELECT * FROM test2.shp_all WHERE lld='" + values.lld + "'",
+                                                            sql: "SELECT * FROM grids.shp_all WHERE lld='" + values.lld + "'",
                                                             styleMap: new OpenLayers.StyleMap({
                                                                 "default": new OpenLayers.Style({
                                                                         fillColor: "#000000",
