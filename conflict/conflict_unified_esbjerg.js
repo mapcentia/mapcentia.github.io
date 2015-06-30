@@ -544,7 +544,7 @@ var cowi = (function () {
                             else {
                                 $('#result-table').append("<tr><td class='checkbox'><input type='checkbox' onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'>" + layerObj.name[this.id.split('.')[1]] + "</td></tr>");
                             }
-                            if (this.id.split('.')[1] === "kpplandk2_view") {
+                            if (this.id.split('.')[1] === "ramme_view") {
                                 $.each(this.geoJSON.features,
                                     function (key, value) {
                                         $('#result-table').append("<tr><td></td><td><a target='_blank' href='/dk/mit_lokalomraade/ramme.htm?enrid=" + value.properties.enrid + "'>" + value.properties.enrid + " " + value.properties.enavn + "</a></td></tr>");
