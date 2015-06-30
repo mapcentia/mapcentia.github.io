@@ -201,7 +201,7 @@ var cowi = (function () {
                 }
                 else {
                     store.db = "esbjerg";
-                    store.sql = "SELECT gid,the_geom,ST_astext(ST_transform(the_geom,900913)) as wkt FROM kommuneplan14.kpplandk2 WHERE gid=" + gid;
+                    store.sql = "SELECT gid,the_geom,ST_astext(ST_transform(the_geom,900913)) as wkt FROM kommuneplan14.kpplandk2_test WHERE gid=" + gid;
                 }
                 store.load();
             };
@@ -333,7 +333,7 @@ var cowi = (function () {
                         placeStore.reset();
                         searchString = datum.value;
                         placeStore.db = "esbjerg";
-                        placeStore.sql = "SELECT gid,the_geom,ST_astext(ST_transform(the_geom,900913)) as wkt FROM kommuneplan14.kpplandk2 WHERE gid=" + gids[datum.value];
+                        placeStore.sql = "SELECT gid,the_geom,ST_astext(ST_transform(the_geom,900913)) as wkt FROM kommuneplan14.kpplandk2_test WHERE gid=" + gids[datum.value];
                         placeStore.load();
                     }
                     else if ((type1 === "adresse" && name === "adresse") || (type2 === "jordstykke" && name === "matrikel")) {
