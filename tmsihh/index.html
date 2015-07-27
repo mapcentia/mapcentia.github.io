@@ -22,9 +22,6 @@
             font: normal 15px/20px Arial, sans-serif;
             background: #fff;
         }
-        .leaflet-control-layers-toggle{
-            display: none !important;
-        }
 
         #logo {
             width: 100px;
@@ -322,10 +319,12 @@
 <script src="http://eu1.mapcentia.com/js/raphael/dist/rlayer-src.js"></script>
 <script src="http://maps.stamen.com/js/tile.stamen.js?v1.2.0"></script>
 <script type="text/html" id="template-sections">
-    <section id='spot_<%= this.properties[' gid'] %>' class='cover active'>
+    <section id='spot_<%= this.properties['gid'] %>' class='cover active'>
     <h4><%= this.properties['text'] %></h4>
-    <p><% if (typeof this.properties.foto !== "undefined" && this.properties.foto !== null) { %>
-        <img src="<%= this.properties.foto %>">
+    <p><i><a target="_blank" href="https://twitter.com/<%= this.properties['user_screen_name'] %>"><%=
+        this.properties['user_screen_name'] %></a></i></p>
+    <p><% if (typeof $.parseJSON(this.properties['entities']).media !== "undefined") { %>
+        <img src="<%= $.parseJSON(this.properties['entities']).media[0].media_url %>">
 
         <% } %></p>
     </section>
@@ -333,7 +332,7 @@
 <script>
     $("#about").click(function () {
         $("#modal-about").modal();
-    });
+    })
     function showVideo(video, name) {
         $("#body-video").html('<iframe src="http://player.vimeo.com/video/' + video + '" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> <p><a href="http://vimeo.com/42997705">Muligheder</a> from <a href="http://vimeo.com/user11620242">CiTyBee</a> on <a href="http://vimeo.com">Vimeo</a>.</p>');
         $("#header-video").html(name);
@@ -383,11 +382,7 @@
             size = (typeof text === "number") ? 40 : 20;
             var top = (m > 3) ? 25 : 50;
             var cssClass = (typeof text !== "number") ? "twitter-single" : "twitter-cluster";
-            return new L.DivIcon({
-                html: '<div><span>' + text + '</span><span style="display: inline;pointer-events:none;overflow:sd;border: 0px solid white;height:150px;top:-80px;left:' + left + 'px;position: absolute;width: 200px"><span style="position:relative; top:' + top + '%;">' + tagCloud + '</span></span></div>',
-                className: 'marker-cluster ' + cssClass,
-                iconSize: new L.Point(size, size)
-            });
+            return new L.DivIcon({ html: '<div><span>' + text + '</span><span style="display: inline;pointer-events:none;overflow:sd;border: 0px solid white;height:150px;top:-80px;left:' + left + 'px;position: absolute;width: 200px"><span style="position:relative; top:' + top + '%;">' + tagCloud + '</span></span></div>', className: 'marker-cluster ' + cssClass, iconSize: new L.Point(size, size) });
         }
         $('#search').typeahead({
             items: 16,
@@ -415,8 +410,8 @@
                 elastic.q = '{"query":{"query_string":{"default_field":"gid","query":' + gids[item] + ',"default_operator":"AND"}}}';
                 elastic.onLoad = function () {
                     map.zoomToExtentOfgeoJsonStore(elastic);
-                };
-                elastic.load();
+                },
+                        elastic.load();
                 return item;
             },
             matcher: function (item) {
@@ -447,24 +442,24 @@
             vigga: fun
         });
         var tweet = new geocloud.sqlStore({
+            host: "http://eu1.mapcentia.com",
             db: "citybee2",
             onLoad: function () {
                 map.map.addLayer(tweetGroups);
             },
-            sql: "SELECT * FROM tweets.tweets",
+            sql: "SELECT * FROM tmsihh.tweets",
             onEachFeature: function (feature, layer) {
 
             },
             pointToLayer: function (feature, latlng) {
                 var f = L.marker(latlng,
-                        {
-                            icon: (function () {
-                                feature.properties.text = feature.properties.text.replace("#tmsihh", "")
-                                var n = feature.properties.text.match(/#\S*/gi) || []
-                                return fun(n, "")
+                        {icon: (function () {
+                            feature.properties.text = feature.properties.text.replace("#tmsihh", "")
+                            var n = feature.properties.text.match(/#\S*/gi) || []
+                            return fun(n, "")
 
-                            })()
-                        }).on("click", function () {
+                        })()
+                        }).on("click",function () {
                             scrollTo("#spot_" + feature.properties.gid);
                         }).bindPopup(feature.properties['text']);
                 f.martin = {id: feature.properties.gid, text: feature.properties.text};
@@ -473,6 +468,7 @@
             }
         });
         var elastic = new geocloud.elasticStore({
+            host: "http://eu1.mapcentia.com",
             db: "citybee2",
             index: "tweets",
             q: "",
@@ -494,15 +490,14 @@
                                         markerColor: 'blue',
                                         prefix: 'fa'
                                     }
-                            )
-                        });
+                            )});
             }
         });
         map.addGeoJsonStore(elastic);
 
         var store = new geocloud.sqlStore({
             db: "citybee2",
-            sql: "SELECT * FROM tweets.tweets order by id desc",
+            sql: "SELECT * FROM tmsihh.tweets order by id desc",
             onEachFeature: function (feature, layer) {
                 layer.bindPopup("<b><a href='javascript:void(0)' onclick=\"showVideo('" + feature.properties['text'] + "','" + feature.properties['text'] + "')\">" + feature.properties.text + "</b>");
                 layer.on("click", function () {
