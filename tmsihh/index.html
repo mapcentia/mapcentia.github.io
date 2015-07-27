@@ -27,6 +27,10 @@
             width: 100px;
             margin-bottom: 20px;
         }
+        .leaflet-control-layers-toggle{
+            display: none !important;
+        }
+
 
         article {
             float: right;
@@ -470,7 +474,7 @@
         var elastic = new geocloud.elasticStore({
             host: "http://eu1.mapcentia.com",
             db: "citybee2",
-            index: "tweets",
+            index: "tmsihh",
             q: "",
             size: 20,
             onEachFeature: function (feature, layer) {
