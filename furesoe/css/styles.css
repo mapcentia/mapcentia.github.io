@@ -1,0 +1,9 @@
+.leaflet-control-layers {
+    display: none !important;
+}
+.control-group {
+    margin-top: 10px;
+}
+label {
+    margin-bottom: 1px !important;
+}

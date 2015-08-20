@@ -1,0 +1,42 @@
+{
+  "form": {
+    "schema": {
+      "name": {
+        "type": "string",
+        "title": "Navn",
+        "required": true
+      },
+      "email": {
+        "type": "email",
+        "title": "E-mail",
+        "required": true
+      }
+    },
+    "form": [
+      "name",
+      "email",
+      {
+        "type": "help",
+        "helpvalue": "Udfyld navn og e-mail og klik send."
+      },
+      {
+        "type": "submit",
+        "title": "Send"
+      }
+    ],
+    "params": {
+      "fieldHtmlClass": "form-control"
+    }
+  },
+  "gc2": {
+    "host": "http://furesoe.mapcentia.com",
+    "db": "furesoe",
+    "table": "registreringer.registreringer",
+    "valueField": "values",
+    "geomField": "the_geom"
+  },
+  "map": {
+    "center": [55.7911, 12.4118],
+    "zoom": 12
+  }
+}
