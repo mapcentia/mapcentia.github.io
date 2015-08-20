@@ -97,7 +97,7 @@
                                                         prefix: 'fa'
                                                     }
                                                 )
-                                            }).addTo(gc2.map).bindPopup("Navn: " + values.name + "<br>E-mail: " + values.email).openPopup();
+                                            }).addTo(gc2.map).bindPopup(values.name + "<br>" + values.email).openPopup();
                                         count = count + 1;
                                     },
                                     failure: function (errMsg) {
