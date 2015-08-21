@@ -28,7 +28,7 @@ body {
 #map {
     position: absolute;
     height: 100%;
-    right: 300px;
+    width: 70%;
     left: 0;
     z-index: 0;
     border-right: 1px solid #ddd;
@@ -37,7 +37,7 @@ body {
 
 #side-panel {
     position: absolute;
-    width: 300px;
+    width: 30%;
     right: 0;
     top: 0;
     padding: 16px 6px 6px 6px;

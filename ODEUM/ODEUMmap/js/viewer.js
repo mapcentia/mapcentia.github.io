@@ -201,7 +201,7 @@ Viewer = function (obj, callback) {
             if (metaDataReady && settingsReady) {
                 var layers,layer, coords;
                 setBaseLayer(window.setBaseLayers[0].id);
-                layers = JSON.parse(obj.layers);
+                layers = (typeof obj.layers !== "string" || obj.layers === "") ? [] : JSON.parse(obj.layers);
                 for (i = 0; i < layers.length; i++) {
                     layer = layers[i].name;
                     switchLayer(layer, true);
