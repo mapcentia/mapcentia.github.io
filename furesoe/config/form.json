@@ -3,7 +3,7 @@
     "schema": {
       "name": {
         "type": "string",
-        "title": "Navn",
+        "title": "Grundejerforening",
         "required": true
       },
       "email": {
@@ -17,7 +17,7 @@
       "email",
       {
         "type": "help",
-        "helpvalue": "Udfyld navn og e-mail og klik send."
+        "helpvalue": "Udfyld Grundejerforening og e-mail og klik send."
       },
       {
         "type": "submit",

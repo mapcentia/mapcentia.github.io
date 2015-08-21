@@ -43,7 +43,7 @@
                         marker = L.marker(coords, {
                             icon: L.AwesomeMarkers.icon(
                                 {
-                                    icon: 'star',
+                                    icon: 'fa-users',
                                     markerColor: 'blue',
                                     prefix: 'fa'
                                 }
@@ -92,7 +92,7 @@
                                             {
                                                 icon: L.AwesomeMarkers.icon(
                                                     {
-                                                        icon: 'star',
+                                                        icon: 'fa-users',
                                                         markerColor: 'red',
                                                         prefix: 'fa'
                                                     }
