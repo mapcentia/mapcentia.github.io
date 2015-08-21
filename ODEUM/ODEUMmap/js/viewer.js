@@ -12,14 +12,12 @@
 /*global window:false */
 var Viewer, print;
 Viewer = function (obj, callback) {
-    console.log(obj)
     "use strict";
     var init, switchLayer, setBaseLayer, addLegend, hostname, cloud, db, schema, hash, zoomControl, metaDataKeys = [], metaDataKeysTitle = [], metaDataReady = false, settingsReady = false, urlVars;
     hostname = "http://cowi.mapcentia.com";
-    hash = decodeURIComponent(geocloud.urlHash);
     urlVars = geocloud.urlVars;
-    db = urlVars.db;
-    schema = urlVars.schema;
+    db = obj.db;
+    schema = obj.schemas.join(",");
     switchLayer = function (name, visible) {
         if (visible) {
             cloud.showLayer(name);
