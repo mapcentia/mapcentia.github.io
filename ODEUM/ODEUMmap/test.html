@@ -69,10 +69,13 @@
             };
 
     var openMapWin = function (page, width, height) {
+
+        // definer etobject med strings fra ODEUM formularen, som kan sende til kortet
         var obj = {
                     layers: layersField.val(),
                     bbox: bboxField.val()
-                }, strWinName = "Map",
+                },
+                strWinName = "Map",
                 popleft = (screen.width - width) / 2,
                 poptop = (screen.height - height) / 2,
                 openWin = false,
@@ -91,8 +94,9 @@
         if (openWin) {
             MapappWin = window.open(page, strWinName, strParameters);
             MapappWin.focus();
-
             $(MapappWin.window).load(function () {
+
+                        // Kald kortets "go" funktion med object og callback
                         MapappWin.window.go(obj, callback);
                     }
             );
