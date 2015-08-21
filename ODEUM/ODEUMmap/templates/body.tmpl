@@ -1,0 +1,58 @@
+<!-- map -->
+<div id="pane">
+    <div id="container">
+        <div id="map"></div>
+        <div id="side-panel">
+            <div id="top">
+                <div id="buffer-container">
+                    <div class="form-inline">
+                        <button class="btn btn-warning" id="done-btn">Indsæt kort</button>
+                    </div>
+                </div>
+            </div>
+            <div role="tabpanel">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist" id="main-tabs">
+                    <li role="presentation" class="active"><a href="#layer-content" aria-controls="" role="tab"
+                                               data-toggle="tab">Lag</a></li>
+                    <li role="presentation"><a href="#legend-content" aria-controls="" role="tab"
+                                               data-toggle="tab">Signatur</a></li>
+
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="layer-content">
+                        <div class="panel-group" id="layers" role="tablist" aria-multiselectable="true"></div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="legend-content">
+                        <div id="legend"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse"
+                        data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav" style="float: left">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Baggrund <b
+                                class="caret"></b></a>
+                        <ul class="dropdown-menu" id="base-layer-list">
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
