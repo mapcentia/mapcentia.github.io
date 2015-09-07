@@ -311,7 +311,7 @@ var cowi = (function () {
                         (function ca() {
                             $.ajax({
                                 url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/esbjerg/kommuneplan14/kpplandk2_test',
-                                data: '&q={"query":{"query_string":{"default_field":"enrid","query":"' + encodeURIComponent(query.toLowerCase()) + '"}}}',
+                                data: '&q={"query":{"query_string":{"default_field":"enrid","query":"' + encodeURIComponent(query.toLowerCase().replace(/-/g, "_")) + '"}}}',
                                 dataType: 'jsonp',
                                 contentType: "application/json; charset=utf-8",
                                 scriptCharset: "utf-8",
