@@ -126,21 +126,21 @@ mapcentia_rammemap = (function () {
                                 value: '91'
                             }),
                             symbolizer: {
-                                fillColor: "#deffde",
+                                fillColor: "#33CCCC",
                                 fillOpacity: 0.3,
-                                strokeColor: "#deffde"
+                                strokeColor: "#008080"
                             }
                         }),
                         new OpenLayers.Rule({
                             filter: new OpenLayers.Filter.Comparison({
                                 type: OpenLayers.Filter.Comparison.EQUAL_TO,
                                 property: "anvgen",
-                                value: '91'
+                                value: '96'
                             }),
                             symbolizer: {
-                                fillColor: "#dedfde",
+                                fillColor: "#C0C0C0",
                                 fillOpacity: 0.3,
-                                strokeColor: "#dedfde"
+                                strokeColor: "#969696"
                             }
                         })
                     ]
