@@ -146,6 +146,7 @@ mapcentia_rammemap = (function () {
                     ]
                 }
             },
+            
             map, store, prop;
         if (config) {
             for (prop in config) {
