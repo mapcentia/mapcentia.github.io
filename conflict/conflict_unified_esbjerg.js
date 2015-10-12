@@ -214,7 +214,7 @@ var cowi = (function () {
                         pointToLayer: null,
                         onLoad: function () {
                             cloudMap.zoomToExtentOfgeoJsonStore(placeStore);
-                            conflict(this.geoJSON.features[0].properties.wkt);
+                            conflict(this.geoJSON.features[0].properties.wkt,typeFlag);
                         }
                     });
                 cloudMap.map.addLayers([placeStore.layer]);
@@ -487,14 +487,9 @@ var cowi = (function () {
                     jsonp: true,
                     method: "GET"
                 });
-                if (type !== "adresse" && type !== "draw") {
-                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects((ST_transform(the_geom,900913)),ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913),-5)) AND komnr=" + komKode;
-                    storeLpFor.sql = "SELECT * FROM planer.lokalplan_forslag WHERE ST_intersects((ST_transform(the_geom,900913)),ST_Buffer(ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913),-5)) AND komnr=" + komKode;
-                }
-                else {
-                    storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects((ST_transform(the_geom,900913)),ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913)) AND komnr=" + komKode;
-                    storeLpFor.sql = "SELECT * FROM planer.lokalplan_forslag WHERE ST_intersects((ST_transform(the_geom,900913)),ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913)) AND komnr=" + komKode;
-                }
+                storeLp.sql = "SELECT * FROM planer.lokalplan_vedtaget WHERE ST_intersects((ST_transform(the_geom,900913)),ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913)) AND komnr=" + komKode;
+                storeLpFor.sql = "SELECT * FROM planer.lokalplan_forslag WHERE ST_intersects((ST_transform(the_geom,900913)),ST_SetSRID(ST_geomfromtext('" + wkt + "'),900913)) AND komnr=" + komKode;
+
                 storeLp.load();
                 storeLpFor.load();
                 storeLp.onLoad = function () {
