@@ -224,7 +224,7 @@ mapcentia_districtmap = (function () {
                     selectControl: selectControl,
                     height: defaults.gridHeight
                 });
-                $("#zoom").on("click",
+                $("#zoom").click(
                     function () {
                         grid.grid.getSelectionModel().each(function (rec) {
                                 var feature = rec.get('feature');
@@ -233,7 +233,7 @@ mapcentia_districtmap = (function () {
                         );
                     }
                 );
-                $("#look").on("click",
+                $("#look").click(
                     function () {
                         var feature;
                         grid.grid.getSelectionModel().each(function (rec) {
