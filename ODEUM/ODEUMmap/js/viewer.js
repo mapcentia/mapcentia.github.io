@@ -149,7 +149,7 @@ Viewer = function (obj, callback) {
                     if (arr[i]) {
                         l = [];
                         cv = ( typeof (metaDataKeysTitle[arr[i]]) === "object") ? metaDataKeysTitle[arr[i]].f_table_name : null;
-                        base64name = Base64.encode(arr[i]).replace(/=/g, "");
+                        base64name = Base64.encode(arr[i]).replace(/=/g, "").replace(/\+/g, "");
                         $("#layers").append('<div class="panel panel-default" id="layer-panel-' + base64name + '"><div class="panel-heading" role="tab"><h4 class="panel-title"><a class="accordion-toggle" data-toggle="collapse" data-parent="#layers" href="#collapse' + base64name + '"> ' + arr[i] + ' </a></h4></div><ul class="list-group" id="group-' + base64name + '" role="tabpanel"></ul></div>');
                         $("#group-" + base64name).append('<div id="collapse' + base64name + '" class="accordion-body collapse"></div>');
                         response.data.reverse();
