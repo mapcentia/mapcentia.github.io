@@ -37,7 +37,7 @@
         type="text/javascript"></script>
 <script>
     window.go = function (obj, callback) {
-        $("body").html(this.Templates["body.tmpl"].render(gc2i18n.dict));
+        $("body").html(this.Templates["body"].render(gc2i18n.dict));
         window.MapCentia = new Viewer(obj, callback);
         MapCentia.init(window.MapCentia);
         $("[data-toggle=tooltip]").tooltip();
@@ -53,6 +53,10 @@
                 onResize();
             })
         }());
+
+
+
+
     }
 </script>
 <script src="//maps.google.com/maps/api/js?v=3&sensor=false&libraries=places" type="text/javascript"></script>
@@ -68,5 +72,14 @@
 <script src="http://cowi.mapcentia.com/api/v3/js/geocloud.php?i18n=da_DK"
         type="text/javascript"></script>
 </html>
+<!--<script>
+    var obj = {
+        layers: '',
+        bbox: '12.293701171875,55.83551802331851,12.401676177978516,55.89129356168413',
+        db: "alleroed",
+        schemas: ["public","kommuneplan13"]
+    };
+    window.go(obj, function(){alert()});
+</script>-->
 
 

@@ -113,6 +113,9 @@ Viewer = function (obj, callback) {
             callback(statObj);
             window.close();
         });
+        $("#unselect-all-btn").on("click", function () {
+            $(".checkbox input[type=checkbox]").prop('checked', false).trigger("change");
+        });
         $.ajax({
             url: hostname.replace("cdn.", "") + '/api/v1/meta/' + db + '/' + (window.gc2Options.mergeSchemata === null ? "" : window.gc2Options.mergeSchemata.join(",") + ',') + (typeof urlVars.i === "undefined" ? "" : urlVars.i.split("#")[0] + ',') + schema,
             scriptCharset: "utf-8",

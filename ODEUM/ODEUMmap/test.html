@@ -52,7 +52,7 @@
         </tbody>
     </table>
 </form>
-<button onclick="openMapWin('http://mapcentia.github.io/ODEUM/ODEUMmap/index.html',800,500)">Indsætning kort</button>
+<button onclick="openMapWin('http://localhost:63342/mapcentia.github.io/ODEUM/ODEUMmap/index.html',800,500)">Indsætning kort</button>
 </body>
 <script src="http://eu1.mapcentia.com/js/jquery/1.10.0/jquery.min.js"
         type="text/javascript"></script>
@@ -63,14 +63,14 @@
 
     // Definer en callback, som kortet kalder, når der klikkes "Indsæt ".
             callback = function (obj) {
-                console.log(obj)
+                console.log(obj);
                 layersField.val(obj.layers);
                 bboxField.val(obj.bbox);
             };
 
     var openMapWin = function (page, width, height) {
 
-        // definer etobject med strings fra ODEUM formularen samt PostGIS db og schemaer, som kan sende til kortet
+        // definer et object med strings fra ODEUM formularen samt PostGIS db og schemaer, som kan sende til kortet
         var obj = {
                     layers: layersField.val(),
                     bbox: bboxField.val(),
