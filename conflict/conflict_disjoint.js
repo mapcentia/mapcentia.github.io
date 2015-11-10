@@ -154,7 +154,7 @@ var cowi = (function () {
                 if (useAreaWithAddress) {
                     store.sql = "SELECT adresse.adgang4.the_geom as a_the_geom,matrikel.jordstykke.the_geom as m_the_geom,ST_astext(adresse.adgang4.the_geom) as a_wkt,ST_astext(matrikel.jordstykke.the_geom) as wkt FROM adresse.adgang4, matrikel.jordstykke WHERE ST_intersects(matrikel.jordstykke.the_geom, adresse.adgang4.the_geom) AND adresse.adgang4.gid=" + gid;
                 } else {
-                    store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang4 WHERE gid=" + gid;
+                    store.sql = "SELECT gid,the_geom,ST_astext(ST_transform(the_geom,4326)) as wkt FROM adresse.adgang4 WHERE gid=" + gid;
                 }
                 store.load();
             };
