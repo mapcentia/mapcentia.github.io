@@ -228,7 +228,7 @@ var cowi = (function () {
                     store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM matrikel.jordstykke WHERE gid=" + gid;
                 }
                 if (typeFlag === "adresse") {
-                    store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
+                    store.sql = "SELECT gid,the_geom,ST_astext(ST_Transform(the_geom,25832)) as wkt FROM adresse.adgang4 WHERE gid=" + gid;
                 }
                 store.load();
                 //conflict(wkt)
@@ -248,9 +248,8 @@ var cowi = (function () {
                 map = {};
                 responseType = {};
                 $.ajax({
-                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws/' + type1,
-                    //data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}}}',
-                    data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"municipalitycode":"0' + komKode + '"}}}}}',
+                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws4/' + type1,
+                    data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"kommunekode":"0' + komKode + '"}}}}}',
                     contentType: "application/json; charset=utf-8",
                     scriptCharset: "utf-8",
                     dataType: 'jsonp',
