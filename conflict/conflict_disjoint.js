@@ -94,7 +94,7 @@ var cowi = (function () {
                 }
                 map = {};
                 $.ajax({
-                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws/' + type,
+                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws4/' + type,
                     data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"municipalitycode":"0' + komKode + '"}}}}}',
                     contentType: "application/json; charset=utf-8",
                     scriptCharset: "utf-8",
@@ -152,9 +152,9 @@ var cowi = (function () {
             var showOnMap = function (gid) {
                 store.reset();
                 if (useAreaWithAddress) {
-                    store.sql = "SELECT adresse.adgang.the_geom as a_the_geom,matrikel.jordstykke.the_geom as m_the_geom,ST_astext(adresse.adgang.the_geom) as a_wkt,ST_astext(matrikel.jordstykke.the_geom) as wkt FROM adresse.adgang, matrikel.jordstykke WHERE ST_intersects(matrikel.jordstykke.the_geom, adresse.adgang.the_geom) AND adresse.adgang.gid=" + gid;
+                    store.sql = "SELECT adresse.adgang4.the_geom as a_the_geom,matrikel.jordstykke.the_geom as m_the_geom,ST_astext(adresse.adgang4.the_geom) as a_wkt,ST_astext(matrikel.jordstykke.the_geom) as wkt FROM adresse.adgang4, matrikel.jordstykke WHERE ST_intersects(matrikel.jordstykke.the_geom, adresse.adgang4.the_geom) AND adresse.adgang4.gid=" + gid;
                 } else {
-                    store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
+                    store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang4 WHERE gid=" + gid;
                 }
                 store.load();
             };
@@ -319,7 +319,7 @@ var cowi = (function () {
                     if (count === arr.length) {
                         $("#spinner").hide();
                     }
-                }
+                };
             }
             store = null;
         };
