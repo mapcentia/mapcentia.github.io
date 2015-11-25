@@ -74,7 +74,7 @@ var search = (function () {
                     store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM matrikel.jordstykke WHERE gid=" + gid;
                 }
                 if (typeFlag === "adresse") {
-                    store.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang4 WHERE gid=" + gid;
+                    store.sql = "SELECT gid,the_geom,ST_astext(ST_Transform(the_geom,25832)) as wkt FROM adresse.adgang4 WHERE gid=" + gid;
                 }
                 store.load();
                 //conflict(wkt)
