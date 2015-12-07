@@ -215,6 +215,9 @@ var cowi = (function () {
                 sql: null,
                 onLoad: function () {
                     cloudMap.zoomToExtentOfgeoJsonStore(store);
+                    if (typeFlag ==="adresse") {
+                        cloudMap.map.zoomTo(17);
+                    }
                     cloudMap.map.addLayers([store.layer]);
                     conflict(store.geoJSON.features[0].properties.wkt, typeFlag);
                 }
