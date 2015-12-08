@@ -197,7 +197,7 @@ var cowi = (function () {
                 }
                 else if (typeFlag === "adresse") {
                     store.db = "dk";
-                    store.sql = "SELECT gid,the_geom,ST_astext(ST_transform(the_geom,900913)) as wkt FROM adresse.adgang WHERE gid=" + gid;
+                    store.sql = "SELECT gid,the_geom,ST_astext(ST_transform(the_geom,900913)) as wkt FROM adresse.adgang4 WHERE gid=" + gid;
                 }
                 else {
                     store.db = "esbjerg";
@@ -240,8 +240,8 @@ var cowi = (function () {
 
                         (function ca() {
                             $.ajax({
-                                url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws/' + type1,
-                                data: '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"municipalitycode":"0' + komKode + '"}}}}}',
+                                url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws4/' + type1,
+                                data: '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"kommunekode":"0' + komKode + '"}}}}}',
                                 contentType: "application/json; charset=utf-8",
                                 scriptCharset: "utf-8",
                                 dataType: 'jsonp',
@@ -343,7 +343,7 @@ var cowi = (function () {
                             placeStore.sql = "SELECT gid,the_geom,ST_astext(ST_transform(the_geom,900913)) as wkt FROM matrikel.jordstykke WHERE gid=" + gids[datum.value];
                         }
                         if (name === "adresse") {
-                            placeStore.sql = "SELECT gid,the_geom,ST_astext(ST_transform(the_geom,900913)) as wkt FROM adresse.adgang WHERE gid=" + gids[datum.value];
+                            placeStore.sql = "SELECT gid,the_geom,ST_astext(ST_transform(the_geom,900913)) as wkt FROM adresse.adgang4 WHERE gid=" + gids[datum.value];
                         }
                         searchString = datum.value;
                         placeStore.load();
@@ -369,8 +369,8 @@ var cowi = (function () {
                 map = {};
                 responseType = {};
                 $.ajax({
-                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws/' + type1,
-                    data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"municipalitycode":"0' + komKode + '"}}}}}',
+                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws4/' + type1,
+                    data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"kommunekode":"0' + komKode + '"}}}}}',
                     contentType: "application/json; charset=utf-8",
                     scriptCharset: "utf-8",
                     dataType: 'jsonp',
