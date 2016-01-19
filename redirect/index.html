@@ -7,8 +7,9 @@
 <body>
 </body>
 <script>
-    var urlVars = geocloud.urlVars, flag=false, url, schemas, geom
+    var urlVars = geocloud.urlVars, flag=false, url, schemas, geom,
             host = "http://ballerup.mapcentia.com", db= "ballerup";
+
     if (typeof urlVars.vejkode === "undefined" || typeof urlVars.husnr === "undefined" || typeof urlVars.kommunekode === "undefined"){
         alert("Skal have husnr, vejkode og kommunekode");
     } else {
