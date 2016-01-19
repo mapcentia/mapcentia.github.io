@@ -1,0 +1,51 @@
+<html>
+<head>
+    <title>Redirect</title>
+    <meta charset="utf-8">
+    <script src="http://eu1.mapcentia.com/api/v3/js/geocloud.php"></script>
+</head>
+<body>
+</body>
+<script>
+    var urlVars = geocloud.urlVars, flag=false, url, schemas, geom
+            host = "http://ballerup.mapcentia.com", db= "ballerup";
+    if (typeof urlVars.vejkode === "undefined" || typeof urlVars.husnr === "undefined" || typeof urlVars.kommunekode === "undefined"){
+        alert("Skal have husnr, vejkode og kommunekode");
+    } else {
+        flag = true;
+    }
+
+    if (typeof urlVars.schemas === "undefined"){
+        schemas = "public";
+    } else {
+        schemas = urlVars.schemas;
+    }
+
+    var sql = "SELECT * FROM adresse.adgang4 WHERE vejkode='" + urlVars.vejkode + "' AND husnr='" + urlVars.husnr + "' AND kommunekode='" + urlVars.kommunekode + "'";
+
+    // Create a GeoJSON store with a SELECT query
+    var store = new geocloud.geoJsonStore({
+        db: "dk",
+        sql: sql,
+        pointToLayer: null
+    });
+
+    // Define a callback for when the SQL returns
+    store.onLoad = function () {
+
+        if (this.geoJSON === null){
+            alert("Fandt ikke adressen");
+        } else {
+            // Create URL
+            geom = this.geoJSON.features[0].geometry.coordinates;
+            url = host + "/apps/viewer/" + db + "/" + schemas + "/#osm/19/" + geom[0] + "/" + geom[1] + "/";
+            window.location = url;
+        }
+    };
+
+    // Run the SQL and load data
+    if (flag) {
+        store.load();
+    }
+</script>
+</html>
