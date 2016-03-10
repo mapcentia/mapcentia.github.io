@@ -1,0 +1,551 @@
+<style>
+    td {
+        vertical-align: top;
+        padding-bottom: 20px;
+    }
+
+    .olControlZoom {
+        display: none;
+    }
+</style>
+<script src="http://cdn.eu1.mapcentia.com/js/openlayers/proj4js-combined.js"></script>
+<script src="http://beta.mygeocloud.cowi.webhouse.dk/js/openlayers/defs/EPSG25832.js"></script>
+<script src="http://mapcentia.github.io/esbjerg/code2map.js"></script>
+<script type="text/javascript">
+    //setting up headers and footers for html2pdf
+    var html2pdf = {
+        footer: {
+            height: "1cm",
+            contents: '<div style="float:right">Side {{pageNumber}} af {{totalPages}}</div>'
+        }
+    };
+    var gc2RammeMap = (function () {
+        return {
+            initTab: function (tabId) {
+                if (!$('#pgtabcnt' + tabId).hasClass("tabOpen")) {
+                    $('#pgtabcnt' + tabId).addClass('tabOpen');
+                } else {
+                    $('#pgtabcnt' + tabId).removeClass('tabOpen');
+                }
+            },
+            init: function (enrid) {
+                var bem = {
+                    //enrid: "Nummmer",
+                    //enavn: "Navn",
+                    h_an: "Hovedanvendelse",
+                    r_an: "Rammeanvendelse",
+                    r_an_txt: "Rammeanvendelse (Lang)",
+                    st_zone: "Zonestatus",
+                    pl_zone: "Planlagt zone",
+                    pct: "Bebyggelsesprocent",
+                    hem: "Højdebestemmelser",
+                    fri: "Opholdsareal",
+                    rkf: "Rækkefølge",
+                    db: "Støj",
+                    vvm: "VVM - Udvidet anvendelse",
+                    auv: "Udvidet anvendelse",
+                    auv1: "Udvidet anvendelse 1",
+                    auv2: "Udvidet anvendelse 2",
+                    auv3: "Udvidet anvendelse 3",
+                    auv4: "Udvidet anvendelse 4",
+                    res: "Reservation",
+                    res1: "Reservation 1",
+                    res2: "Reservation 2",
+                    res3: "Reservation 3",
+                    res4: "Reservation 4",
+                    kva: "Kvalitetsbestemmelser",
+                    kva1: "Kvalitetsbestemmelser 1",
+                    kva2: "Kvalitetsbestemmelser 2",
+                    kva3: "Kvalitetsbestemmelser 3",
+                    kva4: "Kvalitetsbestemmelser 4"
+                };
+                var bind = {
+                    b_p3besk: "§3 Beskyttelse",
+                    b_marsk: "Bebyggelse i Marsken",
+                    r_do: "Begrænset drikkevandsinteresseområde",
+                    b_lin: "Beskyttelseslinier",
+                    b_bygskik: "Byggeskik og bebyggelsesforhold",
+                    t_elspor: "El-jernbanedrift",
+                    b_ex: "Exner-Fredning",
+                    t_fjv: "Fjernvarmeledninger",
+                    b_fa: "Forsvarets arealer",
+                    t_olie: "Forsvarets olieledning",
+                    b_fmbesk: "Fortidsmindebeskyttelseslinie",
+                    b_fred: "Fredning",
+                    b_skf: "Fredskov",
+                    t_fyrl: "Fyrlinier",
+                    b_gen: "Generelt P3 beskyttet område",
+                    b_geo: "Geologisk værdi",
+                    r_vo: "Grundvandbeskyttet område",
+                    b_havd: "Havdige",
+                    b_khm: "Historiske landskaber",
+                    t_aff: "Hovedkloakledning",
+                    t_hsti: "Hovedstiforbindelser",
+                    t_hvl: "Hovedvandledning",
+                    t_hl: "Højspændingskorridorer",
+                    db_jb: "Jernbanestøjisolinie",
+                    t_jbt: "Jernbanetrace",
+                    b_jordfu: "Jordforurening",
+                    r_vk: "Kildepladszoner",
+                    b_kibesk: "Kirkebeskyttelseslinie",
+                    b_ko: "Kirkeomgivelser",
+                    b_kliris: "Klimarisikoområder",
+                    b_klitfr: "Klitfredning",
+                    r_rk: "Klæginteresseområde",
+                    b_kvf: "Kollektiv Varmeforsyning",
+                    b_ka: "Kulturlevn",
+                    b_atl: "Kulturmiljø",
+                    b_kbz: "Kystnære Byzoner",
+                    b_kyst: "Kystnærhedszonen",
+                    b_lkaro: "Landskabskarakterområder",
+                    b_lav: "Lavbundsarealer",
+                    m_hg: "Lufthavnshøjdegrænseplan",
+                    db_lh: "Lufthavnsstøjisolinie",
+                    db_mb: "Motorbanestøjisolinie",
+                    b_ms: "Målsatte søer",
+                    b_mv: "Målsatte vandløb",
+                    b_int: "Natura 2000",
+                    b_nat: "Naturbeskyttelse",
+                    t_gas: "Naturgas",
+                    b_pzrivi: "Planlægningszone for risikovirksomhed",
+                    b_pona: "Potentiel Natur",
+                    t_vej: "Primærvej",
+                    t_ra: "Radiokæder",
+                    b_resvej: "Reserverede veje",
+                    b_skr: "Reserveret til skov",
+                    r_rg: "Råstofgraveområde",
+                    r_ri: "Råstofinteresseområde",
+                    b_sbyg: "Sammenhængende bebyggelser",
+                    b_szrivi: "Sikkerhedszone for risikovirksomhed",
+                    b_skbesk: "Skovbeskyttelseslinie",
+                    b_sk: "Skovområde",
+                    b_skj: "Skovrejsning",
+                    b_sk0: "Skovrejsning uønsket",
+                    db_sk: "Skydebanestøjisolinie",
+                    b_sjd: "Sten og jorddiger",
+                    b_shd: "Store Husdyrbrug",
+                    b_stbesk: "Strandbeskyttelseslinie",
+                    db_bi: "Støjisolinier",
+                    b_sshl: "Større Sammenhængende landskaber",
+                    b_stl: "Større uforstyrrede landskaber",
+                    b_svls: "Særlige Værdifulde Landbrugsområder",
+                    b_sobesk: "Søbeskyttelseslinie",
+                    ter_kot3: "Terrænkoter under +3,90 DVR90.",
+                    ter_kot4: "Terrænkoter under +4,75 DVR90.",
+                    b_dekl: "Tinglyst bevaringsdeklaration",
+                    b_vahafr: "Vadehavsfredning",
+                    db_vejk: "Vejstøj ved vejkant",
+                    db_vej: "Vejstøjisolinie",
+                    db_vind: "Vindmøllestøjisolinie",
+                    db_virk: "Virksomhedsstøjisolinie",
+                    b_vbgr: "Værdifulde byrum",
+                    b_kl: "Værdifulde kystlandskaber",
+                    b_lb: "Værdifulde landbrugsområder",
+                    b_ls: "Værdifulde landskaber",
+                    b_oko: "Økologiske forbindelser",
+                    b_aabesk: "Aabeskyttelseslinie"
+                };
+                var rules = {
+                    rules: [
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'be'
+                            }),
+                            symbolizer: {
+                                fillColor: "#990000",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'bj'
+                            }),
+                            symbolizer: {
+                                fillColor: "#d6c29e",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'bl'
+                            }),
+                            symbolizer: {
+                                fillColor: "#b85252",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'ca'
+                            }),
+                            symbolizer: {
+                                fillColor: "#bf00f2",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'cb'
+                            }),
+                            symbolizer: {
+                                fillColor: "#9954bf",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'cl'
+                            }),
+                            symbolizer: {
+                                fillColor: "#cca8e0",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'cm'
+                            }),
+                            symbolizer: {
+                                fillColor: "#660099",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'ef'
+                            }),
+                            symbolizer: {
+                                fillColor: "#2566d9",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'eh'
+                            }),
+                            symbolizer: {
+                                fillColor: "#bfe8ff",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'eo'
+                            }),
+                            symbolizer: {
+                                fillColor: "#8cb3ed",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'la'
+                            }),
+                            symbolizer: {
+                                fillColor: "#e6e6b3",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'lb'
+                            }),
+                            symbolizer: {
+                                fillColor: "#996666",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'na'
+                            }),
+                            symbolizer: {
+                                fillColor: "#bfd18c",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'of'
+                            }),
+                            symbolizer: {
+                                fillColor: "#ffff73",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'og'
+                            }),
+                            symbolizer: {
+                                fillColor: "#80b340",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 're'
+                            }),
+                            symbolizer: {
+                                fillColor: "#d9ff99",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'so'
+                            }),
+                            symbolizer: {
+                                fillColor: "#fea601",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        }),
+                        new OpenLayers.Rule({
+                            filter: new OpenLayers.Filter.Comparison({
+                                type: OpenLayers.Filter.Comparison.EQUAL_TO,
+                                property: "h",
+                                value: 'ta'
+                            }),
+                            symbolizer: {
+                                fillColor: "#8A8A8A",
+                                fillOpacity: 0.8,
+                                strokeColor: "#fff"
+                            }
+                        })
+                    ]
+                }
+                var styleMap = new OpenLayers.StyleMap({
+                    "default": new OpenLayers.Style({
+                                fillColor: "#ffffff",
+                                fillOpacity: 0.0,
+                                strokeColor: "#00aa00",
+                                strokeWidth: 2,
+                                graphicZIndex: 1
+                            }, rules
+                    ),
+                    "temporary": new OpenLayers.Style({
+                                fillColor: "#ffffff",
+                                fillOpacity: 0.0,
+                                strokeColor: "#00aa00",
+                                strokeWidth: 2,
+                                graphicZIndex: 1
+                            }, rules
+                    )
+                });
+                var map = new mygeocloud_ol.map("map", "esbjerg");
+                map.addBaseLayer("dtkSkaermkortDaempet");
+                var store = new mygeocloud_ol.geoJsonStore("esbjerg", {
+                    sql: "SELECT * FROM kommuneplan14.ramme_view WHERE enrid='" + enrid + "'",
+                    lifetime: 0,
+                    styleMap: styleMap,
+                    clientEncoding: "UTF8",
+                    onLoad: function () {
+                        map.zoomToExtentOfgeoJsonStore(this);
+                        setTimeout(function () {
+                            c.select(store.layer.features[0]);
+                        }, 100);
+
+
+                    }
+                });
+                map.addGeoJsonStore(store);
+                store.load();
+                var dbArr = ["db_jb", "db_lh", "db_mb", "db_sk", "db_vejk", "db_vej", "db_vind", "db_virk"];
+                var c = new OpenLayers.Control.SelectFeature(
+                        store.layer, {
+                            hover: false,
+                            highlightOnly: false,
+                            clickout: true,
+                            renderIntent: "temporary",
+                            onSelect: function (e) {
+                                var layer = e, sp, strBind = "", strBem = "", strHeader = "", strHeadline = "", body, layersForLink = [],
+                                        bounds = layer.geometry.bounds;
+                                var source = new Proj4js.Proj("EPSG:900913");    //source coordinates will be in Longitude/Latitude
+                                var dest = new Proj4js.Proj("EPSG:25832");
+                                var p1 = new Proj4js.Point(bounds.left, bounds.bottom);
+                                Proj4js.transform(source, dest, p1);
+                                var p2 = new Proj4js.Point(bounds.right, bounds.top);
+                                Proj4js.transform(source, dest, p2);
+
+                                if (layer.attributes) {
+                                    console.log(layer.attributes)
+                                    var currentTime = new Date();
+                                    strHeadline = "<h2>Enkeltområde " + layer.attributes.enrid + "</h2>";
+                                    strHeadline += "<p>Esbjerg kommuneplan 2014-2026, rammedel</p>";
+                                    $("#info-headline").html(strHeadline);
+
+
+                                    strHeader += "<table style='width: 100%' class='table table-condensed table-striped table-responsive'>";
+                                    strHeader += "<tr><td style='width: 30%'>" + layer.attributes.onr + "</td><td></td></tr>";
+                                    strHeader += "<tr><td>" + layer.attributes.unr + "</td><td></td></tr>";
+                                    strHeader += "<tr><td>" + layer.attributes.enr + "</td><td>" + layer.attributes.enavn + "</td></tr>";
+                                    strHeader += "</table>";
+
+                                    strHeader += "<h2>Status</h2>";
+                                    strHeader += "<table style='width: 100%;' class='table table-condensed table-striped table-responsive'>";
+                                    strHeader += "<tr><td style='width: 30%'>Dato</td><td>" + currentTime.getDate() + "-" + (currentTime.getMonth() + 1) + "-" + currentTime.getFullYear() + "</td></tr>";
+                                    //strHeader += "<tr><td>Zonestatus</td><td>" + layer.attributes.st_zone_code + "</td></tr>";
+                                    strHeader += "<tr><td>Zonestatus</td><td>" + (function getColor() {
+                                        var d = layer.attributes.st_zone_code;
+                                        return d === "b" ? 'Byzone' :
+                                                d === "l" ? 'Landzone' :
+                                                        d === "s" ? "Sommerhuszone" :
+                                                                d === "bx" ? "Blandet zonestatus" :
+                                                                        d === "vx" ? "Overvejende vandareal" :
+                                                                                d === "v" ? "Vandareal" : d;
+
+                                    }()) + "</td></tr>";
+                                    strHeader += "<tr><td>Kommuneplanstatus</td><td>Bestemmelser og bindinger er vedtaget af byrådet den " + layer.attributes.st_kp.split(" ")[0] + "</td></tr>";
+                                    strHeader += "</table>";
+                                    $("#info-header").html(strHeader);
+                                    strBem += "<h2>Bestemmelser</h2><table style='width: 100%' class='table table-condensed table-striped table-responsive'>";
+                                    $.each(bem, function (i, v) {
+                                        if (layer.attributes[i] !== undefined && layer.attributes[i] !== null && layer.attributes[i] !== "Ingen") {
+                                            sp = layer.attributes[i].split("|");
+                                            if (__code2map(layer.attributes[i + "_code"]) !== null) {
+                                                layersForLink.push(__code2map(layer.attributes[i + "_code"]).toLowerCase());
+                                            }
+                                            if (sp.length > 1 && sp[0] !== "") {
+                                                v = sp[0] + (__code2map(layer.attributes[i + "_code"]) !== null ? "<!--<span style='color: #ff0000'> (kort)</span>-->" : "");
+                                                body = sp[1];
+                                            }
+                                            else if (sp.length > 1) {
+                                                body = sp[1];
+                                            }
+                                            else {
+                                                body = layer.attributes[i];
+                                            }
+                                            strBem += "<tr><td style='width: 30%'>" + v + "</td><td>" + body + "</td></tr>";
+                                        }
+                                    });
+                                    strBem += "</table>";
+                                    $("#info-bem").html(strBem);
+
+                                    strBind = "<h2>Bindinger</h2><table style='width: 100%' border='0' class='table table-condensed table-striped table-responsive'>";
+                                    $.each(bind, function (i, v) {
+                                        if (layer.attributes[i] !== undefined && layer.attributes[i] !== null && layer.attributes[i] !== "Ingen") {
+                                            body = "";
+                                            sp = layer.attributes[i].split("|");
+                                            if (__code2map(i) !== null) {
+                                                layersForLink.push(__code2map(i).toLowerCase());
+                                            }
+                                            if (dbArr.indexOf(i) === -1) {
+                                                if (sp.length > 1 && sp[0] !== "") {
+                                                    v = "<span style='color: #000000'>" + v + (__code2map(i) !== null ? "<!--<span style='color: #ff0000'> (kort)</span>-->" : "") + "</span>";
+                                                    body = sp[1];
+                                                }
+                                                else if (sp.length > 1) {
+                                                    body = sp[1];
+                                                }
+                                                else {
+                                                    body = layer.attributes[i];
+                                                }
+
+                                                if (i === "db_bi") {
+                                                    $.each(dbArr, function (x, db) {
+                                                        if (layer.attributes[db] !== undefined && layer.attributes[db] !== null && layer.attributes[db] !== "Ingen") {
+                                                            body = body + "<br>" + layer.attributes[db].split("|")[1] + (__code2map(db) !== null ? "<!--<span style='color: #ff0000'> (kort)</span>-->" : "") + "</span>";
+                                                        }
+                                                    })
+                                                }
+                                                strBind += "<tr><td style='width: 30%'>" + v + "</td><td>" + body + "</td></tr>";
+                                            }
+                                        }
+                                    })
+                                    layersForLink.push("theme-gst-dtkskaerm-sh");
+                                    layersForLink.push("theme-v1_kp14_ramme_hovedanvendelse");
+                                    strBind += "</table>";
+                                    $("#info-bind").html(strBind);
+
+                                    strBind = "<div id=\"pgtabitem\" class=\"pgtabitem gradient\"><div class=\"pgtabheader\"><a href=\"Javascript:void(0)\" onclick=\"gc2RammeMap.initTab('bind')\">Bindninger som ikke blev fundet</a></div><div id=\"pgtabcntbind\" class=\"pgtabcontent\"><table class=\"table table-condensed table-striped table-responsive\">";
+                                    strBind += "<table class='table table-condensed table-striped table-responsive'>";
+                                    $.each(bind, function (i, v) {
+                                        if (layer.attributes[i] === undefined || layer.attributes[i] === null || layer.attributes[i] === "Ingen") {
+                                            strBind += "<tr><td style='width: 50%'>" + v + "</td><td>" + "Ingen" + "</td></tr>";
+                                        }
+                                    });
+                                    strBind += "</table>";
+                                    strBind += " </div></div>";
+                                    $("#info-bind-null").html(strBind);
+                                    var mapUrl = "http://webkort.esbjergkommune.dk/cbkort?selectorgroups=themecontainer%20baggrundskort&mapext=" + p1.x + " " + p1.y + " " + p2.x + " " + p2.y + "&layers=" + layersForLink.join(" ") + "&profile=borger_kommuneplan"
+                                    var strMap = "<div style='float: left' id='pdf-link'></div><div style='float: right'><a target='_blank' href='" + mapUrl + "'>Link til WebKort med bindinger</a></div>";
+                                    //$("#info-map").html(strMap);
+                                    //$("#pdf-link").html('<a target="_blank" href="http://www.html2pdf.it/?url=http://kommuneplan.esbjergkommune.dk/dk/mit_lokalomraade/ramme.htm?enrid=' + enrid + '&format=A4&orientation=portrait&margin=1cm">Link til PDF</a>')
+                                }
+                            }
+                        }
+                )
+                map.addControl(c);
+            }
+        }
+    }());
+</script>
+<script src='http://cdn.eu1.mapcentia.com/js/openlayers/OpenLayers.js'></script>
+<script src='http://eu1.mapcentia.com/api/v1/js/api.js'></script>
+<div id="info-headline"></div>
+
+<div id="map" style="width:100%; height: 500px">
+    <div class="alert alert-info" id="label"
+         style="display:none;padding:3px;z-index: 1000;position: absolute;border:1px solid silver;background-color:#FFFF99"></div>
+</div>
+<div id="info-map"></div>
+<div id="info-header" style="margin-top:10px;page-break-after:always;"></div>
+
+<div id="info-bem" style="margin-top:50px"></div>
+<div id="info-bind" style="margin-top:50px"></div>
+
+
+<script>
+    gc2RammeMap.init(mygeocloud_ol.urlVars.enrid);
+</script>

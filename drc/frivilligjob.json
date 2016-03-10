@@ -1,0 +1,239 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Lad det ikke blive ved tanken - bliv netv\u00e6rksperson-\/ familie i Odsherred",
+        "Organisation": "Frivillignet",
+        "WorkAddress": "Borgergade 10",
+        "WorkZipcode": "1300",
+        "ActivateDate": "26 Feb 2016 00:00:00 +0100",
+        "Id": "56083"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.58450445056,
+          55.682505808183
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Bliv mentor for et barn i Gellerup",
+        "Organisation": "Frivillignet",
+        "WorkAddress": "",
+        "WorkZipcode": "8220",
+        "ActivateDate": "15 Jan 2016 00:00:00 +0100",
+        "Id": "53123"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.13165,
+          56.15040768417
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Volunteer matron\/house helper at Frivillighuset",
+        "Organisation": "Frivillignet",
+        "WorkAddress": "N\u00f8rre Voldgade 82",
+        "WorkZipcode": "1358",
+        "ActivateDate": "14 Dec 2015 00:00:00 +0100",
+        "Id": "51613"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.572166369066,
+          55.683096307081
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Samtalecaf\u00e9 i Svendborg",
+        "Organisation": "Frivillignet",
+        "WorkAddress": "Toldbodvej 15A",
+        "WorkZipcode": "5700",
+        "ActivateDate": "17 Sep 2015 00:00:00 +0100",
+        "Id": "46765"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.61243,
+          55.061631261979
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Kontaktperson for en ung mand med flygtningebaggrund",
+        "Organisation": "Frivillignet",
+        "WorkAddress": "Vindeby Tv\u00e6rvej 23",
+        "WorkZipcode": "5700",
+        "ActivateDate": "2 Apr 2015 00:00:00 +0100",
+        "Id": "39260"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.61811,
+          55.048711570238
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Kontaktperson for en ung mand med flygtningebaggrund",
+        "Organisation": "Frivillignet",
+        "WorkAddress": "Vindeby Tv\u00e6rvej 23",
+        "WorkZipcode": "5700",
+        "ActivateDate": "2 Apr 2015 00:00:00 +0100",
+        "Id": "39261"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.61811,
+          55.048711570238
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Hj\u00e6lp kvinderne op p\u00e5 cyklerne",
+        "Organisation": "Netv\u00e6rksgruppen i K\u00f8benhavn - en del af Frivillignet",
+        "WorkAddress": "Hans Tavsens Gade",
+        "WorkZipcode": "2200",
+        "ActivateDate": "15 Sep 2015 00:00:00 +0100",
+        "Id": "24956"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.55171,
+          55.687004540435
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Er du sundhedsfaglig?",
+        "Organisation": "Netv\u00e6rksgruppen i K\u00f8benhavn",
+        "WorkAddress": "N\u00f8rre Voldgade 82",
+        "WorkZipcode": "1358",
+        "ActivateDate": "15 Sep 2015 00:00:00 +0100",
+        "Id": "23224"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.57216,
+          55.683095764381
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Kan du hj\u00e6lpe med matematik, fysik eller kemi?",
+        "Organisation": "Netv\u00e6rksgruppen i K\u00f8benhavn - en del af Frivillignet",
+        "WorkAddress": "N\u00f8rre Voldgade 82",
+        "WorkZipcode": "1358",
+        "ActivateDate": "15 Sep 2015 00:00:00 +0100",
+        "Id": "23203"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.57216,
+          55.683095764381
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Hj\u00e6lp unge flygtninge\/indvandrere i Roskilde",
+        "Organisation": "MentorNet Roskilde",
+        "WorkAddress": "",
+        "WorkZipcode": "4000",
+        "ActivateDate": "13 Sep 2015 00:00:00 +0100",
+        "Id": "19392"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          12.16266,
+          55.737141436976
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Netv\u00e6rksfamilier s\u00f8ges",
+        "Organisation": "Frivillignet",
+        "WorkAddress": "Vendersgade 63",
+        "WorkZipcode": "7000",
+        "ActivateDate": "23 Apr 2013 15:51:00 +0100",
+        "Id": "17855"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.75476,
+          55.562643800474
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Frivilligjob i Ribe under Frivillignet, en del af Dansk Flygtningehj\u00e6lp",
+        "Organisation": "Frivillignet, en del af Dansk Flygtningehj\u00e6lp",
+        "WorkAddress": "Tangevej 6",
+        "WorkZipcode": "6760",
+        "ActivateDate": "10 Apr 2013 16:13:00 +0100",
+        "Id": "17668"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.77709,
+          55.3271242
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "Title": "Vi s\u00f8ger lektiehj\u00e6lpere",
+        "Organisation": "Dansk Flygtningehj\u00e6lp",
+        "WorkAddress": "Vendersgade 63, 7000 Fredericia",
+        "WorkZipcode": "7000",
+        "ActivateDate": "21 Oct 2013 00:00:00 +0100",
+        "Id": "9979"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.75476,
+          55.562643800474
+        ]
+      }
+    }
+  ]
+}

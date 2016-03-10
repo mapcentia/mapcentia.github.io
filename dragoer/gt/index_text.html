@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>TEST</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" value="notranslate">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="http://cdn.us1.mapcentia.com/js/div/assets/js/html5shiv.js"></script>
+    <![endif]-->
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js'></script>
+    <script src="http://eu1.mapcentia.com/js/bootstrap3/js/bootstrap3-typeahead.js"></script>
+    <script src="http://eu1.mapcentia.com/js/underscore/underscore-min.js"></script>
+    <script src='http://eu1.mapcentia.com/js/openlayers/proj4js-combined.js'></script>
+    <script src='http://local2.mapcentia.com/apps/widgets/gc2map/js/gc2map.js'></script>
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+            font-family: 'Open Sans Condensed', sans-serif, sans-serif;
+            font-size: 16px;
+            font-weight: normal;
+            background: #fff;
+        }
+        #a_search {
+            width: 100%;
+            padding: 5px;
+            border: 1px solid silver;
+            clear: both;
+            font-size: 18px;
+            box-sizing: border-box;
+        }
+        .top{
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="top"><input id="a_search" autocomplete="off" type="text" name="addr" class="type-a-head" placeholder="Adresse"></div>
+<div></div>
+<script>
+    (function () {
+        var obj = gc2map.init({
+            db: 'mydb',
+          layers: ['public.broenddaeksel'],
+          zoom: [9.871913193281552,57.0359140412942,15],
+            width: '100%',
+            height:  $(window).height()-46 + "px",
+            schema: 'gt',
+            key: '1',
+            clickDistance: 20,
+            callBack: function () {
+                var cloud = obj.maps[this.key].cloud, komKode = 155;
+                //map.fitWorld();
+                (function () {
+                    var storeDk;
+                    var call_counter = 0;
+                    var names = [];
+                    var map = {};
+                    var type = "";
+                    var search = _.debounce(function (query, process) {
+                        if (query.match(/\d+/g) === null && query.match(/\s+/g) === null) {
+                            type = "vejnavn,bynavn";
+                        }
+                        if (query.match(/\d+/g) === null && query.match(/\s+/g) !== null) {
+                            type = "vejnavn_bynavn";
+                        }
+                        if (query.match(/\d+/g) !== null) {
+                            type = "adresse";
+                        }
+                        map = {};
+                        $.ajax({
+                            url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws/' + type,
+                            data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"municipalitycode":"0' + komKode + '"}}}}}',
+                            contentType: "application/json; charset=utf-8",
+                            scriptCharset: "utf-8",
+                            dataType: 'jsonp',
+                            jsonp: 'jsonp_callback',
+                            success: function (response) {
+                                $.each(response.hits.hits, function (i, hit) {
+                                    var str = hit._source.properties.string;
+                                    map[str] = hit._source.properties.gid;
+                                    names.push(str);
+                                });
+                                process(names);
+                                names = [];
+                            }
+                        });
+                    }, 200);
+                    $('#a_search').typeahead({
+                        source: function (query, process) {
+                            search(query, process);
+                        },
+                        updater: function (item) {
+                            var selectedGid = (type === "adresse") ? map[item] : null;
+                            if (selectedGid) {
+                                showOnMap(selectedGid);
+                            }
+                            return item;
+                        },
+                        matcher: function (item) {
+                            var arr = this.query.split(' ');
+                            var flag = false
+                            _(arr).each(
+                                    function (s) {
+                                        if (item.toLowerCase().indexOf($.trim(s).toLowerCase()) === false) {
+                                            flag = false;
+                                        }
+                                        else flag = true;
+                                    }
+                            )
+                            return flag;
+                        },
+                        sorter: function (items) {
+                            return items.sort();
+                        },
+                        highlighter: function (item) {
+                            _($.trim(this.query).split(' ')).each(
+                                    function (s) {
+                                        var regex = new RegExp('(' + s + ')', 'gi');
+                                        item = item.replace(regex, "<b>$1</b>");
+                                    }
+                            )
+                            return item;
+                        },
+                        items: 10
+                    });
+                    var showOnMap = function (gid) {
+                        storeDk.reset();
+                        storeDk.host ="http://eu1.mapcentia.com";
+                        storeDk.sql = "SELECT gid,the_geom,ST_astext(the_geom) as wkt FROM adresse.adgang WHERE gid=" + gid;
+                        storeDk.load();
+                    }
+                    storeDk = new geocloud.geoJsonStore({
+                        host: "http://eu1.mapcentia.com",
+                        db: "dk",
+                        sql: null,
+                        onLoad: function () {
+                            cloud.zoomToExtentOfgeoJsonStore(storeDk);
+                        }
+                    });
+                })();
+            }
+        });
+    }())
+</script>
+</body>
+</html>

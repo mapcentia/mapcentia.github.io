@@ -22,6 +22,7 @@
     var store = new geocloud.sqlStore({
         db: "ballerup",
         sql: "SELECT * FROM proj_daginstitution.b_mlvby",
+        lifetime: 34,
         onLoad: function () {
             // Zoom to vector layer
             //gc2.zoomToExtentOfgeoJsonStore(store);

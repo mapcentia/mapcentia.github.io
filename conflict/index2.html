@@ -1,0 +1,81 @@
+<div class="vc-searchfield-box">
+    <div class="vc-searchbox"><input id="a_search" autocomplete="off" type="text" name="a_search"
+                                     placeholder="Vej og husnummer"></div>
+    <div class="vc-searchbox"><input id="m_search" autocomplete="off" type="text" name="m_search"
+                                     placeholder="Matrikelnummer"></div>
+    <div class="vc-searchbox"><a
+            href="http://cowi.mapcentia.com/apps/viewer/holstebro/kommuneplan13/#mapQuestOSM/10/8.5069/56.4059/public.komgrs_line">Kort med alle plantemaer</a>
+    </div>
+</div>
+<div class="vc-map-box">
+    <div class="left">
+        <script src='http://cowi.mapcentia.com/api/v1/js/api.js'></script>
+        <script src='http://eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
+        <script src="http://cowi.mapcentia.com/js/bootstrap/js/bootstrap.min.js"></script>
+        <script src="http://cowi.mapcentia.com/js/underscore/underscore-min.js"></script>
+        <script src='http://cowi.mapcentia.com/js/openlayers/proj4js-combined.js'></script>
+        <script src='http://cowi.mapcentia.com/js/openlayers/defs/EPSG25832.js'></script>
+        <script src='conflict_unified.js'></script>
+        <link rel="StyleSheet" href="http://mapcentia.github.io/css/type-a-head.css" type="text/css"/>
+        <div id="map" style="width:688px;height:330px;position: relative">
+            <div style="display:inline;z-index:1000;position:absolute;right:3px;top:3px;padding:3px;opacity:0.8;width:auto">
+                <div class="btn-group" data-toggle="buttons-radio">
+                    <button id="punkt" type="button" class="btn btn-primary">Tegn punkt</button>
+                    <button id="flade" type="button" class="btn btn-primary">Tegn flade</button>
+                    <button id="stop" type="button" class="btn btn-primary active">Stop tegn</button>
+                </div>
+            </div>
+
+        </div>
+        <style>
+            .ol-zoom, .olControlZoom {
+                right: 20px;
+                left: auto !important;
+                top: 20px;
+                background: #95bb1c !important;
+
+            }
+
+            .dropdown-menu li {
+                text-align: left !important;
+            }
+        </style>
+        <script>
+            var layers = ["sektorplaner.delopland", "sektorplaner.rensekravoplande", "sektorplaner.delopland_view"];
+            var bbox = null;
+            new cowi.init_search("hedensted", "766", layers, bbox, null, "osm");
+        </script>
+    </div>
+    <div class="right">
+        <div id="result">
+            <table id="result-table"></table>
+        </div>
+    </div>
+    <div id="legendContent"></div>
+
+</div>
+<div style="position:relativ; width:100%; margin-top: 100px">
+    <div style="float:left">
+        <input class="search-field" style="width:250px" id="m_search" autocomplete="off" type="text" name="addr" placeholder="Indtast adresse eller matrikelnr.">
+    </div>
+</div>
+<div id="map" style="width: 100%;height:450px; position:relative;color: black">
+    <div style="display:inline;z-index:1000;position:absolute;right:3px;top:3px;padding:3px;opacity:0.8;width:auto">
+        <div class="btn-group" data-toggle="buttons-radio">
+            <button id="punkt" type="button" class="btn btn-primary">Tegn punkt</button>
+            <button id="flade" type="button" class="btn btn-primary">Tegn flade</button>
+            <button id="stop" type="button" class="btn btn-primary active">Stop tegn</button>
+        </div>
+    </div>
+</div>
+</div>
+<div style="clear:both;color: black">
+    <div class="span6" style="float:right">
+        <div id="legendContent" style="width:250px"></div>
+    </div>
+    <div class="span6" style="float:left">
+        <div id="result">
+            <table id="result-table"></table>
+        </div>
+    </div>
+</div>

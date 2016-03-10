@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>drc</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            height: 100%;
+        }
+
+        table.infowindow {
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        table.infowindow tr td:first-child {
+            white-space: nowrap;
+        }
+
+        table.infowindow td {
+            vertical-align: top;
+            padding: 5px;
+        }
+
+        table.infowindow tr:nth-child(even) {
+            background: #eee
+        }
+
+        .controls {
+            margin-top: 10px;
+            border: 1px solid transparent;
+            border-radius: 2px 0 0 2px;
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            height: 32px;
+            outline: none;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        #pac-input {
+            background-color: #fff;
+            font-family: Roboto;
+            font-size: 15px;
+            font-weight: 300;
+            margin-right: 12px;
+            padding: 0 11px 0 13px;
+            text-overflow: ellipsis;
+            width: 300px;
+        }
+
+        #pac-input:focus {
+            border-color: #4d90fe;
+        }
+
+        .pac-container {
+            font-family: Roboto;
+        }
+
+        #type-selector {
+            color: #fff;
+            background-color: #4d90fe;
+            padding: 5px 11px 0px 11px;
+        }
+
+        #type-selector label {
+            font-family: Roboto;
+            font-size: 13px;
+            font-weight: 300;
+        }
+        #target {
+            width: 345px;
+        }
+
+    </style>
+</head>
+<body>
+<input id="pac-input" class="controls" type="text" placeholder="Søg">
+<div id="map"></div>
+<script>
+    var map;
+    function initMap() {
+        var mapStyle = new google.maps.StyledMapType(
+                [
+                    {
+                        "featureType": "all",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "visibility": "off"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "administrative.locality",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#808080"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "landscape.man_made",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#dddddd"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "landscape.natural",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#eeeeee"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#ffffff"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#666666"
+                            },
+                            {
+                                "visibility": "on"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "transit.station",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#666666"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "transit.station",
+                        "elementType": "labels.icon",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "saturation": "-100"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#cccccc"
+                            }
+                        ]
+                    }
+                ]
+        );
+        var mapOpt = {
+            scrollwheel: false,
+            mapTypeControl: false,
+            streetViewControl: false,
+            panControl: false,
+            zoomControl: true,
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.SMALL,
+                position: google.maps.ControlPosition.LEFT_TOP,
+            },
+            mapTypeControlOptions: {
+                mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'mapStyle']
+            },
+            zoom: 7,
+            center: new google.maps.LatLng(55.6760968, 12.568337100000008),
+        };
+        map = new google.maps.Map(document.getElementById('map'), mapOpt);
+        map.mapTypes.set('mapStyle', mapStyle);
+        map.setMapTypeId('mapStyle');
+
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function() {
+            searchBox.setBounds(map.getBounds());
+        });
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function() {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            // Clear out the old markers.
+            markers.forEach(function(marker) {
+                marker.setMap(null);
+            });
+            markers = [];
+
+            // For each place, get the icon, name and location.
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function(place) {
+                var icon = {
+                    url: place.icon,
+                    size: new google.maps.Size(71, 71),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17, 34),
+                    scaledSize: new google.maps.Size(25, 25)
+                };
+
+                // Create a marker for each place.
+                markers.push(new google.maps.Marker({
+                    map: map,
+                    icon: icon,
+                    title: place.name,
+                    position: place.geometry.location
+                }));
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+            });
+            map.fitBounds(bounds);
+        });
+
+
+        // NOTE: This uses cross-domain XHR, and may not work on older browsers.
+        map.data.loadGeoJson('frivilligjob.json');
+
+        map.data.setStyle(function (feature) {
+            return {
+                icon: "http://backoffice.flygtning.dk/frontend/ldk/images/map_pin.png"
+            };
+        });
+
+        map.data.addListener('click', function (event) {
+            // global infowindow
+            var infowindow = new google.maps.InfoWindow();
+            var html =
+                    "<h3>" + event.feature.getProperty("Title") + "</h3>" +
+                    "<table class=\"infowindow\">" +
+                    "<tr><td><b>WorkAddress</b></td><td>" + event.feature.getProperty("WorkAddress") + "</td></tr>" +
+                    "<tr><td><b>WorkZipcode</b></td><td>" + event.feature.getProperty("WorkZipcode") + "</td></tr>" +
+                    "<tr><td><b>ActivateDate</b></td><td>" + event.feature.getProperty("ActivateDate") + "</td></tr>" +
+                    "<tr><td><b>Organisation</b></td><td>" + event.feature.getProperty("Organisation") + "</td></tr>" +
+                    "<tr><td><b>Link</b></td><td><a target='_blank' href='http://www.frivilligjob.jobbank.dk/job/" + event.feature.getProperty("Id") + "'>www.frivilligjob.jobbank.dk</a></td></tr>" +
+
+                    "</<table>";
+
+
+            infowindow.setContent("<div style='width:300px; text-align: left;'>" + html + "</div>");
+            infowindow.setPosition(event.feature.getGeometry().get());
+            infowindow.setOptions({pixelOffset: new google.maps.Size(0, -30)});
+            infowindow.open(map);
+        });
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap">
+</script>
+</body>
+</html>

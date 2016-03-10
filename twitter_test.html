@@ -66,7 +66,11 @@
             size = (typeof text === "number") ? 40 : 20;
             var top = (m > 3) ? 25 : 50;
             var cssClass = (typeof text !== "number") ? "twitter-single" : "twitter-cluster";
-            return new L.DivIcon({ html: '<div><span>' + text + '</span><span style="display: inline;pointer-events:none;overflow:sd;border: 0px solid white;height:150px;top:-80px;left:' + left + 'px;position: absolute;width: 200px"><span style="position:relative; top:' + top + '%;">' + tagCloud + '</span></span></div>', className: 'marker-cluster ' + cssClass, iconSize: new L.Point(size, size) });
+            return new L.DivIcon({
+                html: '<div><span>' + text + '</span><span style="display: inline;pointer-events:none;overflow:sd;border: 0px solid white;height:150px;top:-80px;left:' + left + 'px;position: absolute;width: 200px"><span style="position:relative; top:' + top + '%;">' + tagCloud + '</span></span></div>',
+                className: 'marker-cluster ' + cssClass,
+                iconSize: new L.Point(size, size)
+            });
         }
 
         var tweetGroups = new L.MarkerClusterGroup({
@@ -89,13 +93,14 @@
             lifetime: 3600,
             pointToLayer: function (feature, latlng) {
                 var f = L.marker(latlng,
-                        {icon: (function () {
-                            n = feature.properties.text.match(/#\S*/gi) || []
-                            return fun(n, "")
-                        })()
+                        {
+                            icon: (function () {
+                                n = feature.properties.text.match(/#\S*/gi) || []
+                                return fun(n, "")
+                            })()
                         }).bindPopup(
-                                "<p><a target='_blank' href='https://twitter.com/" + feature.properties.user_screen_name + "'>" + feature.properties.user_name + "</a><br>" + feature.properties.text + "<br><i style='font-size;80%;color:silver'>" + feature.properties.created_at + "</i></p>"
-                        );
+                        "<p><a target='_blank' href='https://twitter.com/" + feature.properties.user_screen_name + "'>" + feature.properties.user_name + "</a><br>" + feature.properties.text + "<br><i style='font-size;80%;color:silver'>" + feature.properties.created_at + "</i></p>"
+                );
                 f.martin = {id: feature.properties.id, text: feature.properties.text};
                 tweetGroups.addLayer(f);
                 return tweetGroups;

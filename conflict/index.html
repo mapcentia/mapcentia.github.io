@@ -1,0 +1,175 @@
+
+<script src='http://eu1.mapcentia.com/api/v1/js/api.js'></script>
+<script src='http://eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
+<script src="http://eu1.mapcentia.com/js/underscore/underscore-min.js"></script>
+<script src='http://eu1.mapcentia.com/js/openlayers/proj4js-combined.js'></script>
+<script src='http://eu1.mapcentia.com/js/openlayers/defs/EPSG25832.js'></script>
+
+<script src="http://eu1.mapcentia.com/js/bootstrap3/js/bootstrap.min.js"></script>
+<script src="http://eu1.mapcentia.com/js/typeahead.js-0.10.5/dist/typeahead.bundle.js"></script>
+
+<link rel="stylesheet" href="http://eu1.mapcentia.com/js/bootstrap3/css/bootstrap.min.css"/>
+
+<script src='conflict_unified_esbjerg.js'></script>
+<style>
+    .typeahead-heading {
+        margin: 0 20px 5px 20px;
+        padding: 3px 0;
+        border-bottom: 1px solid #ccc;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .twitter-typeahead {
+        width: 100%;
+    }
+
+    .tt-dropdown-menu {
+        overflow-y: auto;
+    }
+    .typeahead,
+    .tt-query,
+    .tt-hint {
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 24px;
+        line-height: 30px;
+        border: 1px solid #ccc;
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 8px;
+        outline: none;
+        margin-top: 10px;
+    }
+
+    .typeahead {
+        background-color: #fff;
+    }
+
+    .typeahead:focus {
+        border: 1px solid #0097cf;
+    }
+
+    .tt-query {
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    }
+
+    .tt-hint {
+        color: #999
+    }
+
+    .tt-dropdown-menu {
+        width: 100%;
+        margin-top: 12px;
+        padding: 8px 0;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        -webkit-border-radius: 8px;
+        -moz-border-radius: 8px;
+        border-radius: 8px;
+        -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+        -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, .2);
+    }
+
+    .tt-suggestion {
+        padding: 3px 20px;
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .tt-suggestion.tt-cursor {
+        color: #fff;
+        background-color: #0097cf;
+
+    }
+
+    .tt-suggestion p {
+        margin: 0;
+    }
+
+    .gist {
+        font-size: 14px;
+    }
+    .ol-zoom, .olControlZoom {
+        right: 20px;
+        left: auto !important;
+        bottom: 30px;
+        opacity: 0.7;
+    }
+
+    div.olControlZoom {
+        top: auto !important;
+    }
+
+    #result {
+        background: white;
+    }
+
+    #legendContent {
+        width: 185px;
+        overflow: auto;
+    }
+
+    #m_search, .dropdown-menu > li > a, .dropdown-menu > li > a > b, .dropdown-menu > li > a > b > b {
+        font-size: 18px;
+    }
+
+    #m_search{
+        width: 100%;
+        padding: 5px;
+        border: 1px solid silver;
+    }
+
+    .layer-name {
+        font-size: 18px;
+    }
+
+    .checkbox {
+        padding-right: 10px;
+    }
+
+    .olControlAttribution {
+        bottom: 0 !important;
+    }
+</style>
+<div class="container">
+    <div>
+        <input id="custom-search" class="typeahead" type="text" placeholder="Adresse, matrikelnr. eller rammenr.">
+    </div>
+    <div style="padding-top:10px; position:relativ; width:100%">
+        <div style="clear:both">
+            <div id="map" style="width:100%; height:450px; position: relative">
+                <div style="display:inline;z-index:1000;position:absolute;right:3px;top:3px;padding:3px;opacity:0.8;width:auto">
+                    <div class="btn-group" data-toggle="buttons-radio">
+                        <button id="punkt" type="button" class="btn btn-primary">Tegn punkt</button>
+                        <button id="flade" type="button" class="btn btn-primary">Tegn flade</button>
+                        <button id="stop" type="button" class="btn btn-primary active">Stop tegn</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div style="float:right">
+            <div id="legendContent"></div>
+        </div>
+        <div style="float:left; width: 400px">
+            <div id="result">
+                <table id="result-table"></table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+<script>
+    var layers = [
+        "kommuneplan14.ramme_view"
+    ];
+    var bbox = [923191.271737813, 7404810.84940484, 995075.299580978, 7478589.60327306];
+    new cowi.init_search("esbjerg", "561", layers, bbox, function () {
+    });
+</script>

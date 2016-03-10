@@ -1,109 +1,111 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<link href="http://eu1.mapcentia.com/js/leaflet/leaflet.css" type="text/css" rel="stylesheet">
-<link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
-<link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap-responsive.min.css" type="text/css"
-      rel="stylesheet">
-<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" type="text/css"
-      rel="stylesheet">
-<link href="http://eu1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" type="text/css"
-      rel="stylesheet">
-<link rel="stylesheet" href="http://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css">
-<link href="http://eu1.mapcentia.com/js/leaflet/TwitterCluster.css" type="text/css" rel="stylesheet">
+    <meta charset="utf-8">
+    <link href="http://eu1.mapcentia.com/js/leaflet/leaflet.css" type="text/css" rel="stylesheet">
+    <link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap.css" type="text/css" rel="stylesheet">
+    <link href="http://eu1.mapcentia.com/js/bootstrap/css/bootstrap-responsive.min.css" type="text/css"
+          rel="stylesheet">
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" type="text/css"
+          rel="stylesheet">
+    <link href="http://eu1.mapcentia.com/js/Leaflet.awesome-markers/dist/leaflet.awesome-markers.css" type="text/css"
+          rel="stylesheet">
+    <link rel="stylesheet" href="http://leaflet.github.io/Leaflet.markercluster/dist/MarkerCluster.css">
+    <link href="http://eu1.mapcentia.com/js/leaflet/TwitterCluster.css" type="text/css" rel="stylesheet">
 
-<title>Aarhus Kommune - Fiskeri- Træskibs- og Lystbådehavnen</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<style>
-    body {
-        margin: 0px;
-        padding: 0px;
-        font: normal 15px/20px Arial, sans-serif;
-        background: #fff;
-    }
-    #logo{
-        width: 100px;
-        margin-bottom: 20px;
-    }
-    article {
-        float: right;
-        width: 33.3333%;
-        min-width: 320px;
-        position: relative;
-        padding-top: 40px;
-        padding-bottom: 33.3333%;
-        z-index: 1000;
-    }
+    <title>Aarhus Kommune - Fiskeri- Træskibs- og Lystbådehavnen</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <style>
+        body {
+            margin: 0px;
+            padding: 0px;
+            font: normal 15px/20px Arial, sans-serif;
+            background: #fff;
+        }
 
-    section {
-        padding: 40px;
-        margin-right: 40px;
-        position: relative;
-        transition: background 500ms, color 500ms;
-        -moz-transition: background 500ms, color 500ms;
-        -webkit-transition: background 500ms, color 500ms;
-    }
+        #logo {
+            width: 100px;
+            margin-bottom: 20px;
+        }
 
-    section,
-    section a {
-        color: #888;
-        color: rgba(128, 128, 128, 0);
-        text-decoration: none;
-        text-shadow: rgba(64, 64, 64, 1) 0px 0px 4px;
-    }
+        article {
+            float: right;
+            width: 33.3333%;
+            min-width: 320px;
+            position: relative;
+            padding-top: 40px;
+            padding-bottom: 33.3333%;
+            z-index: 1000;
+        }
 
-    section {
-        background: #ffffff;
-        opacity: 0.4
+        section {
+            padding: 40px;
+            margin-right: 40px;
+            position: relative;
+            transition: background 500ms, color 500ms;
+            -moz-transition: background 500ms, color 500ms;
+            -webkit-transition: background 500ms, color 500ms;
+        }
 
-    }
+        section,
+        section a {
+            color: #888;
+            color: rgba(128, 128, 128, 0);
+            text-decoration: none;
+            text-shadow: rgba(64, 64, 64, 1) 0px 0px 4px;
+        }
 
-    section.active {
-        background: #000;
-        color: #eee;
-        background: rgba(0, 0, 0, 0.7);
-        opacity: 1;
-    }
+        section {
+            background: #ffffff;
+            opacity: 0.4
 
-    section.active a {
-        color: #eee;
-    }
+        }
 
-    section.active small {
-        color: #aaa;
-    }
+        section.active {
+            background: #000;
+            color: #eee;
+            background: rgba(0, 0, 0, 0.7);
+            opacity: 1;
+        }
 
-    h1 {
-        font-size: 2em;
-        line-height: 1em;
-    }
+        section.active a {
+            color: #eee;
+        }
 
-    h2 {
-        font-size: 1.3333em;
-    }
+        section.active small {
+            color: #aaa;
+        }
 
-    h1, h2 {
-        margin: 0px 0px 10px;
-    }
+        h1 {
+            font-size: 2em;
+            line-height: 1em;
+        }
 
-    p {
-        margin: 0px;
-    }
+        h2 {
+            font-size: 1.3333em;
+        }
 
-    .scroll {
-        position: absolute;
-        right: 0px;
-        bottom: 0px;
-        font-size: 10px;
-        text-transform: uppercase;
-        padding: 5px 10px;
-    }
+        h1, h2 {
+            margin: 0px 0px 10px;
+        }
 
-    .colophon {
-        display: block;
-        margin-top: 10px;
-    }
+        p {
+            margin: 0px;
+        }
+
+        .scroll {
+            position: absolute;
+            right: 0px;
+            bottom: 0px;
+            font-size: 10px;
+            text-transform: uppercase;
+            padding: 5px 10px;
+        }
+
+        .colophon {
+            display: block;
+            margin-top: 10px;
+        }
 
         /*
         .cover:before {
@@ -113,116 +115,117 @@
             margin:0px auto 20px;
         }
         */
-    #pane {
-        position: fixed;
-        top: 0px;
-        bottom: 0px;
-        left: 0px;
-        width: 66.6666%;
-    }
-
-    #map {
-        position: absolute;
-        top: 0px;
-        bottom: 0px;
-        width: 200%;
-        right: -50%;
-        transition: opacity 250ms;
-        -moz-transition: opacity 250ms;
-        -webkit-transition: opacity 250ms;
-    }
-
-    .spot {
-        width: 120px;
-        height: 120px;
-        margin: -60px 0px 0px -60px;
-        background: url(sprite.png) 120px 120px no-repeat;
-        position: absolute;
-    }
-
-    .leaflet-top {
-        left: 25% !important;
-        right: auto !important;
-    }
-
-    a, a:hover, a:focus {
-        /*color: #ff0000 !important;*/
-    }
-
-    section a, section a:hover, section a:focus {
-        color: #fff !important;
-    }
-
-        /* Distinguish the "cover page" visually other sections. */
-    body.section-0 #map {
-        /*opacity: 0.5;*/
-    }
-
-    @media (max-width:640px) {
-        body {
-            font-size: 12px;
-            line-height: 16px;
-        }
-
-        article {
-            width: 100%;
-            min-width: 100%;
-            padding-top: 0px;
-            padding-bottom: 200%;
-        }
-
-        section {
-            text-shadow: none;
-            margin-right: 0px;
-            padding: 30px;
-        }
-
-        section.active {
+        #pane {
             position: fixed;
             top: 0px;
+            bottom: 0px;
             left: 0px;
-            right: 0px;
-        }
-
-        #pane {
-            width: 100%;
+            width: 66.6666%;
         }
 
         #map {
-            bottom: 0%;
-            right: 0%;
-            width: 100%;
-            height: 150%;
+            position: absolute;
+            top: 0px;
+            bottom: 0px;
+            width: 200%;
+            right: -50%;
+            transition: opacity 250ms;
+            -moz-transition: opacity 250ms;
+            -webkit-transition: opacity 250ms;
+        }
+
+        .spot {
+            width: 120px;
+            height: 120px;
+            margin: -60px 0px 0px -60px;
+            background: url(sprite.png) 120px 120px no-repeat;
+            position: absolute;
         }
 
         .leaflet-top {
-            display: none;
+            left: 25% !important;
+            right: auto !important;
         }
 
-    }
-
-    @media (min-width:1280px) {
-        body {
-            font-size: 18px;
-            line-height: 24px;
+        a, a:hover, a:focus {
+            /*color: #ff0000 !important;*/
         }
-    }
 
-    #search-box {
-        position: absolute;
-        top: 20px;
-        left: 100px;
-    }
+        section a, section a:hover, section a:focus {
+            color: #fff !important;
+        }
 
-    .typeahead .dropdown-menu li a {
-        color: #1883c6 !important;
-    }
-    #about{
-        position: absolute;
-        top: 10px;
-        right: 10px;
-    }
-</style>
+        /* Distinguish the "cover page" visually other sections. */
+        body.section-0 #map {
+            /*opacity: 0.5;*/
+        }
+
+        @media (max-width: 640px) {
+            body {
+                font-size: 12px;
+                line-height: 16px;
+            }
+
+            article {
+                width: 100%;
+                min-width: 100%;
+                padding-top: 0px;
+                padding-bottom: 200%;
+            }
+
+            section {
+                text-shadow: none;
+                margin-right: 0px;
+                padding: 30px;
+            }
+
+            section.active {
+                position: fixed;
+                top: 0px;
+                left: 0px;
+                right: 0px;
+            }
+
+            #pane {
+                width: 100%;
+            }
+
+            #map {
+                bottom: 0%;
+                right: 0%;
+                width: 100%;
+                height: 150%;
+            }
+
+            .leaflet-top {
+                display: none;
+            }
+
+        }
+
+        @media (min-width: 1280px) {
+            body {
+                font-size: 18px;
+                line-height: 24px;
+            }
+        }
+
+        #search-box {
+            position: absolute;
+            top: 20px;
+            left: 100px;
+        }
+
+        .typeahead .dropdown-menu li a {
+            color: #1883c6 !important;
+        }
+
+        #about {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+    </style>
 </head>
 <body>
 <div id="pane">
@@ -254,6 +257,7 @@
         <h1>Aarhus Kommune</h1>
 
         <p>Fiskeri- Træskibs- og Lystbådehavnen</p>
+
         <div><a id="about" href="javascript:void(0)">Om</a></div>
         <small class='scroll'>Scroll ▼</small>
     </section>
@@ -283,7 +287,11 @@
         <h2>Om dette web site</h2>
     </div>
     <div class="modal-body">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore
+        magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+        pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+        laborum.
     </div>
     <div class="modal-footer">
         <button class="btn" data-dismiss="modal" aria-hidden="true">
@@ -302,269 +310,275 @@
 <script src="http://eu1.mapcentia.com/js/raphael/dist/rlayer-src.js"></script>
 <script src="http://maps.stamen.com/js/tile.stamen.js?v1.2.0"></script>
 <script type="text/html" id="template-sections">
-    <section id='spot_<%= this.properties['gid'] %>' class='cover active'>
+    <section id='spot_<%= this.properties[' gid'] %>' class='cover active'>
     <h4><%= this.properties['text'] %></h4>
     <p><i><%= this.properties['user_screen_name'] %></i></p>
-    <p><img src='<%= $.parseJSON(this.properties['entities']).media[0].media_url %>'></p>
+    <p><img src='<%= $.parseJSON(this.properties[' entities']).media[0].media_url %>'></p>
     </section>
 </script>
 <script>
-$("#about").click(function(){
-    $("#modal-about").modal();
-})
-function showVideo(video, name) {
-    $("#body-video").html('<iframe src="http://player.vimeo.com/video/' + video + '" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> <p><a href="http://vimeo.com/42997705">Muligheder</a> from <a href="http://vimeo.com/user11620242">CiTyBee</a> on <a href="http://vimeo.com">Vimeo</a>.</p>');
-    $("#header-video").html(name);
-    $("#modal-video").modal().on('hidden', function () {
-        $("#body-video").html('');
+    $("#about").click(function () {
+        $("#modal-about").modal();
     })
-}
-function scrollTo(id) {
-    $('html, body').animate({
-        scrollTop: $(id).offset().top
-    }, 1000);
-}
-
-(function () {
-    var map = new geocloud.map({
-        el: "map"
-    });
-    map.on("moveend", function () {
-    })
-    map.addStamenToner();
-    map.setBaseLayer("stamenToner");
-    map.map.fitBounds([
-        [56.1615798134028, 10.2143539643366],
-        [56.171345521976, 10.2297864670811]
-    ]);
-    map.addTileLayers({
-        db: "bascon",
-        layers: ["ftl_havnen.border"]
-    });
-    var fun = function (arr, text) {
-        var m = 0, tagCloud = "", tags = [], size;
-        $.each(arr, function (index, value) {
-            if (typeof value !== "object") {
-                tags[0] = value;
-                tags[1] = 1;
-            }
-            else {
-                tags = value;
-
-            }
-            tagCloud = tagCloud + "<span style='box-shadow: 1px 2px rgba(0, 0, 0, 0.1);border:1px solid rgba(0, 0, 0, 0.2);padding:2px;opacity:0.9;background-color:white;font-weight: bold;color: #0a76be;font-size: " + (70 + (tags[1] * 30)) + "%'>" + tags[0] + "</span> ";
-            if (((m / 2) % 1) === 0) {
-                tagCloud = tagCloud + "<br>";
-            }
-            m++;
-        });
-        var left = -80;
-        size = (typeof text === "number") ? 40 : 20;
-        var top = (m > 3) ? 25 : 50;
-        var cssClass = (typeof text !== "number") ? "twitter-single" : "twitter-cluster";
-        return new L.DivIcon({ html: '<div><span>' + text + '</span><span style="display: inline;pointer-events:none;overflow:sd;border: 0px solid white;height:150px;top:-80px;left:' + left + 'px;position: absolute;width: 200px"><span style="position:relative; top:' + top + '%;">' + tagCloud + '</span></span></div>', className: 'marker-cluster ' + cssClass, iconSize: new L.Point(size, size) });
+    function showVideo(video, name) {
+        $("#body-video").html('<iframe src="http://player.vimeo.com/video/' + video + '" width="500" height="281" frameborder="0" webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe> <p><a href="http://vimeo.com/42997705">Muligheder</a> from <a href="http://vimeo.com/user11620242">CiTyBee</a> on <a href="http://vimeo.com">Vimeo</a>.</p>');
+        $("#header-video").html(name);
+        $("#modal-video").modal().on('hidden', function () {
+            $("#body-video").html('');
+        })
     }
-    $('#search').typeahead({
-        //items: 16,
-        source: _.debounce(function (query, process) {
-            var texts = [], filter;
-            filter = $("#type").val();
-            elastic.reset();
-            if (filter!=="Alle") {
-                elastic.q = '{"query":{"filtered":{"query":{"query_string":{"default_field":"text","query":"' + query.toLowerCase() + '","default_operator":"AND"}},"filter":{"term":{"type1":["' + filter.toLowerCase() + '"]}}}}}';
-            }
-            else
-            {
-                elastic.q = '{"query":{"query_string":{"default_field":"text","query":"' + query.toLowerCase() + '","default_operator":"AND"}}}';
-            }
-            elastic.onLoad = function () {
-                $.each(elastic.geoJSON.features, function (i, v) {
-                    texts.push(v.properties.text);
-                });
-                process(texts);
-            };
-            elastic.load();
-        }, 300),
-        updater: function (item) {
-            elastic.reset();
-            elastic.q = '{"query":{"query_string":{"default_field":"text","query":"' + item.toLowerCase() + '","default_operator":"AND"}}}';
-            elastic.onLoad = function () {
-                map.zoomToExtentOfgeoJsonStore(elastic);
+    function scrollTo(id) {
+        $('html, body').animate({
+            scrollTop: $(id).offset().top
+        }, 1000);
+    }
+
+    (function () {
+        var map = new geocloud.map({
+            el: "map"
+        });
+        map.on("moveend", function () {
+        })
+        map.addStamenToner();
+        map.setBaseLayer("stamenToner");
+        map.map.fitBounds([
+            [56.1615798134028, 10.2143539643366],
+            [56.171345521976, 10.2297864670811]
+        ]);
+        map.addTileLayers({
+            db: "bascon",
+            layers: ["ftl_havnen.border"]
+        });
+        var fun = function (arr, text) {
+            var m = 0, tagCloud = "", tags = [], size;
+            $.each(arr, function (index, value) {
+                if (typeof value !== "object") {
+                    tags[0] = value;
+                    tags[1] = 1;
+                }
+                else {
+                    tags = value;
+
+                }
+                tagCloud = tagCloud + "<span style='box-shadow: 1px 2px rgba(0, 0, 0, 0.1);border:1px solid rgba(0, 0, 0, 0.2);padding:2px;opacity:0.9;background-color:white;font-weight: bold;color: #0a76be;font-size: " + (70 + (tags[1] * 30)) + "%'>" + tags[0] + "</span> ";
+                if (((m / 2) % 1) === 0) {
+                    tagCloud = tagCloud + "<br>";
+                }
+                m++;
+            });
+            var left = -80;
+            size = (typeof text === "number") ? 40 : 20;
+            var top = (m > 3) ? 25 : 50;
+            var cssClass = (typeof text !== "number") ? "twitter-single" : "twitter-cluster";
+            return new L.DivIcon({
+                html: '<div><span>' + text + '</span><span style="display: inline;pointer-events:none;overflow:sd;border: 0px solid white;height:150px;top:-80px;left:' + left + 'px;position: absolute;width: 200px"><span style="position:relative; top:' + top + '%;">' + tagCloud + '</span></span></div>',
+                className: 'marker-cluster ' + cssClass,
+                iconSize: new L.Point(size, size)
+            });
+        }
+        $('#search').typeahead({
+            //items: 16,
+            source: _.debounce(function (query, process) {
+                var texts = [], filter;
+                filter = $("#type").val();
+                elastic.reset();
+                if (filter !== "Alle") {
+                    elastic.q = '{"query":{"filtered":{"query":{"query_string":{"default_field":"text","query":"' + query.toLowerCase() + '","default_operator":"AND"}},"filter":{"term":{"type1":["' + filter.toLowerCase() + '"]}}}}}';
+                }
+                else {
+                    elastic.q = '{"query":{"query_string":{"default_field":"text","query":"' + query.toLowerCase() + '","default_operator":"AND"}}}';
+                }
+                elastic.onLoad = function () {
+                    $.each(elastic.geoJSON.features, function (i, v) {
+                        texts.push(v.properties.text);
+                    });
+                    process(texts);
+                };
+                elastic.load();
+            }, 300),
+            updater: function (item) {
+                elastic.reset();
+                elastic.q = '{"query":{"query_string":{"default_field":"text","query":"' + item.toLowerCase() + '","default_operator":"AND"}}}';
+                elastic.onLoad = function () {
+                    map.zoomToExtentOfgeoJsonStore(elastic);
+                },
+                        elastic.load();
+                return item;
             },
-                    elastic.load();
-            return item;
-        },
-        matcher: function (item) {
-            return true;
-        },
-        sorter: function (items) {
-            return items.sort();
-            return items;
-        },
-        highlighter: function (item) {
-            _($.trim(this.query).split(' ')).each(
-                    function (s) {
-                        var regex = new RegExp('(' + s + ')', 'gi');
-                        item = item.replace(regex, "<b>$1</b>");
-                    }
-            );
-            return item;
-        }
-    });
-
-    var tweetGroups = new L.MarkerClusterGroup({
-        maxClusterRadius: 60,
-        iconCreateFunction: null,
-        spiderfyOnMaxZoom: true,
-        showCoverageOnHover: false,
-        zoomToBoundsOnClick: true,
-        spiderfyDistanceMultiplier: 2,
-        vigga: fun
-    });
-    var tweet = new geocloud.sqlStore({
-        db: "bascon",
-        onLoad: function () {
-            map.map.addLayer(tweetGroups);
-        },
-        sql: "SELECT * FROM ftl_havnen.tweets",
-        pointToLayer: function (feature, latlng) {
-            var f = L.marker(latlng,
-                    {icon: (function () {
-                        feature.properties.text = feature.properties.text.replace("#FTL","")
-                        var n = feature.properties.text.match(/#\S*/gi) || []
-                        return fun(n, "")
-
-                    })()
-                    }).bindPopup(
-                            "<p><!--<a target='_blank' href='https://twitter.com/" + feature.properties.user_screen_name + "'>" + feature.properties.user_name + "</a><br>-->" + feature.properties.text + "<!--<br><i style='font-size;80%;color:silver'>" + feature.properties.created_at + "</i>--></p>"
-                    );
-            f.martin = {id: feature.properties.gid, text: feature.properties.text};
-            tweetGroups.addLayer(f);
-            return tweetGroups;
-        }
-    });
-    var elastic = new geocloud.elasticStore({
-        db: "citybee",
-        index: "tweets",
-        q: "",
-        onEachFeature: function (feature, layer) {
-            layer.bindPopup(feature.properties['text']);
-        },
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng,
-                    {
-                        zIndexOffset: 10000,
-                        icon: L.AwesomeMarkers.icon(
-                                {
-                                    icon: 'icon-twitter',
-                                    color: 'blue'}
-                        )});
-        }
-
-
-    });
-    map.addGeoJsonStore(elastic);
-
-    var store = new geocloud.sqlStore({
-        db: "bascon",
-        sql: "SELECT * FROM ftl_havnen.tweets",
-        onEachFeature: function (feature, layer) {
-            layer.bindPopup("<b><a href='javascript:void(0)' onclick=\"showVideo('" + feature.properties['text'] + "','" + feature.properties['text'] + "')\">" + feature.properties.text + "</b>");
-            layer.on("click", function () {
-                        scrollTo("#spot_" + feature.properties.gid);
-                    }
-            );
-        },
-        pointToLayer: function (feature, latlng) {
-            return L.marker(latlng);
-        }
-    });
-    //map.addGeoJsonStore(store);
-
-    store.onLoad = function () {
-        $('article').append($('#template-sections').jqote(store.geoJSON.features));
-        var sections = document.getElementsByTagName('section');
-        var markers = _(sections).map(function (section) {
-            return _(store.layer._layers).find(function (m) {
-                return "spot_" + m.feature.properties.gid == section.id;
-            });
+            matcher: function (item) {
+                return true;
+            },
+            sorter: function (items) {
+                return items.sort();
+                return items;
+            },
+            highlighter: function (item) {
+                _($.trim(this.query).split(' ')).each(
+                        function (s) {
+                            var regex = new RegExp('(' + s + ')', 'gi');
+                            item = item.replace(regex, "<b>$1</b>");
+                        }
+                );
+                return item;
+            }
         });
-        var flag;
-        var setActive = function (index, ease) {
-            if (index !== flag) {
-                flag = index;
-                _(sections).each(function (s) {
-                    s.className = s.className.replace(' active', '')
+
+        var tweetGroups = new L.MarkerClusterGroup({
+            maxClusterRadius: 60,
+            iconCreateFunction: null,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            zoomToBoundsOnClick: true,
+            spiderfyDistanceMultiplier: 2,
+            vigga: fun
+        });
+        var tweet = new geocloud.sqlStore({
+            db: "bascon",
+            onLoad: function () {
+                map.map.addLayer(tweetGroups);
+            },
+            sql: "SELECT * FROM ftl_havnen.tweets",
+            pointToLayer: function (feature, latlng) {
+                var f = L.marker(latlng,
+                        {
+                            icon: (function () {
+                                feature.properties.text = feature.properties.text.replace("#FTL", "")
+                                var n = feature.properties.text.match(/#\S*/gi) || []
+                                return fun(n, "")
+
+                            })()
+                        }).bindPopup(
+                        "<p><!--<a target='_blank' href='https://twitter.com/" + feature.properties.user_screen_name + "'>" + feature.properties.user_name + "</a><br>-->" + feature.properties.text + "<!--<br><i style='font-size;80%;color:silver'>" + feature.properties.created_at + "</i>--></p>"
+                );
+                f.martin = {id: feature.properties.gid, text: feature.properties.text};
+                tweetGroups.addLayer(f);
+                return tweetGroups;
+            }
+        });
+        var elastic = new geocloud.elasticStore({
+            db: "citybee",
+            index: "tweets",
+            q: "",
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup(feature.properties['text']);
+            },
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng,
+                        {
+                            zIndexOffset: 10000,
+                            icon: L.AwesomeMarkers.icon(
+                                    {
+                                        icon: 'icon-twitter',
+                                        color: 'blue'
+                                    }
+                            )
+                        });
+            }
+
+
+        });
+        map.addGeoJsonStore(elastic);
+
+        var store = new geocloud.sqlStore({
+            db: "bascon",
+            sql: "SELECT * FROM ftl_havnen.tweets",
+            onEachFeature: function (feature, layer) {
+                layer.bindPopup("<b><a href='javascript:void(0)' onclick=\"showVideo('" + feature.properties['text'] + "','" + feature.properties['text'] + "')\">" + feature.properties.text + "</b>");
+                layer.on("click", function () {
+                            scrollTo("#spot_" + feature.properties.gid);
+                        }
+                );
+            },
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng);
+            }
+        });
+        //map.addGeoJsonStore(store);
+
+        store.onLoad = function () {
+            $('article').append($('#template-sections').jqote(store.geoJSON.features));
+            var sections = document.getElementsByTagName('section');
+            var markers = _(sections).map(function (section) {
+                return _(store.layer._layers).find(function (m) {
+                    return "spot_" + m.feature.properties.gid == section.id;
                 });
-                sections[index].className += ' active';
-                document.body.className = 'section-' + index;
-		    try {
-                    /*L.marker([markers[index].feature.geometry.coordinates[1],markers[index].feature.geometry.coordinates[0]],{icon: L.AwesomeMarkers.icon(
-                            {
-                                icon: 'icon-twitter',
-                                color: 'blue'
-                            }
-                    )}).addTo(map.map);*/
-                    var x = markers[index].feature.geometry.coordinates[1];
-                    var y = markers[index].feature.geometry.coordinates[0];
-                    map.map.setView([x,y], 17);
-                    //markers[index].openPopup();
-                var p = new R.Pulse(
-                        [x,y],
-                        30,
-                        {'stroke': 'none', 'fill': 'none'},
-                        {'stroke': '#30a3ec', 'stroke-width': 3});
-
-                map.map.addLayer(p);
-                setTimeout(function() {
-                    map.map.removeLayer(p);
-                }, 1000);
-
-                }
-                catch (e) {
-                    //console.log(e.message)
-                    //map.map.fitBounds(store.layer.getBounds());
-                }
-                try {
-                    history.pushState(null, null, "#" + index);
-                }
-                catch (e) {
-                }
-            }
-            return true;
-        };
-        window.onscroll = _(function () {
-            // IE 8
-            if (window.pageYOffset === undefined) {
-                var y = document.documentElement.scrollTop;
-                var h = document.documentElement.clientHeight;
-            } else {
-                var y = window.pageYOffset;
-                var h = window.innerHeight;
-            }
-            if (y === 0) return setActive(0, true);
-            var memo = 0;
-            var buffer = (h * 0.3333333333);
-            var active = _(sections).any(function (el, index) {
-                memo += el.offsetHeight;
-                return y < (memo - buffer) ? setActive(index, true) : false;
             });
+            var flag;
+            var setActive = function (index, ease) {
+                if (index !== flag) {
+                    flag = index;
+                    _(sections).each(function (s) {
+                        s.className = s.className.replace(' active', '')
+                    });
+                    sections[index].className += ' active';
+                    document.body.className = 'section-' + index;
+                    try {
+                        /*L.marker([markers[index].feature.geometry.coordinates[1],markers[index].feature.geometry.coordinates[0]],{icon: L.AwesomeMarkers.icon(
+                         {
+                         icon: 'icon-twitter',
+                         color: 'blue'
+                         }
+                         )}).addTo(map.map);*/
+                        var x = markers[index].feature.geometry.coordinates[1];
+                        var y = markers[index].feature.geometry.coordinates[0];
+                        map.map.setView([x, y], 17);
+                        //markers[index].openPopup();
+                        var p = new R.Pulse(
+                                [x, y],
+                                30,
+                                {'stroke': 'none', 'fill': 'none'},
+                                {'stroke': '#30a3ec', 'stroke-width': 3});
 
-            if (!active) setActive(sections.length - 1, true);
-        }).debounce(100);
-        setActive(0, false);
-        (function () {
-            var hash, hashArr;
-            hash = geocloud.urlHash;
-            hashArr = hash.replace("#", "").split("/");
-            if (hashArr[0]) {
-                scrollTo("#spot_" + hashArr[0]);
-            }
-        })();
-    }
-    store.load();
-    tweet.load();
-})();
+                        map.map.addLayer(p);
+                        setTimeout(function () {
+                            map.map.removeLayer(p);
+                        }, 1000);
+
+                    }
+                    catch (e) {
+                        //console.log(e.message)
+                        //map.map.fitBounds(store.layer.getBounds());
+                    }
+                    try {
+                        history.pushState(null, null, "#" + index);
+                    }
+                    catch (e) {
+                    }
+                }
+                return true;
+            };
+            window.onscroll = _(function () {
+                // IE 8
+                if (window.pageYOffset === undefined) {
+                    var y = document.documentElement.scrollTop;
+                    var h = document.documentElement.clientHeight;
+                } else {
+                    var y = window.pageYOffset;
+                    var h = window.innerHeight;
+                }
+                if (y === 0) return setActive(0, true);
+                var memo = 0;
+                var buffer = (h * 0.3333333333);
+                var active = _(sections).any(function (el, index) {
+                    memo += el.offsetHeight;
+                    return y < (memo - buffer) ? setActive(index, true) : false;
+                });
+
+                if (!active) setActive(sections.length - 1, true);
+            }).debounce(100);
+            setActive(0, false);
+            (function () {
+                var hash, hashArr;
+                hash = geocloud.urlHash;
+                hashArr = hash.replace("#", "").split("/");
+                if (hashArr[0]) {
+                    scrollTo("#spot_" + hashArr[0]);
+                }
+            })();
+        }
+        store.load();
+        tweet.load();
+    })();
 </script>
 </html>
 

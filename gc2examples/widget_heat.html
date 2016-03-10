@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <script src='http://eu1.mapcentia.com/apps/widgets/gc2map/js/gc2map.js'></script>
+</head>
+<body>
+<div class="map"></div>
+<script>
+    (function () {
+        gc2map.init({
+            db: 'mydb',
+            zoom: [9.865, 55.58239999999999, 8],
+            setBaseLayer: 'osm',
+            width: '500px',
+            height: '500px',
+            schema: 'public',
+            callBack: function (e) {
+                var store = new geocloud.sqlStore({
+                    db: "trackunit",
+                    sql: "SELECT * FROM trackunit.units",
+                    lifetime: 3600,
+                    onLoad: function () {
+                        var points = [], features = store.geoJSON.features;
+                        for (var key in features) {
+                            if (features.hasOwnProperty(key)) {
+                                features[key].geometry.coordinates.reverse();
+                                features[key].geometry.coordinates.push(features[key].properties.run1 + "")
+                                points.push(features[key].geometry.coordinates)
+                            }
+                        }
+                        L.heatLayer(points, {blur: 40}).addTo(e.map);
+                    }
+                });
+                store.load();
+            }
+        });
+    }())
+</script>
+</body>
+</html>

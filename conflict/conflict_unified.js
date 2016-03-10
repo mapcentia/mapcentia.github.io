@@ -13,7 +13,7 @@ var cowi = (function () {
             (visible) ? cloudMap.map.getLayersByName(id)[0].setVisibility(true) : cloudMap.map.getLayersByName(id)[0].setVisibility(false);
             addLegend();
         },
-        init_search = function (db, komKode, layers, bbox, callback, baseLayer) {
+        init_search = function (db, komKode, layers, bbox, callback, baseLayer, layersDefaultOn) {
             cloudMap = new mygeocloud_ol.map("map", db, {
                 controls: [
                     new OpenLayers.Control.Navigation(),
@@ -111,7 +111,8 @@ var cowi = (function () {
                             })
                         ]
                     })
-                })});
+                })
+            });
             cloudMap.addGeoJsonStore(storeDraw);
             $("#flade").click(function () {
                 storeDraw.pointControl.deactivate();
@@ -215,7 +216,7 @@ var cowi = (function () {
                 sql: null,
                 onLoad: function () {
                     cloudMap.zoomToExtentOfgeoJsonStore(store);
-                    if (typeFlag ==="adresse") {
+                    if (typeFlag === "adresse") {
                         cloudMap.map.zoomTo(17);
                     }
                     cloudMap.map.addLayers([store.layer]);
@@ -341,7 +342,6 @@ var cowi = (function () {
                 }
 
 
-
                 // Lp search
                 var storeLp = new mygeocloud_ol.geoJsonStore("dk");
                 if (type === "jordstykke") {
@@ -376,13 +376,14 @@ var cowi = (function () {
                         if (this.geoJSON.features !== undefined) {
                             cloudMap.addTileLayers([this.id], {
                                 name: this.id,
-                                visibility: false
+                                visibility: layersDefaultOn || false
                             });
+                            var checked = layersDefaultOn ? "checked" : "";
                             if (layerObj.url[this.id.split('.')[1]] !== null && layerObj.url[this.id.split('.')[1]] !== "") {
-                                $('#result-table').append("<tr><td class='checkbox'><input type='checkbox' onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'><a target='_blank' href='" + layerObj.url[this.id.split('.')[1]] + "'>" + layerObj.name[this.id.split('.')[1]] + "</a></td></tr>");
+                                $('#result-table').append("<tr><td class='checkbox'><input type='checkbox' " + checked + " onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'><a target='_blank' href='" + layerObj.url[this.id.split('.')[1]] + "'>" + layerObj.name[this.id.split('.')[1]] + "</a></td></tr>");
                             }
                             else {
-                                $('#result-table').append("<tr><td class='checkbox'><input type='checkbox' onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'>" + layerObj.name[this.id.split('.')[1]] + "</td></tr>");
+                                $('#result-table').append("<tr><td class='checkbox'><input type='checkbox' " + checked + " onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'>" + layerObj.name[this.id.split('.')[1]] + "</td></tr>");
                             }
                             if (this.id.split('.')[1] === "kpplandk2_view") {
                                 $.each(this.geoJSON.features,

@@ -308,9 +308,8 @@ var cowi = (function () {
                     }
                 }
             }
-            ;
             store = null;
-        }
+        };
         return cloudMap;
     };
     return {

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+</head>
+<body>
+<script src='http://eu1.mapcentia.com/apps/widgets/gc2map/js/gc2map.js'></script>
+<div class="map"></div>
+<script>
+    (function () {
+        gc2map.init({
+            db: 'mydb',
+            zoom: [9.865, 55.58239999999999, 8],
+            setBaseLayer: 'osm',
+            width: '500px',
+            height: '500px',
+            schema: 'public',
+            callBack: function (e) {
+                var groups = new L.MarkerClusterGroup({
+                    maxClusterRadius: 100,
+                    iconCreateFunction: null,
+                    spiderfyOnMaxZoom: true,
+                    showCoverageOnHover: false,
+                    zoomToBoundsOnClick: true,
+                    spiderfyDistanceMultiplier: 2
+                });
+                var store = new geocloud.sqlStore({
+                    db: "trackunit",
+                    sql: "SELECT * FROM trackunit.units",
+                    lifetime: 3600,
+                    pointToLayer: function (feature, latlng) {
+                        groups.addLayer(L.marker(latlng));
+                        return groups;
+                    }
+                });
+                store.layer.addTo(e.map);
+                store.load();
+            }
+        });
+    }())
+</script>
+</body>
+</html>

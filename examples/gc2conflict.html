@@ -18,24 +18,23 @@
 <script>
     (function () {
         "use strict";
-        var search, formData, socketId = "mySocketID", socket = io.connect('http://172.30.1.162:8080');
+        var host="http://127.0.0.1:8080", search, formData, socketId = "mySocketID", socket = io.connect(host);
         socket.on(socketId, function (data) {
             if (typeof data.num !== "undefined") {
                 $("#console").append(JSON.stringify(data));
             }
-        });;
+        });
         formData = "" +
-        "db=ballerup&" +
-        "schema=_17_undervisning&" +
+        "db=mydb&" +
+        "schema=public&" +
         "wkt=POLYGON ((12.366657257080078 55.73116995298137, 12.366657257080078 55.731701571091904, 12.367944717407227 55.731701571091904, 12.367944717407227 55.73116995298137, 12.366657257080078 55.73116995298137))&" +
-        "baselayer=PUBLIC.BALLERUP_2014_RGB&" +
         "buffer=20&" +
         "socketid=" + socketId + "&" +
         "text=Fra%20tegning";
 
         search = function (formData) {
             $.ajax({
-                url: 'http://172.30.1.162:8080/intersection',
+                url: host + "/intersection",
                 method: 'POST',
                 data: formData,
                 contentType: 'application/x-www-form-urlencoded',

@@ -1,0 +1,331 @@
+<link rel="StyleSheet" href="http://cowi.mapcentia.com/js/bootstrap/css/bootstrap_buttonandicons.css" type="text/css">
+<link rel="StyleSheet" href="/css/thickbox.css" type="text/css">
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/thickbox.js"></script>
+<script type="text/javascript"
+        src="http://webkort.syddjurs.dk/js/standard/spatialmap/1.3.0/api/SpatialMap.js?modules=map"></script>
+
+<script type="text/javascript" src="//cowi.mapcentia.com/js/openlayers/OpenLayers.js"></script>
+
+<script type="text/javascript" src="http://hillerod.odeum.com/js/jquery.js"></script>
+<script type="text/javascript" src="http://cowi.mapcentia.com/api/v1/js/api.js"></script>
+<script type="text/javascript"
+        src="http://jquery-ui.googlecode.com/svn/tags/latest/ui/minified/i18n/jquery-ui-i18n.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/ui/1.8.23/jquery-ui.min.js"></script>
+<script type="text/javascript"
+        src="http://plandk2.mapcentia.com/apps/custom/randers/xml_to_json.php?url=http%3A%2F%2Fwebkort.syddjurs.dk%2Fcbkort%3Fpage%3Dkommuneplan.read.config&setvariable=metaurls&lifetime=0"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.23/themes/base/jquery-ui.css" type="text/css" media="all"/>
+<link rel="stylesheet" href="http://cowi.mapcentia.com/js/bootstrap/css/bootstrap_buttonandicons.css">
+<link rel="Stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css"
+      type="text/css">
+<link rel="Stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/redmond/jquery-ui.css"
+      type="text/css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/jquery-ui.min.js"></script>
+<script type="text/javascript" src="http://demo-find.spatialsuite.com/js/jquery.spatialfind.js"></script>
+<script src="http://cowi.mapcentia.com/js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://cowi.mapcentia.com/js/jqote2/jquery.jqote2.js"></script>
+<script src='http://eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
+<script>
+    var mapComp;
+    var store;
+    var cloud;
+    var styles = new OpenLayers.StyleMap({
+        "default": new OpenLayers.Style(null, {
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                        "Point": {
+                            pointRadius: 5,
+                            graphicName: "square",
+                            fillColor: "white",
+                            fillOpacity: 0.25,
+                            strokeWidth: 2,
+                            strokeOpacity: 1,
+                            strokeColor: "#0000FF"
+                        },
+                        "Polygon": {
+                            strokeWidth: 3,
+                            strokeOpacity: 1,
+                            strokeColor: "#0000FF"
+                        }
+                    }
+                })
+            ]
+        }),
+        "select": new OpenLayers.Style({
+            strokeColor: "#00ccff",
+            strokeWidth: 4
+        }),
+        "temporary": new OpenLayers.Style(null, {
+            rules: [
+                new OpenLayers.Rule({
+                    symbolizer: {
+                        "Point": {
+                            pointRadius: 5,
+                            graphicName: "square",
+                            fillColor: "white",
+                            fillOpacity: 0.25,
+                            strokeWidth: 1,
+                            strokeOpacity: 1,
+                            strokeColor: "#333333"
+                        },
+                        "Polygon": {
+                            strokeWidth: 3,
+                            strokeOpacity: 1,
+                            strokeColor: "#00ccff"
+                        }
+                    }
+                })
+            ]
+        })
+    });
+
+    var options = {
+        layers: [
+            {
+                id: "baggrund",
+                layername: "syddjurs_oversigt",
+                format: "image/jpeg",
+                basemap: true,
+                visible: true,
+                host: "http://mapcache.syddjurs.dk/geowebcache/service/wms?SERVICENAME=syddjurs"
+            }
+        ],
+        servicename: "ekstern_all",
+        extent: {x1: 556593, y1: 6221498, x2: 654385, y2: 6261946},
+        resolutions: [0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8, 25.6, 51.2, 102.4, 204.8]
+    };
+
+    $(window).load(function () {
+        var storeLp = new mygeocloud_ol.geoJsonStore("syddjurs", {projection: "25832", styleMap: null});
+        mapComp = new SpatialMap.Map("map", options);
+        cloud = new mygeocloud_ol.map("null", "syddjurs",
+                {
+                    numZoomLevels: 15,
+                    projection: "EPSG:25832",
+                    maxResolution: "auto",
+                    minResolution: 0.2
+                }
+        );
+        cloud.map = mapComp.map;
+        cloud.map.render("map");
+        store = new mygeocloud_ol.geoJsonStore("mobreg", {styleMap: styles});
+        cloud.addGeoJsonStore(store);
+
+        store.layer.events.on({
+            sketchcomplete: clearAllDraw,
+            featuremodified: serialize,
+            featureadded: serialize
+        });
+        $("#toogle").click(function () {
+            toogleDraw();
+        });
+    });
+    var clearAllDraw = function (e) {
+        if (store.layer.features.length > 0) {
+            clearDrawing();
+        }
+    };
+    var serialize = function (feature) {
+        var wkt;
+        var format = new OpenLayers.Format.WKT;
+        var g = new OpenLayers.Format.WKT;
+        try {
+            wkt = g.write(feature);
+        }
+        catch (e) {
+        }
+        try {
+            wkt = g.write(feature.feature);
+        }
+        catch (e) {
+        }
+        try {
+            wkt = g.write(feature.layer.features);
+        }
+        catch (e) {
+        }
+        try {
+            if (feature.features.length > 0) {
+                wkt = g.write(feature.features);
+            }
+            else wkt = "";
+        }
+        catch (e) {
+        }
+        handleSelect(wkt, true);
+
+    };
+    var clearDrawing = function (e) {
+
+        store.layer.destroyFeatures();
+
+
+        store.polygonControl.deactivate();
+        store.polygonControl.activate();
+    };
+    var metaUrlObj = {};
+    var metaLayers = "";
+    if (typeof metaurls.themes.theme.length == "undefined") {
+        metaUrlObj[metaurls.themes.theme.name] = metaurls.themes.theme.link;
+        metaLayers = metaurls.themes.theme.name;
+    }
+    else {
+        for (var i = 0; i < metaurls.themes.theme.length; i++) {
+            metaUrlObj[metaurls.themes.theme[i].name] = metaurls.themes.theme[i].link;
+
+            metaLayers += metaurls.themes.theme[i].name + "%20";
+
+        }
+
+        metaLayers = metaLayers.substring(0, metaLayers.length - 3);
+
+    }
+    $(function () {
+        var options = {
+            'apikey': '52EC9D0D-998A-4815-A0AC-978339CF9743',
+            'select': handleSelect,
+            'recieved': handleReceived,
+            'error': function (message) {
+                alert(message)
+            },
+            'area': 'muncode0706'
+        };
+        $("#search").spatialfind(options);
+    });
+    var storeLp = new mygeocloud_ol.geoJsonStore("syddjurs", {projection: "25832", styleMap: null});
+    var storeRammer = new mygeocloud_ol.geoJsonStore("syddjurs", {projection: "25832", styleMap: null});
+    var handleSelect = function (data, isWkt) {
+        if (!isWkt) {
+            if (!data.x) {
+                alert("Du skal søge på en komplet adresse");
+                return false;
+            } else {
+                //mapComp.map.setCenter(new OpenLayers.LonLat(data.x, data.y), 8)
+            }
+            var wkt = "POINT(" + data.x + " " + data.y + ")";
+        } else {
+            var wkt = data;
+        }
+        var matrikelStore = new geocloud.geoJsonStore({
+            db: "dk",
+            projection: "25832",
+            styleMap: new OpenLayers.StyleMap({
+                "default": new OpenLayers.Style({
+                            fillColor: "#000000",
+                            fillOpacity: 0.0,
+                            pointRadius: 8,
+                            strokeColor: "#ff0000",
+                            strokeWidth: 2,
+                            strokeOpacity: 0.8,
+                            graphicZIndex: 3
+                        }
+                )
+            }),
+            sql: "SELECT ST_geomfromtext('" + wkt + "', 25832) as a_the_geom, matrikel.jordstykke.the_geom as m_the_geom, ST_astext(matrikel.jordstykke.the_geom) as m_wkt FROM matrikel.jordstykke WHERE ST_intersects(matrikel.jordstykke.the_geom, ST_geomfromtext('" + wkt + "', 25832))",
+            onLoad: function () {
+                cloud.zoomToExtentOfgeoJsonStore(this);
+                cloud.map.addLayers([this.layer]);
+                wkt = this.geoJSON.features[0].properties.m_wkt;
+                $('#table-conflict').empty();
+                $('#table-lp').empty();
+                $('#table-rammer').empty();
+                storeLp.reset();
+                storeRammer.reset();
+                if (typeof storeLp.geoJSON.features != 'undefined')storeLp.geoJSON.features.length = 0;
+                if (typeof storeRammer.geoJSON.features != 'undefined')storeRammer.geoJSON.features.length = 0;
+                storeLp.sql = "SELECT kommuneplan13.theme_pdk_lokalplan_vedtaget.plannr,kommuneplan13.theme_pdk_lokalplan_vedtaget.plannavn,kommuneplan13.theme_pdk_lokalplan_vedtaget.doklink,kommuneplan13.theme_pdk_lokalplan_vedtaget.the_geom FROM kommuneplan13.theme_pdk_lokalplan_vedtaget WHERE  ST_Intersects(ST_GeomFromText('" + wkt + "',25832),kommuneplan13.theme_pdk_lokalplan_vedtaget.the_geom)";
+                storeLp.load();
+                storeLp.onLoad = function () {
+                    $('#table-lp').empty();
+                    for (var i = 0; i < storeLp.geoJSON.features.length; i++) {
+                        $('#table-lp').append('<tr><td style="width:100%"><a target="_blank" href="' + storeLp.geoJSON.features[i].properties.doklink + '">' + storeLp.geoJSON.features[i].properties.plannr + ' ' + storeLp.geoJSON.features[i].properties.plannavn + '</a></td></tr>');
+                    }
+                };
+                storeRammer.sql = "SELECT kommuneplan13.kpplandk2_view.plannr,kommuneplan13.kpplandk2_view.plannavn,kommuneplan13.kpplandk2_view.html,kommuneplan13.kpplandk2_view.the_geom FROM kommuneplan13.kpplandk2_view WHERE  ST_Intersects(ST_GeomFromText('" + wkt + "',25832),kommuneplan13.kpplandk2_view.the_geom)";
+                storeRammer.load();
+                storeRammer.onLoad = function () {
+                    $('#table-rammer').empty();
+                    for (var i = 0; i < storeRammer.geoJSON.features.length; i++) {
+                        $('#table-rammer').append('<tr><td style="width:100%"><a target="_blank" href="' + storeRammer.geoJSON.features[i].properties.html + '">' + storeRammer.geoJSON.features[i].properties.plannr + ' ' + storeRammer.geoJSON.features[i].properties.plannavn + '</a></td></tr>');
+                    }
+                };
+                $('#spinner_ret').show();
+                $.ajax({
+                    data: 'url=http%3A%2F%2Fwebkort.syddjurs.dk%2Fcbkort%3Fpage%3Dkommuneplan.query%26layers%3D' + metaLayers + '%26wkt%3D' + wkt,
+                    type: 'POST',
+                    url: '/xml_to_json.php',
+                    success: function (response) {
+                        response = $.parseJSON(response);
+                        var res = response.pcomposite.pcomposite.pcomposite[0].pcomposite;
+                        if (typeof metaurls.themes.theme.length == "undefined") {
+                            var hit = (res.col[5]._content > 0) ? 'Ja' : 'Nej';
+                            var tjek = (metaUrlObj[res.col[3]._content] === undefined) ? "<b style='color:red'>!</b>" : "<b style='color:green'>v</b>";
+                            $('#spinner_ret').hide();
+                            if (hit === 'Ja') $('#table-conflict').append("<tr><td><a target='_blank' href='" + metaUrlObj[res.col[3]._content] + "'>" + res.col[1]._content + "</a></td></tr>")
+                        }
+                        else {
+                            for (var i = 0; i < res.length; i++) {
+                                var hit = (res[i].col[5]._content > 0) ? 'Ja' : 'Nej';
+                                var tjek = (metaUrlObj[res[i].col[3]._content] === undefined) ? "<b style='color:red'>!</b>" : "<b style='color:green'>v</b>";
+                                $('#spinner_ret').hide();
+                                if (hit === 'Ja') $('#table-conflict').append("<tr><td><a target='_blank' href='" + metaUrlObj[res[i].col[3]._content] + "'>" + res[i].col[1]._content + "</a></td></tr>")
+                            }
+                        }
+                    },
+                    complete: function () {
+                    }
+                });
+            }
+        });
+        matrikelStore.load();
+    };
+    // Modtager et result som JSON. result.data er et array med veje og adresser.
+    function handleReceived(result) {
+    }
+    $('#table-conflict').empty();
+    $('#table-lp').empty();
+    $('#table-rammer').empty();
+    storeLp.reset();
+    storeRammer.reset();
+    if (typeof storeLp.geoJSON.features != 'undefined')storeLp.geoJSON.features.length = 0;
+    if (typeof storeRammer.geoJSON.features != 'undefined')storeRammer.geoJSON.features.length = 0;
+
+    var toogleDraw = function () {
+        if (store.polygonControl.active) {
+            store.layer.destroyFeatures();
+            store.polygonControl.deactivate();
+        }
+        else {
+            store.polygonControl.activate();
+        }
+    }
+</script>
+<h2>Søg via adresse</h2>
+<div style="z-index:10000"><input type="text" id="search" name="search" placeholder="Addresse" size="40"/></div>
+<p>Tip: Søgning afsluttes med return/enter og kræver at der er indtastet husnummer. <br> Resultatet vises under kortet.
+</p>
+<h2>Søg via kort</h2>
+<p>Tip: Søgningen gennemføres efter dobbeltklik med musen. Det kan enten være et punkt, eller en flade.
+    <br> Efter dobbeltklik kan resultatet ses under kortet og hvis der tegnes påny i kortet, startes der forfra.</p>
+<div id="map" style="width:962px;height:400px;position:relative">
+    <div style="display:inline;z-index:1000;position:absolute;right:3px;top:3px;padding:3px;opacity:0.8;width:auto">
+        <button id="toogle" type="button" class="btn btn-primary" data-toggle="button">Tegn et punkt eller en flade
+        </button>
+    </div>
+</div>
+<h2>Der bliver søgt på:</h2>
+<h3>Lokalplaner</h3>
+<table class="table table-striped" id="table-lp"></table>
+<h3>Rammer</h3>
+<table class="table table-striped" id="table-rammer"></table>
+<h3>Retningslinjer</h3>
+<div id="spinner_ret">
+    <img src="http://jujinga.net/img/ajaxSpinner.gif" alt=""/> Det kan tage lidt tid.
+</div>
+<table class="table table-striped" id="table-conflict"></table>
+
+<script>
+    $('#spinner_ret').hide();
+</script>

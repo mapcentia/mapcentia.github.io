@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>drc</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            height: 100%;
+        }
+
+        table.infowindow {
+            border-spacing: 0;
+            border-collapse: collapse;
+        }
+
+        table.infowindow tr td:first-child {
+            white-space: nowrap;
+        }
+
+        table.infowindow td {
+            vertical-align: top;
+            padding: 5px;
+        }
+
+        table.infowindow tr:nth-child(even) {
+            background: #eee
+        }
+
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+
+    var map;
+    function initMap() {
+        var mapStyle = new google.maps.StyledMapType(
+                [
+                    {
+                        "featureType": "all",
+                        "elementType": "all",
+                        "stylers": [
+                            {
+                                "visibility": "off"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "administrative.locality",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#808080"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "landscape.man_made",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#dddddd"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "landscape.natural",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#eeeeee"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "geometry",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#ffffff"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "road",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "color": "#666666"
+                            },
+                            {
+                                "visibility": "on"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "transit.station",
+                        "elementType": "labels.text.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#666666"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "transit.station",
+                        "elementType": "labels.icon",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "saturation": "-100"
+                            }
+                        ]
+                    },
+                    {
+                        "featureType": "water",
+                        "elementType": "geometry.fill",
+                        "stylers": [
+                            {
+                                "visibility": "on"
+                            },
+                            {
+                                "color": "#cccccc"
+                            }
+                        ]
+                    }
+                ]
+        );
+        var mapOpt = {
+            scrollwheel: false,
+            mapTypeControl: false,
+            streetViewControl: false,
+            panControl: false,
+            zoomControl: true,
+            zoomControlOptions: {
+                style: google.maps.ZoomControlStyle.SMALL,
+                position: google.maps.ControlPosition.LEFT_TOP,
+            },
+            mapTypeControlOptions: {
+                mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'mapStyle']
+            },
+            zoom: 7,
+            center: new google.maps.LatLng(55.6760968, 12.568337100000008),
+        };
+        map = new google.maps.Map(document.getElementById('map'), mapOpt);
+        map.mapTypes.set('mapStyle', mapStyle);
+        map.setMapTypeId('mapStyle');
+
+
+        // NOTE: This uses cross-domain XHR, and may not work on older browsers.
+        map.data.loadGeoJson('drc.json');
+
+        map.data.setStyle(function (feature) {
+            return {
+                icon: "http://backoffice.flygtning.dk/frontend/ldk/images/map_pin.png"
+            };
+        });
+
+        map.data.addListener('click', function (event) {
+            // global infowindow
+            var infowindow = new google.maps.InfoWindow();
+            var html =
+                    "<h3>" + event.feature.getProperty("title") + "</h3>" +
+                    "<table class=\"infowindow\">" +
+                    "<tr><td><b>Address (Google)</b></td><td>" + event.feature.getProperty("formatted_address") + "</td></tr>" +
+                    "<tr><td><b>Address (TYPO3)</b></td><td>" + event.feature.getProperty("tx_flygtninge_address") + "</td></tr>" +
+                    "<tr><td><b>Phone</b></td><td>" + event.feature.getProperty("tx_flygtninge_phone1") + "</td></tr>" +
+                    "<tr><td><b>Email</b></td><td>" + event.feature.getProperty("tx_flygtninge_email1") + "</td></tr>" +
+                    "<tr><td><b>WWW</b></td><td>" + event.feature.getProperty("tx_flygtninge_www") + "</td></tr>" +
+                    "<tr><td><b>Type</b></td><td>" + event.feature.getProperty("tx_flygtninge_activity_type") + "</td></tr>" +
+                    "<tr><td><b>Activity hours</b></td><td>" + event.feature.getProperty("tx_flygtninge_activity_hours") + "</td></tr>" +
+                    "<tr><td><b>Entity type</b></td><td>" + event.feature.getProperty("tx_flygtninge_entity_type") + "</td></tr>" +
+
+                    "</<table>";
+
+
+            infowindow.setContent("<div style='width:300px; text-align: left;'>" + html + "</div>");
+            infowindow.setPosition(event.feature.getGeometry().get());
+            infowindow.setOptions({pixelOffset: new google.maps.Size(0, -30)});
+            infowindow.open(map);
+        });
+    }
+</script>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?callback=initMap">
+</script>
+</body>
+</html>

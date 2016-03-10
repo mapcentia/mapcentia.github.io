@@ -1,0 +1,117 @@
+<script src='http://eu1.mapcentia.com/js/openlayers/OpenLayers.js'></script>
+<script src='http://eu1.mapcentia.com/api/v3/js/geocloud.js'></script>
+<script src="http://eu1.mapcentia.com/js/bootstrap/js/bootstrap.min.js"></script>
+<script src="http://eu1.mapcentia.com/js/underscore/underscore-min.js"></script>
+<script src='http://beta.mygeocloud.cowi.webhouse.dk/js/openlayers/proj4js-combined.js'></script>
+<script src='http://beta.mygeocloud.cowi.webhouse.dk/js/openlayers/defs/EPSG25832.js'></script>
+<script src='search_unified.js'></script>
+<link rel="StyleSheet" href="http://mapcentia.github.io/css/type-a-head.css" type="text/css"/>
+<style>
+.ol-zoom, .olControlZoom {
+    bottom: 15px !important;
+    right: 5px !important;
+    top: auto !important;
+    left: auto !important;
+}
+
+#result {
+    background: white;
+}
+
+#legendContent {
+    width: 185px;
+    overflow: auto;
+}
+</style>
+<div class="container" style="margin-top:0px;position:relative">
+<div class="row" style="position:relative; width:100%">
+<div class="span6" style="float:left">
+<input style="width:250px" id="m_search" autocomplete="off" type="text" name="addr"
+placeholder="By, vej, husnr, ejerlav eller matrikelnr">
+</div>
+</div>
+<div style="padding-top:10px">&nbsp;</div>
+<div class="row" style="padding-top:10px; position:relative; width:100%">
+<div class="span6" style="float:left">
+<div id="map" style="width:780px;height:350px"></div>
+</div>
+<div style="clear:both">
+<div class="span6" style="float:right">
+<div id="legendContent"></div>
+</div>
+<div class="span6" style="float:left">
+<div id="result">
+<table id="result-table"></table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<script>
+var layers = [
+    "kommuneplan.kpplandk2_view",
+    "kommuneplan.aabesk",
+//"kommuneplan.beskyttelseslinjer",
+    "kommuneplan.afst_lufthavn",
+    "kommuneplan.badevand",
+    "kommuneplan.besk_dige",
+    "kommuneplan.beskyttetnatur",
+    "kommuneplan.beskyttetvandloeb",
+    "kommuneplan.beskzone",
+    "kommuneplan.bevaring_region",
+    "kommuneplan.bevaringsvaerdier",
+    "kommuneplan.biogas",
+    "kommuneplan.biogas_milvur",
+    "kommuneplan.byrolle",
+    "kommuneplan.byzone_landzone",
+    "kommuneplan.detailhandel",
+    "kommuneplan.camping",
+    "kommuneplan.dc_power",
+    "kommuneplan.ef_fugl",
+    "kommuneplan.ef_habitat",
+    "kommuneplan.eksisterende_trafik",
+    "kommuneplan.forslag_til_fredninger",
+    "kommuneplan.kirker",
+    "kommuneplan.fredninger",
+    "kommuneplan.graenseforknz",
+    "kommuneplan.havne",
+    "kommuneplan.highvoltage",
+    "kommuneplan.jordbrugsomr",
+    "kommuneplan.kirkebeskyt",
+    "kommuneplan.kulturmiljo",
+    "kommuneplan.landsby_afg",
+    "kommuneplan.lavbund",
+    "kommuneplan.miljovur",
+    "kommuneplan.nationale_geologiske_omraader",
+    "kommuneplan.naturgas",
+    "kommuneplan.nyt_skov",
+    "kommuneplan.naturomrder",
+    "kommuneplan.nye_vind",
+    "kommuneplan.okologiskeforbindelser",
+    "kommuneplan.omriknz",
+    "kommuneplan.pindstrup",
+    "kommuneplan.plan_skagerak",
+    "kommuneplan.sea_powerline",
+    "kommuneplan.planlagt_trafik",
+//"kommuneplan.planomrder",
+    "kommuneplan.potentvaad",
+    "kommuneplan.ramsar",
+    "kommuneplan.regjord",
+    "kommuneplan.regnatur",
+    "kommuneplan.skovbyg",
+    "kommuneplan.skovrejsning",
+    "kommuneplan.soebesk",
+    "kommuneplan.spec_geo",
+    "kommuneplan.stier",
+    "kommuneplan.stojbelastedearealer",
+    "kommuneplan.vejklasser",
+    "kommuneplan.vindmolleomraader",
+    "kommuneplan.virksomhederbeligkrav"
+];
+var bbox = [1005215.60420902,7761686.00418784,1104187.51468753,7833140.24813214];
+$(document).ready(function () {
+    search.init_search("jammerbugt", "849", layers, bbox, function () {
+    })
+});
+
+</script>

@@ -1,0 +1,105 @@
+<script src='http://cdn.us1.mapcentia.com/js/underscore/underscore-min.js'></script>
+<script src='http://ajax.googleapis.com/ajax/libs/jquery/1.10.0/jquery.min.js'></script>
+
+<div id="search"><input class="form-control" id="search-input" name="search-input" type="text"
+                        placeholder="Emneord"/>Alle ord skal forekomme? <input type="radio" name="operator" value="AND"
+                                                                               CHECKED>Ja <input type="radio"
+                                                                                                 name="operator"
+                                                                                                 VALUE="OR">Nej
+</div>
+<div class="list-group" id="content_gc"></div>
+<style>
+    .highlighted {
+        background-color: yellow;
+        font-size: 1em;
+        font-weight: bold;
+        font-style: normal;
+    }
+
+    #search-input {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid silver;
+        clear: both;
+        font-size: 18px;
+    }
+</style>
+<script>
+    (function () {
+        var map, input, highlighter, search, elastic, markerMap = {};
+
+        $("input[name=search-input]").keyup(function () {
+            if (!this.value) {
+                $('#content_gc').empty();
+            }
+        });
+
+        $("input[name=search-input]").on('input', _.debounce(function (e) {
+            search(e.target.value);
+        }, 300));
+
+        $("input:radio[name ='operator']").on("change", function () {
+            search($("#search-input").val())
+        })
+
+        search = function (value) {
+            var e = "#content_gc";
+            $(e).empty();
+            if (value) {
+                $.ajax({
+                    dataType: "jsonp",
+                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/esbjerg/kommuneplan14/retningslinjer/',
+                    data: 'q={"query":{"query_string":{"default_operator": "' + $("input:radio[name ='operator']:checked").val() + '","default_field":"string","query":"' + encode_utf8(value.toLowerCase()) + '"}}}',
+                    contentType: "application/json; charset=utf-8",
+                    scriptCharset: "utf-8",
+                    jsonp: 'jsonp_callback',
+                    success: function (response) {
+                        $.each(response.hits.hits, function (index, hit) {
+                            // Ret
+                            $('<div/>', {
+                                html: "<h2>" + highlighter(value, decode_utf8(hit._source.properties.titel)) + "</h2>"
+                            }).appendTo(e);
+                            $('<div/>', {
+                                html: highlighter(value, decode_utf8(_.unescape(hit._source.properties.retningslinje)))
+                            }).appendTo(e);
+
+                            // rede
+                            $('<div/>', {
+                                id: "pgtabitem" + "rede" + index,
+                                class: "pgtabitem gradient"
+
+                            }).appendTo(e);
+
+                            $('<div/>', {
+                                class: "pgtabheader",
+                                html: "<a  href=\"Javascript:void(0)\" onclick=\"gc2.initTab(" + "'rede" + index + "')\" >Redegørelse</a>"
+                            }).appendTo("#pgtabitem" + "rede" + index);
+
+                            $('<div/>', {
+                                id: "pgtabcnt" + "rede" + index,
+                                class: "pgtabcontent",
+                                html: highlighter(value, decode_utf8(_.unescape(hit._source.properties.redegoerelse)))
+                            }).appendTo("#pgtabitem" + "rede" + index);
+
+                        })
+                    }
+                });
+            }
+        };
+        highlighter = function (value, item) {
+            _($.trim(value).split(' ')).each(
+                    function (s) {
+                        var regex = new RegExp('(\\b' + s + ')', 'gi');
+                        item = item.replace(regex, "<i class=\"highlighted\">$1</i>");
+                    }
+            );
+            return item;
+        };
+    }());
+    function decode_utf8(s) {
+        return decodeURIComponent(escape(s));
+    }
+    function encode_utf8(s) {
+        return unescape(encodeURIComponent(s));
+    }
+</script>

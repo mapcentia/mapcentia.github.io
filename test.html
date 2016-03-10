@@ -1,64 +1,51 @@
 
+<?php	
+//Headerinfo sættes:
+Header("Content-Type: text/html; charset=UTF-8");
+?>
+
 <!DOCTYPE html>
 <html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"/>
-    <title></title>
-    <style>
-        html, body, #map {
-            margin: 0;
-            height: 100%;
-            width: 100%;
-        }
-    </style>
+<head>
+    <title>Geo Fyn</title>
+    <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+
+    <!-- jQuery og Bootstrap -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <script src="../../../jquery2.1.3/jquery-2.1.3.min.js"></script>
+
+
+    <!-- Vi laver ikoner -->
+    <link href="../../images/GeoFyn_logo_60x60w.png" rel="apple-touch-icon" />
+    <link href="../../images/GeoFyn_logo_76x76w.png" rel="apple-touch-icon" sizes="76x76" />
+    <link href="../../images/GeoFyn_logo_120x120w.png" rel="apple-touch-icon" sizes="120x120" />
+    <link href="../../images/GeoFyn_logo_152x152w.png" rel="apple-touch-icon" sizes="152x152" />
+    <link rel="icon" href="../../images/GeoFyn_logo_152x152w.png" />
+    <link rel="shortcut icon" href="../../images/GeoFyn_logo_152x152w.png" />
+
 </head>
 <body>
-<div id="map"></div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
-<script type="text/javascript" src="http://ec2-52-19-39-57.eu-west-1.compute.amazonaws.com/js/leaflet/plugins/Leaflet-WFST/Leaflet-WFST.src.js"></script>
+
+<h2>&nbsp;Status på etablering af FKG skoledistrikter på Danmarks Arealinformation (DAI)</h2>
+&nbsp;&nbsp;<img src="Signaturforklaring02.png">
+<br>
+<script src='http://geofyn.mapcentia.com:80/apps/widgets/gc2map/js/gc2map.js'></script>
+<div></div>
 <script>
-    var map = L.map('map').setView([0, 0], 2);
-
-    // add an OpenStreetMap tile layer
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    var boundaries = new L.WFS({
-        url: 'http://ec2-52-19-39-57.eu-west-1.compute.amazonaws.com/wfs/gdhsupport/public/4326',
-        typeNS: 'mydb',
-        typeName: 'polygon',
-        version: '1.0.0',
-        crs: L.CRS.EPSG4326,
-        geometryField: 'the_geom',
-        style: {
-            color: 'blue',
-            weight: 2
-        }
-    }).addTo(map)
-            .once('load', function () {
-                map.fitBounds(boundaries);
-            });
-
-    /*var boundaries = new L.WFS({
-        url: 'http://demo.opengeo.org/geoserver/ows',
-        typeNS: 'topp',
-        typeName: 'tasmania_state_boundaries',
-        crs: L.CRS.EPSG4326,
-        version: '1.0.0',
-        geometryField: 'the_geom',
-        style: {
-            color: 'blue',
-            weight: 2
-        }
-    }).addTo(map)
-            .once('load', function () {
-                map.fitBounds(boundaries);
-            });*/
-
-
-
+    (function () {
+        gc2map.init({
+            db: 'geofyn',
+            layers: ['fkg_skoledistrikter.kommune_oversigt'],
+            zoom: [9.5361328125,56.185310993254575,7],
+            setBaseLayer: 'dtkSkaermkortDaempet',
+            width: '600px',
+            height: '300px',
+            template: 'body2.tmpl',
+            schema: 'fkg_skoledistrikter'
+        });
+    }())
 </script>
+
 </body>
 </html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mapcentia Example</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.5/mapbox.css' rel='stylesheet'/>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        html, body, #map {
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+<script src='https://us1.mapcentia.com:443/apps/widgets/gc2map/js/gc2map.js'></script>
+<div></div>
+</body>
+<script>
+    (function () {
+        gc2map.init({
+            db: 'ovrdc',
+            layers: ['public.btrail'],
+            zoom: [-83.12234072409012,40.63197629598801,7],
+            setBaseLayer: 'stamenToner',
+            width: '100%',
+            height: '100%',
+            callBack: function(map){
+
+                var acetate = L.tileLayer('http://a{s}.acetate.geoiq.com/tiles/acetate-hillshading/{z}/{x}/{y}.png', {
+                    attribution: '&copy;2012 Esri & Stamen, Data from OSM and Natural Earth',
+                    subdomains: '0123',
+                    maxZoom: 20,
+                    maxNativeZoom: 17
+                }).addTo(map.map);
+
+                var store = new geocloud.geoJsonStore({
+                    // Set the database. The address is set from the origin of geocloud.js. In this case us1.mapcentia.com
+                    db: "ovrdc",
+                    // Only the SQL
+                    sql: "SELECT * FROM public.btrail",
+                    // Cache the result on the server in secs
+                    lifetime: (3600 * 24)
+                });
+                // Fire the SQL
+                store.load();
+
+                // Add the vector layer to the map
+                map.addGeoJsonStore(store);
+
+                // Define a callback for when the SQL returns
+                store.onLoad = function () {
+                    // Zoom to vector layer
+                    map.zoomToExtentOfgeoJsonStore(this);
+                }
+            }
+        });
+    }())
+</script>
+</html>

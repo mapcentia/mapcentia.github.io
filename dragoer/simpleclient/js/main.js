@@ -163,9 +163,9 @@ MapCentia = function (globalId) {
     });
     init = function (conf) {
         var metaData, metaDataKeys = [], metaDataKeysTitle = [], layers = {}, modalFlag, extent = null, p, arr, prop,
-        defaults = {
-            baseLayers: null
-        };
+            defaults = {
+                baseLayers: null
+            };
         if (conf) {
             for (prop in conf) {
                 defaults[prop] = conf[prop];
@@ -220,7 +220,7 @@ MapCentia = function (globalId) {
                 {id: geocloud.OSM, name: "OSM"}
             ];
         }
-        if (defaults.baseLayers === null && typeof window.setBaseLayers === 'object'){
+        if (defaults.baseLayers === null && typeof window.setBaseLayers === 'object') {
             defaults.baseLayers = window.setBaseLayers;
         }
 
@@ -228,7 +228,7 @@ MapCentia = function (globalId) {
         for (var i = 0; i < defaults.baseLayers.length; i++) {
             cloud.addBaseLayer(defaults.baseLayers[i].id);
             $("#base-layer-list-" + id).append(
-                "<li><a href=\"#\" onclick=\"gc2Widget.maps['" + id + "'].setBaseLayer('" +defaults.baseLayers[i].id + "')\"><img class=\"img-rounded images-base-map\" src=\"http://apps/viewer/img/mqosm.png\">" + defaults.baseLayers[i].name + "</a></li>"
+                "<li><a href=\"#\" onclick=\"gc2Widget.maps['" + id + "'].setBaseLayer('" + defaults.baseLayers[i].id + "')\"><img class=\"img-rounded images-base-map\" src=\"http://apps/viewer/img/mqosm.png\">" + defaults.baseLayers[i].name + "</a></li>"
             );
         }
         //setBaseLayer(defaults.baseLayer);

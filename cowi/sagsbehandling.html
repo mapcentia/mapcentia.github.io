@@ -1,0 +1,696 @@
+<script type="text/javascript" src="http://beta.mygeocloud.cowi.webhouse.dk/js/openlayers/proj4js-combined.js"></script>
+<script type="text/javascript" src="http://mygeocloud.cowi.webhouse.dk/js/openlayers/defs/EPSG25832.js"></script>
+<script type="text/javascript" src="http://mygeocloud.cowi.webhouse.dk/js/openlayers/defs/EPSG32622.js"></script>
+<script type="text/javascript" src="http://mygeocloud.cowi.webhouse.dk/js/openlayers/defs/EPSG32624.js"></script>
+<script type="text/javascript" src="http://mygeocloud.cowi.webhouse.dk/js/openlayers/defs/EPSG32621.js"></script>
+<link href="http://beta.mygeocloud.cowi.webhouse.dk/js/bootstrap/css/bootstrap.css" rel="stylesheet">
+<link href="http://beta.mygeocloud.cowi.webhouse.dk/js/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+<script type="text/javascript" src="http://alpha.mygeocloud.cowi.webhouse.dk/api/v1/js/api.js"></script>
+
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.13/themes/base/jquery-ui.css">
+<script src="http://code.jquery.com/ui/1.8.13/jquery-ui.min.js"></script>
+<script src="http://alpha.mygeocloud.cowi.webhouse.dk/js/oiorest/jquery.ui.plugin_autocompleteAddress.js"></script>
+<script src='https://maps.googleapis.com/maps/api/js?key=AIzaSyA-DSPlhVi52zBadpyTRa4cOtSr6WKDOgA&sensor=false'></script>
+
+
+<link rel='stylesheet' type='text/css' href='http://beta.mygeocloud.cowi.webhouse.dk/js/ext/resources/css/ext-all.css'/>
+<script type="text/javascript" src="http://cowi.mapcentia.com/api/v3/js/geocloud.js"></script>
+
+<style>
+    .ui-autocomplete-loading {
+        background: white url('http://alpha.mygeocloud.cowi.webhouse.dk/js/oiorest/ui-anim_basic_16x16.gif') right center no-repeat;
+    }
+
+    #streetname {
+        width: 14em;
+    }
+
+    #streetnumber {
+        width: 3em;
+    }
+
+    #zipcode {
+        width: 3em;
+    }
+
+    .table {
+        width: 100%;
+    }
+
+    .table tr td {
+        font-size: 8pt;
+        padding: 0px;
+        padding-right: 5px;
+    }
+
+    img {
+        max-width: none !important;
+    }
+
+    html, body {
+        height: 100%;
+    }
+
+    .fill {
+        height: 1000px;
+    }
+
+    #map {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+
+    html * {
+        font-family: arial;
+    }
+
+    img {
+        max-width: none;
+    }
+
+    .ui-datepicker-trigger {
+        cursor: pointer;
+    }
+
+    input {
+        height: 28px;
+    }
+
+    .datepicker {
+        margin-right: 4px;
+    }
+
+    .filter, .operator {
+        height: 20px;
+        width: 200px;
+        background-color: #f0f8fd;
+        border-radius: 5px;
+        border: 1px solid #c7e0e5;
+        display: inline;
+        padding: 6px 0px;
+        line-height: 34px;
+        margin-right: 6px;
+        margin-bottom: 12px;
+    }
+
+    .filter, .operator span {
+        padding-left: 4px;
+        padding-right: 8px;
+
+    }
+
+    .filter a {
+        text-decoration: none;
+        padding: 3px 5px;
+        border-radius: 3px;
+        text-align: center;
+        background-color: #cfdee4;
+        color: white;
+        font-weight: bold;
+        font-size: 10px;
+    }
+
+    .filter a:hover {
+        background-color: #aab7ba;
+    }
+
+    .template {
+        display: none;
+    }
+
+    .no-break {
+        display: inline-block;
+    }
+
+    .filterOp {
+        background-color: #f5fbd5;
+        border: 1px solid #dbc9af;
+    }
+
+    .filter-name, .operator-name {
+        margin: 0px 6px;
+    }
+
+</style>
+<script>
+    Proj4js.defs["EPSG:3857"] = "+title=GoogleMercator +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs";
+    var styleMap = new OpenLayers.StyleMap({
+        'default': {
+            pointRadius: 10,
+            fillColor: "blue",
+            fillOpacity: 0.5,
+            strokeColor: "blue",
+            strokeOpacity: 0.7
+        },
+        'temporary': {
+            pointRadius: 10,
+            fillColor: "blue",
+            fillOpacity: 0.5,
+            strokeColor: "blue",
+            strokeOpacity: 0.7
+        },
+        'select': {
+            pointRadius: 10,
+            fillColor: "yellow",
+            fillOpacity: 0.5,
+            strokeColor: "blue",
+            strokeOpacity: 0.7
+        }
+    });
+
+    var grid, cloud, store, elastic;
+    var queryFilters = {};
+    var keys = [];
+    var columns = [
+        {
+            "header": "ID",
+            "dataIndex": "id",
+            "type": "varchar",
+            "typeObj": null,
+            "width": 40
+        },
+        {
+            "header": "Navn og adresse",
+            "dataIndex": "navn_adresse",
+            "type": "varchar",
+            "typeObj": null,
+            "width": 200
+        }, {
+            "header": "Dato",
+            "dataIndex": "dato_reworked",
+            "type": "date",
+            "typeObj": null,
+            "width": 65
+        }, {
+            "header": "Status",
+            "dataIndex": "areal_status",
+            "type": "varchar",
+            "typeObj": null,
+            "width": 95
+        }, {
+            "header": "Beskrivelse",
+            "dataIndex": "beskrivelse",
+            "type": "varchar",
+            "typeObj": null,
+            "width": 500
+        },
+        {
+            header: 'Link',
+            xtype: 'templatecolumn',
+            tpl: '<a target="_blank" href="/dk/areal/areal.htm?rowid={irowid}">{irowid}</a>',
+            flex: 1
+        }
+    ];
+    var fields = [
+        {
+            "name": "irowid",
+            "type": "varchar"
+        }, {
+            "name": "id",
+            "type": "varchar"
+        },
+        {
+            "name": "navn_adresse",
+            "type": "varchar",
+            "typeObj": null,
+            "width": 200
+        }, {
+            "header": "Dato",
+            "name": "dato_reworked",
+            "type": "varchar",
+            "typeObj": null,
+            "width": 65
+        }, {
+            "header": "Status",
+            "name": "areal_status",
+            "type": "varchar",
+            "typeObj": null,
+            "width": 95
+        }, {
+            "header": "Beskrivelse",
+            "name": "beskrivelse",
+            "type": "varchar",
+            "typeObj": null,
+            "width": 500
+        }
+    ];
+
+    var selectControl = {
+        onSelect: function (feature) {
+            $("#start").show();
+            irowid = feature.attributes.irowid;
+        },
+        onUnselect: function () {
+            $("#start").hide();
+        }
+    };
+    $(window).load(function () {
+        cloud = new mygeocloud_ol.map("map", "sagsbehandling", {
+            controls: [
+                new OpenLayers.Control.Navigation(
+                        {mouseWheelOptions: {interval: 100}}
+                ),
+                new OpenLayers.Control.PanZoom()
+
+            ]
+        });
+        store = new mygeocloud_ol.geoJsonStore("sagsbehandling", {styleMap: styleMap});
+        cloud.addGeoJsonStore(store);
+        cloud.addGoogleHybrid({type: google.maps.MapTypeId.HYBRID});
+        cloud.map.zoomToExtent([-8253706.7554268, 8599127.3525147, -1013591.4372628, 18383066.971655]);
+        store.onLoad = function () {
+            /*$("#grid").empty();
+             grid = undefined;
+             if (store.geoJSON.features != null) {
+             cloud.zoomToExtentOfgeoJsonStore(store);
+
+             if (typeof grid !== "object") {
+             grid = new mygeocloud_ol.grid("grid", store, {
+             columns: columns,
+             //selectControl: selectControl,
+             height: 500
+             });
+             }
+
+             }
+             else {
+             $("#notfound").css('display', 'block');
+             }*/
+        };
+
+        elastic = new geocloud.elasticStore({
+            db: "sagsbehandling",
+            index: "areal",
+            size: 300,
+            projection: "EPSG:4326",
+            q: "", // Empty search will return documents from the top
+            onLoad: function () {
+                $("#grid").empty();
+                grid = undefined;
+                if (elastic.geoJSON.features != null && elastic.geoJSON.features.length > 0) {
+                    elastic.featureStore = new GeoExt.data.FeatureStore({
+                        fields: fields,
+                        layer: elastic.layer
+                    });
+                    //cloud.zoomToExtentOfgeoJsonStore(elastic);
+                    cloud.map.zoomToExtent(elastic.layer.getDataExtent());
+
+                    if (typeof grid !== "object") {
+                        grid = new mygeocloud_ol.grid("grid", elastic, {
+                            columns: columns,
+                            //selectControl: selectControl,
+                            height: 500
+                        });
+                    }
+                }
+                else {
+                    $("#notfound").css('display', 'block');
+                }
+            }
+        });
+        //cloud.addGeoJsonStore(elastic);
+        cloud.map.addLayers([elastic.layer]);
+        console.log(elastic.layer);
+
+        $("#map").append('\
+			<div style="z-index:1000;position:absolute;bottom:5px;right:5px">\
+				<button id="MapQuest-OSM" onclick="switchBaseLayer(\'MapQuest-OSM\')" type="button" class="btn btn-medium active" style="margin-right:5px;" >Vejkort</button>\
+				<button id="ortokort" onclick="switchBaseLayer(\'Google Hybrid\')" type="button" class="btn btn-medium" >Luftfoto</button>\
+			</div>\
+		');
+
+
+    });
+    $(document).ready(function () {
+        $("#from").datepicker({
+            showOn: "button", buttonImage: "/gifs/icons/16/icon_datepicker.png", buttonImageOnly: true,
+            defaultDate: "+1w",
+            changeMonth: true,
+            numberOfMonths: 3,
+            onClose: function (selectedDate) {
+                $("#to").datepicker("option", "minDate", selectedDate, $.datepicker.regional['da']);
+            }
+        });
+        $("#to").datepicker({
+            showOn: "button", buttonImage: "/gifs/icons/16/icon_datepicker.png", buttonImageOnly: true,
+            defaultDate: "+1w",
+            changeMonth: true,
+            numberOfMonths: 3,
+            onClose: function (selectedDate) {
+                $("#from").datepicker("option", "maxDate", selectedDate, $.datepicker.regional['da']);
+            }
+        });
+
+    });
+
+    function switchBaseLayer(name) {
+        var base = cloud.map.getLayersByName(name)[0];
+        base.setVisibility(true);
+        cloud.map.setBaseLayer(base);
+    }
+
+
+</script>
+</head>
+<body>
+
+
+<div class="row">
+    <div class="span6">
+
+        <fieldset>
+            <legend>Søgekriterier</legend>
+
+            <label>Periode</label>
+            <input class="datepicker" id="from" name="from" value="Start dato..." name="startdate"
+                   style="width:100px;"/>
+            <input class="datepicker form-control" id="to" name="to" value="Slut dato..." name="enddate"
+                   style="width:100px;"/>
+            <input type="button" class="btn filterBut" value="Tilføj" id="dateBut"/>
+
+            <label>Status</label>
+            <select id="status" name="status" style="width:140px;">
+                <option value="Arealansøgning modtaget">Arealansøgning modtaget</option>
+                <option value="Ufuldstændig arealansøgning">Ufuldstændig arealansøgning</option>
+                <option value="Uden plangrundlag">Uden plangrundlag</option>
+                <option value="Arealreservation udstedes">Arealreservation udstedes</option>
+                <option value="Under behandling">Under behandling</option>
+                <option value="Afvist/annulleret arealansøgning">Afvist/annulleret arealansøgning</option>
+                <option value="Tilbagetaget arealtildeling">Tilbagetaget arealtildeling</option>
+                <option value="Godkendt arealtildeling">Godkendt arealtildeling</option>
+                <option value="Klarmeldt arealtildeling">Klarmeldt arealtildeling</option>
+            </select>
+
+            <input type="button" class="btn filterBut" value="Tilføj" id="statusBut"/>
+
+            <label>ID</label>
+            <input id="resType" name="resType" style="width:140px;"/>
+
+            <input type="button" class="btn filterBut" value="Tilføj" id="resTypeBut"/>
+
+            <label>Prioritering</label>
+            <select id="prio" name="prio" style="width:140px;">
+                <option value="Høj">Høj</option>
+                <option value="Normal">Normal</option>
+                <option value="Lav">Lav</option>
+            </select>
+
+            <input type="button" class="btn filterBut" value="Tilføj" id="prioBut"/>
+
+            <label>Fritekst</label>
+            <input class="span4" id="q" value="Fritekst søgning..." name="q" onfocus="this.value=''"
+                   onblur="if(this.value==''){this.value='Fritekstsøgning...'}"/>
+
+            <input type="button" class="btn filterBut" value="Tilføj" id="freeBut"/><br/>
+
+        </fieldset>
+
+    </div>
+
+    <div class="span6">
+
+        <fieldset>
+            <legend>Anvendte søgekriterier</legend>
+        </fieldset>
+
+        <ul class="filters">
+            <li class="operator-template template"><span class="no-break"><span class="operator-name"><a href="#">OG</a></span></span>
+            </li>
+            <li class="filter-template template"><span class="no-break"><span class="filter-name">Dato min/max</span><a
+                    href="#">X</a></span></li>
+        </ul>
+
+    </div>
+
+</div>
+
+<div class="row" style="margin-top:20px;">
+    <div class="span12">
+        <fieldset>
+            <legend>Resultater</legend>
+        </fieldset>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span12">
+
+        <div id="grid">Brug søgefeltet herover...</div>
+        <div id="notfound" style="z-index:10000; text-align: center; display: none;margin-top:40px;">
+            <h1>Søgningen gav ingen resultater</h1>
+        </div>
+        &nbsp;
+
+
+    </div>
+
+</div>
+<div class="row">
+
+    <div class="span12">
+        <div id="map" style="height:500px">
+
+        </div>
+
+    </div>
+</div>
+
+<div class="row" style="margin-top:20px;">
+    <div class="span12" style="text-align:center;">
+        <p>
+            COWI A/S - ODEUM Eplan app
+        </p>
+    </div>
+</div>
+</body>
+<script>
+    var searchString = function (qJson) {
+        console.log(qJson);
+        $("#notfound").css('display', 'none');
+        elastic.reset();
+        elastic.geoJSON = null;
+        if (qJson !== null) {
+            elastic.q = qJson;
+            elastic.load();
+        }
+    };
+    // LAV ET ORDER-ARRAY SOM SKAL BRUGES TIL AT FINDE UD AF HVILKEN PLADS DE FORSKELLIGE FILTRE LIGGER PÅ.
+    //Filtering
+    $(".filterBut").click(function (e) {
+        var obj = new Array();
+        var objEs = new Array();
+        var test = e.target.id || e.srcElement.id;
+        switch (test) {
+            case "dateBut":
+                var fra = $("#from").val();
+                var til = $("#to").val();
+                obj.push({ftype: "dato", from: fra, to: til, op: "AND", text: fra + "-" + til, name: "Dato"});
+                break;
+
+            case "statusBut":
+                var status = $("#status").val();
+                obj.push({ftype: "status", op: "AND", text: status, column: "areal_status", name: "Status"});
+                break;
+
+            case "prioBut":
+                var prio = $("#prio").val();
+                obj.push({ftype: "prioritering", op: "AND", text: prio, column: "prioritering", name: "Prioritering"});
+                break;
+
+            case "resTypeBut":
+                var type = $("#resType").val();
+                obj.push({ftype: "resType", op: "AND", text: type, column: "id", name: "ID"});
+                break;
+
+            case "freeBut":
+                var free = $("#q").val();
+                var res;
+                if (free.indexOf("\"") >= 0 || free.indexOf("'") >= 0) {
+                    res = free;
+                    obj.push({ftype: "free", op: "AND", text: res, column: "tsv", name: "Fritekst"});
+                } else {
+                    res = free.split(" ");
+                    for (i = 0; i < res.length; i++) {
+                        obj.push({ftype: "free", op: "AND", text: res[i], column: "tsv", name: "Fritekst"});
+                    }
+                }
+
+                break;
+        }
+        for (i = 0; i < obj.length; i++) {
+            var linkFilter = $(".filter-template").clone();
+            var linkOp = $(".operator-template").clone();
+            var ran = Math.random().toString(36).substring(3);
+            if (Object.keys(queryFilters).length > 0) {
+                $(".filters").append(linkOp);
+                linkOp.find("a").attr("data-key", ran);
+                linkOp.find("a").click(opHandler);
+                linkOp.removeClass("operator-template");
+                linkOp.removeClass("template");
+                linkOp.addClass("operator");
+                linkOp.addClass("filterOp");
+            }
+            $(".filters").append(linkFilter);
+            queryFilters[ran] = obj[i];
+            linkFilter.find(".filter-name").text(obj[i].name + ": " + obj[i].text);
+            linkFilter.find("a").attr("data-key", ran);
+            linkFilter.find("a").click(handler);
+            linkFilter.removeClass("filter-template");
+            linkFilter.removeClass("template");
+            linkFilter.addClass("filter");
+            keys.push(ran);
+        }
+        //queryFilters parsing
+        var qJson = parseQueryFilters();
+        //var query = "SELECT id,irowid,navn_adresse,to_char(to_timestamp(in_dato_1)::timestamp,'DD-MM-YYYY') as dato_reworked,in_dato_1,areal_status,res_type,beskrivelse,the_geom FROM areal.tforms123230100000627_join " + where + " order by in_dato_1 desc";
+        searchString(qJson);
+    });
+
+    $("#q").keyup(function (event) {
+        if (event.keyCode == 13) {
+            $("#freeBut").click();
+        }
+    });
+
+    var handler = function (e) {
+
+        e.preventDefault();
+
+        if (Object.keys(queryFilters).length > 1) {
+            if (keys.indexOf($(this).attr("data-key")) != 0) {
+                $(this).parent().parent().prev().remove();
+            } else {
+                $(this).parent().parent().next().remove();
+            }
+        }
+
+        $(this).parent().parent().remove();
+
+        delete queryFilters [$(this).attr("data-key")];
+
+        for (i = 0; i < keys.length; i++) {
+            if (keys[i] == $(this).attr("data-key")) {
+                keys.splice(i, 1);
+            }
+        }
+
+        var qJson = parseQueryFilters();
+        if (qJson == "") {
+            store.reset();
+            elastic.reset();
+            $("#grid").html("Brug søgefeltet herover...");
+        } else {
+            //var query = "SELECT id,irowid,navn_adresse,to_char(to_timestamp(in_dato_1)::timestamp,'DD-MM-YYYY') as dato_reworked,in_dato_1,areal_status,res_type,beskrivelse,the_geom FROM areal.tforms123230100000627_join " + where + " order by in_dato_1 desc";
+            searchString(qJson);
+        }
+    };
+
+    var opHandler = function (e) {
+        e.preventDefault();
+
+        if (queryFilters[$(this).attr("data-key")].op == "AND") {
+            queryFilters[$(this).attr("data-key")].op = "OR";
+            $(this).text("ELLER");
+        } else {
+            queryFilters[$(this).attr("data-key")].op = "AND";
+            $(this).text("OG");
+        }
+
+        var qJson = parseQueryFilters();
+
+        if (qJson == "") {
+            elastic.reset();
+            $("#grid").html("Brug søgefeltet herover...");
+        } else {
+            //var query = "SELECT id,irowid,navn_adresse,to_char(to_timestamp(in_dato_1)::timestamp,'DD-MM-YYYY') as dato_reworked,in_dato_1,areal_status,res_type,beskrivelse,the_geom FROM areal.tforms123230100000627_join " + where + " order by in_dato_1 desc";
+            searchString(qJson);
+        }
+    };
+    var parseQueryFilters = function () {
+        var qJson = {
+            "query": {
+                "filtered": {
+                    "query": {
+                        "bool": {
+                            must: [],
+                            should: []
+                        }
+                    },
+                    "filter": {
+                        "bool": {
+                            must: [],
+                            should: []
+                        }
+                    }
+                }
+            }
+        };
+        var where = "";
+        var flag = false;
+        var ops = [];
+        var i = 0;
+        for (key in queryFilters) {
+            ops.push(queryFilters[key].op);
+        }
+        for (key in queryFilters) {
+            var tmp = {}, op, text = queryFilters[key].text;
+            flag = true;
+            text = text.replace(/\"/g, "");
+            text = text.replace(/\'/g, "");
+            if (typeof ops[i + 1] !== "undefined") {
+                op = (ops[i + 1] === "AND") ? "must" : "should";
+            } else {
+                op = (ops[i] === "AND") ? "must" : "should";
+            }
+
+            if (queryFilters[key].ftype == "dato") {
+                where += queryFilters[key].op + " in_dato_1 > cast(extract(epoch from to_timestamp('" + queryFilters[key].from + "', 'DD-MM-YYYY')) as integer) and in_dato_1 < cast(extract(epoch from to_timestamp('" + queryFilters[key].to + "', 'DD-MM-YYYY')) as integer) ";
+
+                qJson.query.filtered.query.bool[op].push({
+                    "range": {
+                        "in_dato_1": {
+                            "gt": queryFilters[key].from,
+                            "lt": queryFilters[key].to,
+                            "format": "dd-MM-yyyy"
+                        }
+                    }
+                });
+
+            } else if (queryFilters[key].ftype == "free") {
+                where += queryFilters[key].op + " tsv::tsvector @@ to_tsquery('simple',(select string_agg(word, '|') from (select word from((SELECT word, similarity(word, '" + encodeURI(queryFilters[key].text) + "') as dist FROM areal.unique_lexemes WHERE word % '" + encodeURI(queryFilters[key].text) + "' AND similarity(word, '" + encodeURI(queryFilters[key].text) + "')>0.34 )) as inner_words union all select '" + encodeURI(queryFilters[key].text) + "') as outer_words))";
+
+                if (text.indexOf(" ") >= 0) {
+                    qJson.query.filtered.query.bool[op].push({"match_phrase": {"beskrivelse": encodeURI(text)}});
+                } else if (text.indexOf("*") >= 0 || text.indexOf("?") >= 0) {
+                    qJson.query.filtered.query.bool[op].push({"wildcard": {"wildcard": encodeURI(text)}});
+                } else {
+                    qJson.query.filtered.query.bool[op].push({"term": {"beskrivelse": encodeURI(text)}});
+                }
+
+            } else {
+                where += queryFilters[key].op + " " + queryFilters[key].column + "='" + text + "' ";
+
+                tmp = {};
+                tmp[queryFilters[key].column] = text;
+                qJson.query.filtered.query.bool[op].push({"term": tmp});
+            }
+            i++;
+        }
+
+        where = where.trim();
+        where = where.substring(where.indexOf(' '));
+        where = where.trim();
+        if (where.length > 3) {
+            where = " where " + where;
+        }
+        if (!flag) {
+            qJson = null;
+        }
+
+        return JSON.stringify(qJson);
+    }
+</script>
+<script type="text/javascript" src="http://beta.mygeocloud.cowi.webhouse.dk/js/jqote2/jquery.jqote2.js"></script>
+<script src="http://beta.mygeocloud.cowi.webhouse.dk/js/bootstrap/js/bootstrap-typeahead.js"></script>
+<script src="/js/jquery.ui.datepicker-da.js" type="text/javascript"></script>

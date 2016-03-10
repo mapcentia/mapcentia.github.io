@@ -1,13 +1,13 @@
 var mapcentia_rammemap;
+var test
 mapcentia_rammemap = (function () {
     "use strict";
     var mygeocloud_host = "http://cowi.mapcentia.com";
     if (typeof jQuery === "undefined") {
         document.write("<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'><\/script>");
     }
-    document.write("<script src='" + mygeocloud_host + "/js/openlayers/OpenLayers.js'><\/script>");
-    //document.write("<script src='" + mygeocloud_host + "/js/leaflet/OpenLayers.js'><\/script>");
-    document.write("<script src='" + mygeocloud_host + "/api/v3/js/geocloud.js'><\/script>");
+    document.write("<script src='" + mygeocloud_host + "/js/OpenLayers-2.12/OpenLayers.js'><\/script>");
+    document.write("<script src='http://192.168.33.11/api/v3/js/geocloud.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/js/hogan/hogan-2.0.0.js'><\/script>");
     document.write("<script src='http://mapcentia.github.io/ODEUM/templates/templates.js'><\/script>");
     //document.write("<script src='../templates/templates.js'><\/script>");
@@ -146,7 +146,7 @@ mapcentia_rammemap = (function () {
                     ]
                 }
             },
-            
+
             map, store, prop;
         if (config) {
             for (prop in config) {
@@ -157,6 +157,7 @@ mapcentia_rammemap = (function () {
         map = new geocloud.map({
             el: "map"
         });
+        test = map
         store = new geocloud.geoJsonStore(
             {
                 db: defaults.db,
@@ -187,13 +188,14 @@ mapcentia_rammemap = (function () {
                 lifetime: 0
             }
         );
-        map.addBaseLayer("dtkSkaermkortDaempet");
-        map.setBaseLayer("dtkSkaermkortDaempet");
+        map.addBaseLayer("OSM");
+        map.setBaseLayer("OSM");
         map.addGeoJsonStore(store);
         store.sql = "SELECT anvgen,the_geom FROM " + defaults.table + " WHERE planid = '" + encodeURIComponent(defaults.planid) + "'";
         store.load();
         store.onLoad = function () {
             map.zoomToExtentOfgeoJsonStore(store);
+            console.log(map.map)
             if (defaults.layers) {
                 for (i = 0; i < defaults.layers.length; i = i + 1) {
                     map.addTileLayers({
