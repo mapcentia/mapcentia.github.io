@@ -299,6 +299,9 @@ var cowi = (function () {
                             name: this.id,
                             visibility: layersDefaultOn || false
                         });
+                        if (layersDefaultOn) {
+                            addLegend();
+                        }
                         var checked = layersDefaultOn ? "checked" : "";
                         if (layerObj.url[this.id.split('.')[1]] !== null && layerObj.url[this.id.split('.')[1]] !== "") {
                             $('#result-table').append("<tr><td class='checkbox'><input type='checkbox' " + checked + " onclick='cowi.switchLayer(\"" + this.id + "\",this.checked)'></td><td class='layer-name'><a target='_blank' href='" + layerObj.url[this.id.split('.')[1]] + "'>" + layerObj.name[this.id.split('.')[1]] + "</a></td></tr>");
