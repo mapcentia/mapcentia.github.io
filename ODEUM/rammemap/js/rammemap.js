@@ -7,7 +7,7 @@ mapcentia_rammemap = (function () {
         document.write("<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js'><\/script>");
     }
     document.write("<script src='" + mygeocloud_host + "/js/OpenLayers-2.12/OpenLayers.js'><\/script>");
-    document.write("<script src='http://192.168.33.11/api/v3/js/geocloud.js'><\/script>");
+    document.write("<script src='http://cowi.mapcentia.com/api/v3/js/geocloud.js'><\/script>");
     document.write("<script src='" + mygeocloud_host + "/js/hogan/hogan-2.0.0.js'><\/script>");
     document.write("<script src='http://mapcentia.github.io/ODEUM/templates/templates.js'><\/script>");
     //document.write("<script src='../templates/templates.js'><\/script>");
