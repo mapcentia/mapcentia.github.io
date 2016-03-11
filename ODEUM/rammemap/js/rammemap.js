@@ -188,14 +188,13 @@ mapcentia_rammemap = (function () {
                 lifetime: 0
             }
         );
-        map.addBaseLayer("OSM");
-        map.setBaseLayer("OSM");
+        map.addBaseLayer("osm");
+        map.setBaseLayer("osm");
         map.addGeoJsonStore(store);
         store.sql = "SELECT anvgen,the_geom FROM " + defaults.table + " WHERE planid = '" + encodeURIComponent(defaults.planid) + "'";
         store.load();
         store.onLoad = function () {
             map.zoomToExtentOfgeoJsonStore(store);
-            console.log(map.map)
             if (defaults.layers) {
                 for (i = 0; i < defaults.layers.length; i = i + 1) {
                     map.addTileLayers({
