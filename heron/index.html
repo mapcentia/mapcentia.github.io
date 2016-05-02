@@ -1,0 +1,126 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title>GC2 Heron viewer</title>
+    <script type="text/javascript"
+            src="//maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+
+    <!-- External lib: ExtJS -->
+    <link rel="stylesheet" type="text/css"
+          href="http://cdnjs.cloudflare.com/ajax/libs/extjs/3.4.1-1/resources/css/ext-all.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="http://dev.sencha.com/deploy/ext-3.3.1/examples/tabs/tab-scroller-menu.css"/>
+
+    <link rel="stylesheet" href="http://eu1.mapcentia.com/js/heron/ux/oleditor/ole/client/theme/geosilk/geosilk.css"
+          type="text/css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript"
+            src="http://cdnjs.cloudflare.com/ajax/libs/extjs/3.4.1-1/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/extjs/3.4.1-1/ext-all.js"></script>
+    <script type="text/javascript" src="http://dev.sencha.com/deploy/ext-3.3.1/examples/ux/TabScrollerMenu.js"></script>
+    <script type="text/javascript"
+            src="http://eu1.mapcentia.com/js/openlayers/proj4js-combined.js?e3d43fb0b6487682"></script>
+
+
+    <!-- External lib: OpenLayers -->
+    <link rel="stylesheet" type="text/css"
+          href="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/theme/default/style.css"/>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/openlayers/2.12/OpenLayers.js"></script>
+
+    <!-- External lib: GeoExt   -->
+    <script type="text/javascript" src="http://eu1.mapcentia.com/js/GeoExt/script/GeoExt.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://lib.heron-mc.org/heron/latest/ux/gxp/git/src/theme/all.css"/>
+    <script type="text/javascript" src="http://eu1.mapcentia.com/js/heron/ux/gxp/gxp.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://eu1.mapcentia.com/js/heron/resources/css/default.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="http://eu1.mapcentia.com/js/heron/resources/css/default-theme-gray.css"/>
+
+    <!-- MapCentia GC2 -->
+    <script type="text/javascript" src="http://us1.mapcentia.com/api/v3/js/geocloud.js" type="text/javascript"></script>
+
+    <!-- Script and css resources for printpreview ux -->
+    <script type="text/javascript"
+            src="http://lib.heron-mc.org/heron/1.0.3/ux/printpreview/lib/GeoExt.ux/PrintPreview.js"></script>
+    <script type="text/javascript"
+            src="http://lib.heron-mc.org/heron/1.0.3/ux/printpreview/lib/locale/PrintPreview-en.js"></script>
+    <link rel="stylesheet" type="text/css"
+          href="http://lib.heron-mc.org/heron/1.0.3/ux/printpreview/resources/css/printpreview.css"/>
+
+    <script type="text/javascript" src="http://eu1.mapcentia.com/js/common.js"></script>
+    <script type="text/javascript" src="http://eu1.mapcentia.com/js/heron/ux/oleditor/ole/ole.min.js"></script>
+    <script type="text/javascript" src="http://eu1.mapcentia.com/js/heron/script/Heron.js"></script>
+    <script type="text/javascript" src="http://eu1.mapcentia.com/js/heron/lib/NoLaunch.js"></script>
+    <script type="text/javascript" src="js/config.js"></script>
+    <script src="http://us1.mapcentia.com/api/v1/baselayerjs" type="text/javascript"></script>
+
+    <link rel="stylesheet" type="text/css" href="http://eu1.mapcentia.com/js/ext/resources/css/xtheme-gray.css"/>
+
+    <style>
+        .olControlAttribution {
+            bottom: 0 !important;
+        }
+
+        .x-btn .icon-flag-red {
+            background-image: url("http://us1.mapcentia.com/js/heron/resources/images/silk/flag_red.png") !important;
+        }
+
+        .x-btn .icon-add {
+            background-image: url("http://us1.mapcentia.com/js/heron/resources/images/silk/add.png") !important;
+        }
+
+        .x-btn .icon-delete {
+            background-image: url("http://us1.mapcentia.com/js/heron/resources/images/silk/delete.png") !important;
+        }
+
+        .x-btn .icon-chart-curve-add {
+            background-image: url("http://us1.mapcentia.com/js/heron/resources/images/silk/chart_curve_add.png") !important;
+        }
+
+        .x-btn .icon-chart-curve-delete {
+            background-image: url("http://us1.mapcentia.com/js/heron/resources/images/silk/chart_curve_delete.png") !important;
+        }
+
+        .x-btn .icon-chart-curve-go {
+            background-image: url("http://us1.mapcentia.com/js/heron/resources/images/silk/chart_curve_go.png") !important;
+        }
+
+        .x-btn .icon-chart-curve {
+            background-image: url("http://us1.mapcentia.com/js/heron/resources/images/silk/chart_curve.png") !important;
+        }
+
+        .x-btn .icon-arrow-down {
+            background-image: url("http://us1.mapcentia.com/js/heron/resources/images/silk/arrow_down.png") !important;
+        }
+
+        .x-btn .icon-arrow-up {
+            background-image: url("http://us1.mapcentia.com/js/heron/resources/images/silk/arrow_up.png") !important;
+        }
+
+        .pac-container {
+            z-index: 10000
+        }
+
+        .olControlScaleLine {
+            right: 10px;
+            left: auto !important;
+            top: 15px;
+            bottom: auto !important;
+        }
+
+        .x-tree-node-loading .x-tree-node-icon {
+            background-image: url("http://eu1.mapcentia.com/js/heron/resources/images/silk/bullet_raster.png") !important;
+        }
+
+        .x-tree-node-loading a span {
+            font-style: normal !important;
+        }
+    </style>
+</head>
+<body>
+
+</body>
+</html>
