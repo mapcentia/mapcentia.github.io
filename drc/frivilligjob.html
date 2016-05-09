@@ -4,216 +4,55 @@
     <title>drc</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="frivilligjob.json"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+    <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
+    <script src="js/mapstyle.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"
+            type="text/javascript"></script>
+    <script src="https://jawj.github.io/OverlappingMarkerSpiderfier/bin/oms.min.js"
+            type="text/javascript"></script>
 
-        #map {
-            height: 100%;
-        }
-
-        table.infowindow {
-            border-spacing: 0;
-            border-collapse: collapse;
-        }
-
-        table.infowindow tr td:first-child {
-            white-space: nowrap;
-        }
-
-        table.infowindow td {
-            vertical-align: top;
-            padding: 5px;
-        }
-
-        table.infowindow tr:nth-child(even) {
-            background: #eee
-        }
-
-        .controls {
-            margin-top: 10px;
-            border: 1px solid transparent;
-            border-radius: 2px 0 0 2px;
-            box-sizing: border-box;
-            -moz-box-sizing: border-box;
-            height: 32px;
-            outline: none;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-        }
-
-        #pac-input {
-            background-color: #fff;
-            font-family: Roboto;
-            font-size: 15px;
-            font-weight: 300;
-            margin-right: 12px;
-            padding: 0 11px 0 13px;
-            text-overflow: ellipsis;
-            width: 300px;
-        }
-
-        #pac-input:focus {
-            border-color: #4d90fe;
-        }
-
-        .pac-container {
-            font-family: Roboto;
-        }
-
-        #type-selector {
-            color: #fff;
-            background-color: #4d90fe;
-            padding: 5px 11px 0px 11px;
-        }
-
-        #type-selector label {
-            font-family: Roboto;
-            font-size: 13px;
-            font-weight: 300;
-        }
-        #target {
-            width: 345px;
-        }
-
-    </style>
 </head>
 <body>
-<input id="pac-input" class="controls" type="text" placeholder="Søg">
+<input id="pac-input" class="controls" type="text" placeholder="Find adresse, by eller sted">
+
 <div id="map"></div>
+<input id="filter-input" class="controls" type="text" name="custom-search" placeholder="Søg i frivilligjobs">
 <script>
     var map;
+    $(document).ready(initMap)
     function initMap() {
-        var mapStyle = new google.maps.StyledMapType(
-                [
-                    {
-                        "featureType": "all",
-                        "elementType": "all",
-                        "stylers": [
-                            {
-                                "visibility": "off"
-                            }
-                        ]
-                    },
-                    {
-                        "featureType": "administrative.locality",
-                        "elementType": "labels.text.fill",
-                        "stylers": [
-                            {
-                                "visibility": "on"
-                            },
-                            {
-                                "color": "#808080"
-                            }
-                        ]
-                    },
-                    {
-                        "featureType": "landscape.man_made",
-                        "elementType": "geometry.fill",
-                        "stylers": [
-                            {
-                                "visibility": "on"
-                            },
-                            {
-                                "color": "#dddddd"
-                            }
-                        ]
-                    },
-                    {
-                        "featureType": "landscape.natural",
-                        "elementType": "geometry.fill",
-                        "stylers": [
-                            {
-                                "visibility": "on"
-                            },
-                            {
-                                "color": "#eeeeee"
-                            }
-                        ]
-                    },
-                    {
-                        "featureType": "road",
-                        "elementType": "geometry",
-                        "stylers": [
-                            {
-                                "visibility": "on"
-                            },
-                            {
-                                "color": "#ffffff"
-                            }
-                        ]
-                    },
-                    {
-                        "featureType": "road",
-                        "elementType": "labels.text.fill",
-                        "stylers": [
-                            {
-                                "color": "#666666"
-                            },
-                            {
-                                "visibility": "on"
-                            }
-                        ]
-                    },
-                    {
-                        "featureType": "transit.station",
-                        "elementType": "labels.text.fill",
-                        "stylers": [
-                            {
-                                "visibility": "on"
-                            },
-                            {
-                                "color": "#666666"
-                            }
-                        ]
-                    },
-                    {
-                        "featureType": "transit.station",
-                        "elementType": "labels.icon",
-                        "stylers": [
-                            {
-                                "visibility": "on"
-                            },
-                            {
-                                "saturation": "-100"
-                            }
-                        ]
-                    },
-                    {
-                        "featureType": "water",
-                        "elementType": "geometry.fill",
-                        "stylers": [
-                            {
-                                "visibility": "on"
-                            },
-                            {
-                                "color": "#cccccc"
-                            }
-                        ]
-                    }
-                ]
-        );
-        var mapOpt = {
-            scrollwheel: false,
-            mapTypeControl: false,
-            streetViewControl: false,
-            panControl: false,
-            zoomControl: true,
-            zoomControlOptions: {
-                style: google.maps.ZoomControlStyle.SMALL,
-                position: google.maps.ControlPosition.LEFT_TOP,
+
+
+        var boxText = document.createElement("div");
+
+        boxText.style.cssText = "border: 1px solid black; margin-top: 8px; background: white; padding: 5px;";
+        var infobox = new InfoBox({
+            content: boxText,
+            disableAutoPan: false,
+            maxWidth: 0,
+            pixelOffset: new google.maps.Size(-140, 0),
+            zIndex: null,
+            boxStyle: {
+                //background: "url('tipbox.gif') no-repeat",
+                opacity: 0.75
+                //width: "280px"
             },
-            mapTypeControlOptions: {
-                mapTypeIds: [google.maps.MapTypeId.ROADMAP, 'mapStyle']
-            },
-            zoom: 7,
-            center: new google.maps.LatLng(55.6760968, 12.568337100000008),
-        };
+            closeBoxMargin: "10px 2px 2px 2px",
+            closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
+            infoBoxClearance: new google.maps.Size(1, 1),
+            isHidden: false,
+            pane: "floatPane",
+            enableEventPropagation: false
+        });
+
         map = new google.maps.Map(document.getElementById('map'), mapOpt);
         map.mapTypes.set('mapStyle', mapStyle);
         map.setMapTypeId('mapStyle');
+
 
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
@@ -221,13 +60,14 @@
         map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
 
         // Bias the SearchBox results towards current map's viewport.
-        map.addListener('bounds_changed', function() {
+        map.addListener('bounds_changed', function () {
             searchBox.setBounds(map.getBounds());
         });
         var markers = [];
+        var spiders = [];
         // Listen for the event fired when the user selects a prediction and retrieve
         // more details for that place.
-        searchBox.addListener('places_changed', function() {
+        searchBox.addListener('places_changed', function () {
             var places = searchBox.getPlaces();
 
             if (places.length == 0) {
@@ -235,14 +75,14 @@
             }
 
             // Clear out the old markers.
-            markers.forEach(function(marker) {
+            markers.forEach(function (marker) {
                 marker.setMap(null);
             });
             markers = [];
 
             // For each place, get the icon, name and location.
             var bounds = new google.maps.LatLngBounds();
-            places.forEach(function(place) {
+            places.forEach(function (place) {
                 var icon = {
                     url: place.icon,
                     size: new google.maps.Size(71, 71),
@@ -269,40 +109,106 @@
             map.fitBounds(bounds);
         });
 
+        var oms = new OverlappingMarkerSpiderfier(map, {
+            markersWontMove: true,
+            markersWontHide: true,
+            keepSpiderfied: true
+        });
 
-        // NOTE: This uses cross-domain XHR, and may not work on older browsers.
-        map.data.loadGeoJson('frivilligjob.json');
+        google.maps.event.addListener(map.data, 'addfeature', function (e) {
+            var marker = new google.maps.Marker({
+                position: e.feature.getGeometry().get(),
+                title: e.feature.getProperty('title'),
+                icon: "http://backoffice.flygtning.dk/frontend/ldk/images/map_pin.png",
+                map: map
+            });
+            google.maps.event.addListener(marker, 'click', function (marker, e) {
+                return function () {
+                    var myHTML =  "<h3>" + e.feature.getProperty("Title") + "</h3>" +
+                            "<table class=\"infowindow\">" +
+                            "<tr><td><b>WorkAddress</b></td><td>" + e.feature.getProperty("WorkAddress") + "</td></tr>" +
+                            "<tr><td><b>WorkZipcode</b></td><td>" + e.feature.getProperty("WorkZipcode") + "</td></tr>" +
+                            "<tr><td><b>ActivateDate</b></td><td>" + e.feature.getProperty("ActivateDate") + "</td></tr>" +
+                            "<tr><td><b>Organisation</b></td><td>" + e.feature.getProperty("Organisation") + "</td></tr>" +
+                            "<tr><td><b>Link</b></td><td><a target='_blank' href='http://www.frivilligjob.jobbank.dk/job/" + e.feature.getProperty("Id") + "'>www.frivilligjob.jobbank.dk</a></td></tr>" +
 
-        map.data.setStyle(function (feature) {
-            return {
-                icon: "http://backoffice.flygtning.dk/frontend/ldk/images/map_pin.png"
+                            "</<table>";
+                    boxText.innerHTML = "<div style='text-align: center;'><b>" + myHTML + "</b></div>";
+                    infobox.setPosition(e.feature.getGeometry().get());
+                    infobox.setOptions({
+                        pixelOffset: new google.maps.Size(0, 0)
+                    });
+                    infobox.open(map);
+                }
+            }(marker, e));
+            spiders.push(marker);
+            oms.addMarker(marker);
+        });
+
+        var features = map.data.addGeoJson(geojson);
+        map.data.setMap(null);
+
+
+        $("input[name=custom-search]").on('input', _.debounce(function (e) {
+            search(e.target.value)
+        }, 800));
+
+        var search = function (e) {
+
+            if (e === "") {
+                map.data.forEach(function (feature) {
+                    map.data.remove(feature);
+                });
+                features = map.data.addGeoJson(geojson);
+                return;
+            }
+
+            var searchArr = [];
+            var flag;
+            var newJson = {
+                "type": "FeatureCollection",
+                "features": searchArr
             };
-        });
+            $.each(geojson.features, function (i, v) {
+                flag = false;
 
-        map.data.addListener('click', function (event) {
-            // global infowindow
-            var infowindow = new google.maps.InfoWindow();
-            var html =
-                    "<h3>" + event.feature.getProperty("Title") + "</h3>" +
-                    "<table class=\"infowindow\">" +
-                    "<tr><td><b>WorkAddress</b></td><td>" + event.feature.getProperty("WorkAddress") + "</td></tr>" +
-                    "<tr><td><b>WorkZipcode</b></td><td>" + event.feature.getProperty("WorkZipcode") + "</td></tr>" +
-                    "<tr><td><b>ActivateDate</b></td><td>" + event.feature.getProperty("ActivateDate") + "</td></tr>" +
-                    "<tr><td><b>Organisation</b></td><td>" + event.feature.getProperty("Organisation") + "</td></tr>" +
-                    "<tr><td><b>Link</b></td><td><a target='_blank' href='http://www.frivilligjob.jobbank.dk/job/" + event.feature.getProperty("Id") + "'>www.frivilligjob.jobbank.dk</a></td></tr>" +
+                $.each(v.properties.Title.split(" "), function (u, m) {
+                    $.each(e.split(" "), function (z, y) {
+                        if (y.length > 1) {
+                            if (m.toLowerCase().search(y.toLowerCase()) !== -1) {
+                                flag = true
+                            }
+                        }
+                    })
+                });
 
-                    "</<table>";
+                $.each(v.properties.WorkAddress.split(" "), function (u, m) {
+                    $.each(e.split(" "), function (z, y) {
+                        if (y.length > 1) {
+                            if (m.toLowerCase().search(y.toLowerCase()) !== -1) {
+                                flag = true
+                            }
+                        }
+                    })
+                });
 
-
-            infowindow.setContent("<div style='width:300px; text-align: left;'>" + html + "</div>");
-            infowindow.setPosition(event.feature.getGeometry().get());
-            infowindow.setOptions({pixelOffset: new google.maps.Size(0, -30)});
-            infowindow.open(map);
-        });
+                if (flag) {
+                    searchArr.push(v);
+                }
+                newJson = {
+                    "type": "FeatureCollection",
+                    "features": searchArr
+                };
+            });
+            oms.clearMarkers();
+            for (var i = 0; i < spiders.length; i++) {
+                spiders[i].setMap(null);
+            }
+            spiders = [];
+            features = map.data.addGeoJson(newJson);
+            map.data.setMap(null);
+        };
     }
-</script>
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initMap">
 </script>
 </body>
 </html>
