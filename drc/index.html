@@ -152,10 +152,13 @@
 
         var search = function (e) {
             if (e === "") {
-                map.data.forEach(function (feature) {
-                    map.data.remove(feature);
-                });
+                oms.clearMarkers();
+                for (var i = 0; i < spiders.length; i++) {
+                    spiders[i].setMap(null);
+                }
+                spiders = [];
                 features = map.data.addGeoJson(geojson);
+                map.data.setMap(null);
                 return;
             }
 
@@ -178,7 +181,7 @@
                     })
                 });
 
-                $.each(v.properties.tx_flygtninge_address.split(" "), function (u, m) {
+                $.each(v.properties.formatted_address.split(" "), function (u, m) {
                     $.each(e.split(" "), function (z, y) {
                         if (y.length > 1) {
                             if (m.toLowerCase().search(y.toLowerCase()) !== -1) {
