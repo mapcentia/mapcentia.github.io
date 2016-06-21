@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Widget with a vector overlay</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel='stylesheet' type='text/css' href='https://gc2.dbbjackup.dk/js/leaflet/plugins/awesome-markers/leaflet.awesome-markers.css'>
+
+    <script src="https://gc2.dbbjackup.dk/apps/widgets/gc2map/js/gc2map.js"></script>
+    <script src="https://gc2.dbbjackup.dk/apps/widgets/gc2table/js/gc2table.js"></script>
+    <script src="https://gc2.dbbjackup.dk/apps/widgets/gc2map/js/searchModules/danish.js"></script>
+
+
+
+</head>
+<body>
+<div>
+    <div style="position:relative" id="map"></div>
+    <div>
+        <table id="dtable" data-show-toggle="true" data-show-export="true" data-show-columns="true"
+               data-filter-control="true"></table>
+    </div>
+</div>
+
+</body>
+<script>
+    function operateFormatter(value, row, index) {
+        return "<a target='_blank' href='" + value + "'>Link</a>";
+    }
+
+    var cloud = gc2map.init({
+        key: "map",
+        db: 'dbb',
+        layers: ["public.positions","public.wtg"],
+        zoom: [0, 0, 4],
+        baseLayers: [{"id": "osm", "name": "OSM"}, {id: "googleStreets", "name": "Google Streets"}],
+        setBaseLayer: 'osm',
+        width: '100%',
+        height: '400px',
+        callBack: function (m, w) {
+            m.map.setView([53.24471080975629, -0.9670665000000067], 5);
+            //gc2map.createSearch(m, "101");
+            $("#custom-search-form").show();
+            var store = new geocloud.sqlStore({
+                db: "dbb",
+                sql: "SELECT * FROM public.interventions_table ORDER BY entry_time",
+                pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, {
+                        icon: L.AwesomeMarkers.icon({
+                                    icon: 'star',
+                                    markerColor: 'blue',
+                                    prefix: 'fa'
+                                }
+                        )
+                    });
+                },
+                onLoad: function () {
+
+                    //m.zoomToExtentOfgeoJsonStore(store);
+                }
+            });
+            // Add the store as a vector overlay
+            m.addGeoJsonStore(store);
+            store.load();
+
+            var cm = [
+                {
+                    "header": "mmsi",
+                    "dataIndex": "mmsi",
+                    "type": "varchar",
+                    filterControl: "select",
+                    sortable: true
+                },
+                {
+                    "header": "entry_time",
+                    "dataIndex": "entry_time",
+                    type: "date",
+                    sortable: true
+
+                },
+                {
+                    "header": "time_passed",
+                    "dataIndex": "time_passed",
+                    sortable: true
+
+                },
+                {
+                    "header": "time_until_next",
+                    "dataIndex": "time_until_next",
+                    sortable: true
+
+                }
+            ];
+
+            gc2table.init({
+                el: "#dtable",
+                geocloud2: m,
+                store: store,
+                cm: cm,
+                autoUpdate: false,
+                setViewOnSelect: false,
+                openPopUp: true,
+                setSelectedStyle: false
+            });
+        }
+    });
+</script>
+</html>
