@@ -18,7 +18,7 @@ var search = (function () {
             var typeFlag;
 
             store = new geocloud.geoJsonStore({
-                host: "http://eu1.mapcentia.com",
+                host: "https://eu1.mapcentia.com",
                 db: "dk",
                 sql: null,
                 onLoad: function () {
@@ -55,7 +55,7 @@ var search = (function () {
                 map = {};
                 responseType = {};
                 $.ajax({
-                    url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws4/' + type1,
+                    url: 'https://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/aws4/' + type1,
                     //data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}}}',
                     data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase().replace(",", "")) + '","default_operator":"AND"}},"filter":{"term":{"kommunekode":"0' + komKode + '"}}}}}',
                     contentType: "application/json; charset=utf-8",
@@ -70,7 +70,7 @@ var search = (function () {
                             names.push(str);
                         });
                         $.ajax({
-                            url: 'http://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/matrikel/' + type2,
+                            url: 'https://eu1.mapcentia.com/api/v1/elasticsearch/search/dk/matrikel/' + type2,
                             //data: 'call_counter=' + (++call_counter) + '&size=8&q={"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}}}',
                             data: 'call_counter=' + (++call_counter) + '&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}},"filter":{"term":{"komkode":"' + komKode + '"}}}}}',
                             dataType: 'jsonp',
