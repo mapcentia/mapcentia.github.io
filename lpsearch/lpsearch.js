@@ -11,7 +11,7 @@ var cowiLpSearch = (function () {
                 var search = _.debounce(function (query, process) {
                     map = {};
                     $.ajax({
-                        url: 'http://cowi.mapcentia.com/api/v1/elasticsearch/search/dk/planer/lokalplan',
+                        url: 'http://cowi.mapcentia.com/api/v1/elasticsearch/search/dk/planer/lokalplaner',
                         data: '&size=20&q={"query":{"filtered":{"query":{"query_string":{"default_field":"string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}},"filter":{"term":{"properties.komnr":"' + conf.komnr + '"}}}}}',
                         dataType: 'jsonp',
                         contentType: "application/json; charset=utf-8",
