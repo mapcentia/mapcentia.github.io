@@ -91,7 +91,7 @@ var base2 = "dtk_skaermkort";
 var base3 = "theme-gst-dtkskaerm-copy";
 var base4 = "theme-cowi-arialphoto-none";
 var base5 = "theme-kms-dtkskaerm-sh";
-var base6 = "theme-v3_kommune_esbjerg";
+var base6 = "theme-kortdata_kommune10_esbjerg";
 var base7 = "theme-kms-dtkskaerm";
 
 url = decodeURIComponent(url);
