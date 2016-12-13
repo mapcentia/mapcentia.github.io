@@ -4,5 +4,5 @@
         {"id": "stamenToner", "name": "Stamen Toner"}
     ],
     "brandName": "Martin Høgh",
-  "enableExtensions": ["conflictSearch"]
+    "enabledExtensions": ["conflictSearch"]
 }
