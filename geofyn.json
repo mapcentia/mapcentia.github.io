@@ -1,4 +1,3 @@
-
 {
   "baseLayers": [
     {"id": "gc2_group._b_baggrundskort01.baggrundskort01", "name": "Topografisk kort", "db": "geofyn",
@@ -27,6 +26,10 @@
     {"id": "_b_luftfotoserier.luftfoto1995", "name": "Luftfoto 1995", "db": "geofyn"},
     {"id": "_b_luftfotoserier.luftfoto1992", "name": "Luftfoto 1992", "db": "geofyn"},
     {"id": "_b_luftfotoserier.luftfoto1954", "name": "Luftfoto 1954", "db": "geofyn"},
-    {"id": "_b_luftfotoserier.luftfoto1945", "name": "Luftfoto 1945", "db": "geofyn"}
+    {"id": "_b_luftfotoserier.luftfoto1945", "name": "Luftfoto 1945", "db": "geofyn"},
+    {"id": "osm", "name": "Open Street Map"},
+    {"id": "stamenToner", "name": "Stamen Toner Dark"},
+    {"id": "stamenTonerLite", "name": "Stamen Toner Light"},
+    {"id": "kortforsyningen.topo25_klassisk", "name": "Topografisk kort (Kortforsyningens 1:25.000, klassisk)", "db": "geofyn"}
   ]
 }
