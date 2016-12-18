@@ -2,9 +2,11 @@
   "baseLayers": [
         {"id": "osm", "name": "OSM"},
         {"id": "gc2_group._b_baggrundskort01.baggrundskort01", "name": "Topografisk kort", "db": "geofyn",
-             "maxZoom": 21,
-             "maxNativeZoom": 19,
-             "attribution": "Geofyn A/S",
+             "config": {
+                maxZoom: 18,
+                maxNativeZoom: 16,
+                attribution: "Geofyn A/S"
+            },
             "overlays": [{
                 "id": "tekster.tekster_samlet_wms_web", "db": "geofyn"
             }]
