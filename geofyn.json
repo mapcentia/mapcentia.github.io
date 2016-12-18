@@ -10,12 +10,11 @@
                 "id": "tekster.tekster_samlet_wms_web", "db": "geofyn"
             }]
         },
-        {"id": "osm", "name": "OSM"},
         {"id": "_b_luftfotoserier.luftfoto2016", "name": "Luftfoto 2016", "db": "geofyn"},
         {"id": "_b_luftfotoserier.luftfoto2015", "name": "Luftfoto 2015", "db": "geofyn"},
         {"id": "_b_luftfotoserier.luftfoto2014", "name": "Luftfoto 2014", "db": "geofyn"},
         {"id": "_b_luftfotoserier.luftfoto2013", "name": "Luftfoto 2013", "db": "geofyn"},
         {"id": "_b_luftfotoserier.luftfoto2012", "name": "Luftfoto 2012", "db": "geofyn"},
-        {"id": "_b_luftfotoserier.luftfoto2011", "name": "Luftfoto 2011", "db": "geofyn"},
+        {"id": "_b_luftfotoserier.luftfoto2011", "name": "Luftfoto 2011", "db": "geofyn"}
     ]
 }
