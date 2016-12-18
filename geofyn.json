@@ -1,0 +1,6 @@
+{
+  "baseLayers": [
+        {"id": "osm", "name": "OSM"},
+        {"id": "stamenToner", "name": "Stamen Toner"}
+    ]
+}
