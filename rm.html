@@ -56,12 +56,13 @@
                     lineGroup.clearLayers();
                     partners.layer.eachLayer(function (l) {
                         if (l.feature.properties.projektid === feature.properties.projektid) {
-                            L.marker(l.getLayers()[0].getLatLng(), {icon: pulsingIcon}).addTo(pulseGroup);
+                            L.marker(l.getLayers()[0].getLatLng(), {icon: pulsingIcon}).bindPopup(l.feature.properties['partnerorg']).addTo(pulseGroup);
                             new L.Polyline([e.latlng,l.getLayers()[0].getLatLng()], {
                                 color: 'red',
                                 weight: 1,
                                 opacity: 0.5,
-                                smoothFactor: 1
+                                smoothFactor: 1,
+                                clickable: false
                             }).addTo(lineGroup);
                         }
                     });
