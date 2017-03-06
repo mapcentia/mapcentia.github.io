@@ -19,6 +19,8 @@
         el: "map"
     });
 
+    var clickedCoord;
+
     // Add a base layer
     gc2.addBaseLayer("osm");
 
@@ -28,8 +30,10 @@
     var pulsingIcon = L.icon.pulse({iconSize: [10, 10], color: 'red'});
 
     var pulseGroup = new L.FeatureGroup();
+    var lineGroup = new L.FeatureGroup();
 
     pulseGroup.addTo(gc2.map);
+    lineGroup.addTo(gc2.map);
 
 
     // Create a GeoJSON store with a SELECT query
@@ -45,17 +49,23 @@
         onEachFeature: function (feature, layer) {
             layer.bindPopup(feature.properties['partnerorg']);
             layer.on({
-                click: function () {
+                click: function (e) {
                     //console.info(feature.properties.projektid);
                     //console.info(partners.layer);
                     pulseGroup.clearLayers();
+                    lineGroup.clearLayers();
                     partners.layer.eachLayer(function (l) {
                         if (l.feature.properties.projektid === feature.properties.projektid) {
-                            var t = L.marker(l.getLayers()[0].getLatLng(), {icon: pulsingIcon}).addTo(pulseGroup);
+                            L.marker(l.getLayers()[0].getLatLng(), {icon: pulsingIcon}).addTo(pulseGroup);
+                            new L.Polyline([e.latlng,l.getLayers()[0].getLatLng()], {
+                                color: 'red',
+                                weight: 1,
+                                opacity: 0.5,
+                                smoothFactor: 1
+                            }).addTo(lineGroup);
                         }
                     });
-                    gc2.map.fitBounds(pulseGroup.getBounds())
-
+                    gc2.map.fitBounds(pulseGroup.getBounds());
                 }
             });
         },
@@ -102,11 +112,6 @@
         // Bind a popup to each point
         onEachFeature: function (feature, layer) {
             layer.bindPopup(feature.properties['partnerorg']);
-            layer.on({
-                click: function () {
-                    // alert();
-                }
-            });
         },
 
         // Make Awesome Markers instead of simple vector point features
