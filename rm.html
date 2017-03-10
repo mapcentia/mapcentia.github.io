@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Map with custom Awesome Markers and pop-up</title>
+    <title>Region Midt</title>
     <script src="http://gc2.mapcentia.com/api/v3/js/geocloud.php"></script>
     <script src="https://rawgit.com/mapshakers/leaflet-icon-pulse/master/src/L.Icon.Pulse.js"></script>
     <link rel="stylesheet" href="https://rawgit.com/mapshakers/leaflet-icon-pulse/master/src/L.Icon.Pulse.css"/>
     <style>body, html {
-        margin: 0; padding: 0;
+        margin: 0;
+        padding: 0;
     }</style>
 </head>
 <body>
@@ -22,12 +23,12 @@
     var clickedCoord;
 
     // Add a base layer
-    gc2.addBaseLayer("osm");
+    gc2.addBaseLayer("stamenTonerLite");
 
     // Set a base layer active
-    gc2.setBaseLayer("osm");
+    gc2.setBaseLayer("stamenTonerLite");
 
-    var pulsingIcon = L.icon.pulse({iconSize: [10, 10], color: 'red'});
+    var pulsingIcon = L.icon.pulse({iconSize: [10, 10], color: '#7e9aa8'});
 
     var pulseGroup = new L.FeatureGroup();
     var lineGroup = new L.FeatureGroup();
@@ -44,7 +45,6 @@
         // Cache the SELECT query on the server for an hour
         lifetime: 3600,
 
-
         // Bind a popup to each point
         onEachFeature: function (feature, layer) {
             layer.bindPopup(feature.properties['partnerorg']);
@@ -57,10 +57,10 @@
                     partners.layer.eachLayer(function (l) {
                         if (l.feature.properties.projektid === feature.properties.projektid) {
                             L.marker(l.getLayers()[0].getLatLng(), {icon: pulsingIcon}).bindPopup(l.feature.properties['partnerorg']).addTo(pulseGroup);
-                            new L.Polyline([e.latlng,l.getLayers()[0].getLatLng()], {
-                                color: 'red',
+                            new L.Polyline([e.latlng, l.getLayers()[0].getLatLng()], {
+                                color: '#7e9aa8',
                                 weight: 1,
-                                opacity: 0.5,
+                                opacity: 1,
                                 smoothFactor: 1,
                                 clickable: false
                             }).addTo(lineGroup);
@@ -75,8 +75,8 @@
         pointToLayer: function (feature, latlng) {
             return L.marker(latlng, {
                 icon: L.AwesomeMarkers.icon({
-                            icon: 'star',
-                            markerColor: 'blue',
+                            icon: 'circle-o',
+                            markerColor: '#990033',
                             prefix: 'fa'
                         }
                 )
@@ -101,31 +101,18 @@
 
         styleMap: function () {
             return {
-                color: "#ff0000"
+                color: "#7e9aa8"
             }
         },
 
-        pointToLayer: function(feature, latlng) {
+        pointToLayer: function (feature, latlng) {
             return new L.CircleMarker(latlng, {radius: 5, fillOpacity: 1});
         },
-
 
         // Bind a popup to each point
         onEachFeature: function (feature, layer) {
             layer.bindPopup(feature.properties['partnerorg']);
         },
-
-        // Make Awesome Markers instead of simple vector point features
-        /*   pointToLayer: function (feature, latlng) {
-         return L.marker(latlng, {
-         icon: L.AwesomeMarkers.icon({
-         icon: 'star',
-         markerColor: 'red',
-         prefix: 'fa'
-         }
-         )
-         });
-         },*/
 
         onLoad: function () {
 
