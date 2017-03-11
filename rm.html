@@ -6,10 +6,28 @@
     <script src="http://gc2.mapcentia.com/api/v3/js/geocloud.php"></script>
     <script src="https://rawgit.com/mapshakers/leaflet-icon-pulse/master/src/L.Icon.Pulse.js"></script>
     <link rel="stylesheet" href="https://rawgit.com/mapshakers/leaflet-icon-pulse/master/src/L.Icon.Pulse.css"/>
-    <style>body, html {
-        margin: 0;
-        padding: 0;
-    }</style>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
+
+        .leaflet-popup-content table {
+            border-collapse: collapse;
+        }
+
+        .leaflet-popup-content td {
+            vertical-align: top;
+            padding: 5px;
+            border-top: 1px solid lightgrey;
+            white-space:;
+
+        }
+
+        .leaflet-popup-content td:first-child {
+            white-space: nowrap;
+        }
+    </style>
 </head>
 <body>
 <div style="width: 100%;height: 100%; position: absolute" id="map"></div>
@@ -47,7 +65,20 @@
 
         // Bind a popup to each point
         onEachFeature: function (feature, layer) {
-            layer.bindPopup(feature.properties['partnerorg']);
+            layer.bindPopup(
+                    "<table>" +
+                    "<tr><td>Titel</td><td>" + feature.properties['projekttit'] + "</td></tr>" +
+                    "<tr><td>forkortelse</td><td>" + feature.properties['forkortels'] + "</td></tr>" +
+                    "<tr><td>Status</td><td>" + feature.properties['projektsta'] + "</td></tr>" +
+                    "<tr><td>Slutning</td><td>" + feature.properties['projektslu'] + "</td></tr>" +
+                    "<tr><td>Summary (en)</td><td>" + feature.properties['summaryen'] + "</td></tr>" +
+                    "<tr><td>Link</td><td><a target='_blank' href='" + feature.properties['linkhjemme'] + "'>" + feature.properties['linkhjemme'] + "</a></td></tr>" +
+                    "<tr><td>Partner org</td><td>" + feature.properties['partnerorg'] + "</td></tr>" +
+                    "<tr><td>Kontakt</td><td>" + feature.properties['fornavnkon'] + " " + feature.properties['efternavnk'] + "</td></tr>" +
+                    "<tr><td>Land</td><td>" + feature.properties['land'] + "</td></tr>" +
+                    "<tr><td>Email</td><td>" + feature.properties['email'] + "</td></tr>" +
+                    "</table>"
+            );
             layer.on({
                 click: function (e) {
                     //console.info(feature.properties.projektid);
@@ -56,7 +87,22 @@
                     lineGroup.clearLayers();
                     partners.layer.eachLayer(function (l) {
                         if (l.feature.properties.projektid === feature.properties.projektid) {
-                            L.marker(l.getLayers()[0].getLatLng(), {icon: pulsingIcon}).bindPopup(l.feature.properties['partnerorg']).addTo(pulseGroup);
+                            L.marker(l.getLayers()[0].getLatLng(), {icon: pulsingIcon}).bindPopup(
+                                    "<table>" +
+                                    "<tr><td>Projekt id</td><td>" + l.feature.properties['projektid'] + "</td></tr>" +
+                                    "<tr><td>Partner org</td><td>" + l.feature.properties['partnerorg'] + "</td></tr>" +
+                                    "<tr><td>Kontaktperson</td><td>" + l.feature.properties['kontaktper'] + "</td></tr>" +
+                                    "<tr><td>Adresse</td><td>" + l.feature.properties['vejnavn'] + ", " + l.feature.properties['postnummer'] + ", " + l.feature.properties['city'] + "</td></tr>" +
+                                    "<tr><td>Land</td><td>" + feature.properties['land'] + "</td></tr>" +
+                                    "<tr><td>Partnertype</td><td>" + l.feature.properties['partnertyp'] + "</td></tr>" +
+                                    "<tr><td>Total</td><td>" + l.feature.properties['total'] + "</td></tr>" +
+                                    "<tr><td>Eusupportp</td><td>" + l.feature.properties['eusupportp'] + "</td></tr>" +
+                                    "<tr><td>Medfinansi</td><td>" + l.feature.properties['medfinansi'] + "</td></tr>" +
+                                    "<tr><td>Medfinan_1</td><td>" + l.feature.properties['medfinan_1'] + "</td></tr>" +
+                                    "<tr><td>Medfinanse</td><td>" + l.feature.properties['medfinanse'] + "</td></tr>" +
+                                    "<tr><td>Partnerire</td><td>" + l.feature.properties['partnerire'] + "</td></tr>" +
+                                    "</table>"
+                            ).addTo(pulseGroup);
                             new L.Polyline([e.latlng, l.getLayers()[0].getLatLng()], {
                                 color: '#7e9aa8',
                                 weight: 1,
@@ -111,7 +157,21 @@
 
         // Bind a popup to each point
         onEachFeature: function (feature, layer) {
-            layer.bindPopup(feature.properties['partnerorg']);
+            layer.bindPopup(
+                    "<table>" +
+                    "<tr><td>Projekt id</td><td>" + feature.properties['projektid'] + "</td></tr>" +
+                    "<tr><td>Partner org</td><td>" + feature.properties['partnerorg'] + "</td></tr>" +
+                    "<tr><td>Kontaktperson</td><td>" + feature.properties['kontaktper'] + "</td></tr>" +
+                    "<tr><td>Adresse</td><td>" + feature.properties['vejnavn'] + ", " + feature.properties['postnummer'] + ", " + feature.properties['city'] + "</td></tr>" +
+                    "<tr><td>Land</td><td>" + feature.properties['land'] + "</td></tr>" +
+                    "<tr><td>Partnertype</td><td>" + feature.properties['partnertyp'] + "</td></tr>" +
+                    "<tr><td>Total</td><td>" + feature.properties['total'] + "</td></tr>" +
+                    "<tr><td>Eusupportp</td><td>" + feature.properties['eusupportp'] + "</td></tr>" +
+                    "<tr><td>Medfinansi</td><td>" + feature.properties['medfinansi'] + "</td></tr>" +
+                    "<tr><td>Medfinan_1</td><td>" + feature.properties['medfinan_1'] + "</td></tr>" +
+                    "<tr><td>Medfinanse</td><td>" + feature.properties['medfinanse'] + "</td></tr>" +
+                    "<tr><td>Partnerire</td><td>" + feature.properties['partnerire'] + "</td></tr>" +
+                    "</table>");
         },
 
         onLoad: function () {
