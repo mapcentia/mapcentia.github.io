@@ -8,11 +8,30 @@ var cowiLpSearch = (function () {
                 var store;
                 var names = [];
                 var map = {};
+                var dsl;
                 var search = _.debounce(function (query, process) {
                     map = {};
+                    dsl = {
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {
+                                        "match": {
+                                            "properties.string": {
+                                                "query": encodeURIComponent(query.toLowerCase()),
+                                                "operator": "and"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "filter": [
+                                    {"term": {"properties.komnr": conf.komnr}}]
+                            }
+                        }
+                    };
                     $.ajax({
                         url: 'http://cowi.mapcentia.com/api/v1/elasticsearch/search/dk/planer/lokalplaner',
-                        data: '&size=20&q={"query":{"filtered":{"query":{"query_string":{"default_field":"properties.string","query":"' + encodeURIComponent(query.toLowerCase()) + '","default_operator":"AND"}},"filter":{"term":{"properties.komnr":"' + conf.komnr + '"}}}}}',
+                        data: "q=" + JSON.stringify(dsl),
                         dataType: 'jsonp',
                         contentType: "application/json; charset=utf-8",
                         scriptCharset: "utf-8",
@@ -20,7 +39,7 @@ var cowiLpSearch = (function () {
                         success: function (response) {
                             $.each(response.hits.hits, function (i, hit) {
                                 var str = hit._source.properties.string;
-                                map[str] = hit._source.properties.planid;
+                                map[str] = hit._source.properties.gid;
                                 names.push(str);
                             });
                             process(names);
