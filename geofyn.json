@@ -1,6 +1,3 @@
 {
-  "enabledExtensions": [
-     
-    ],
   "enabledPrints": ["geofyn","test"]
 }
