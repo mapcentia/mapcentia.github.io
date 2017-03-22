@@ -1,5 +1,5 @@
 {
-  enabledExtensions: [
+  "enabledExtensions": [
         "conflictSearch"
     ],
   "enabledPrints": ["geofyn","test"]
