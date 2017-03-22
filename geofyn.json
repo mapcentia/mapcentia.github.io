@@ -1,6 +1,6 @@
 {
   "enabledExtensions": [
-       /* "conflictSearch"*/
+     
     ],
   "enabledPrints": ["geofyn","test"]
 }
