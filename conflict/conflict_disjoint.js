@@ -294,7 +294,7 @@ var cowi = (function () {
                 store[i].id = arr[i];
                 store[i].load();
                 store[i].onLoad = function () {
-                    if (this.geoJSON.features !== undefined) {
+                    if (this.geoJSON.features.length > 0) {
                         cloudMap.addTileLayers([this.id], {
                             name: this.id,
                             visibility: layersDefaultOn || false
