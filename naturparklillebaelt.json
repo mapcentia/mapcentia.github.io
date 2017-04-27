@@ -1,5 +1,7 @@
 {
-  "naturparklillebaelt": {
-      "youtubeId": "j44COkxFT7Y"
+  "extensionConfig": {
+    "naturparklillebaelt": {
+        "youtubeId": "j44COkxFT7Y"
+    }
   }
 }
