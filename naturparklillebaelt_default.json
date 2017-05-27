@@ -1,1 +1,11 @@
 
+{
+  "baseLayers": [
+        {"id": "osm", "name": "OSM"},
+        {"id": "stamenToner", "name": "Stamen Toner"}
+    ],
+    "brandName": "Naturpark Lillebælt",
+    "enabledExtensions": [],
+    "template": "default.tmpl",
+    "enabledPrints": ["print"]
+}
