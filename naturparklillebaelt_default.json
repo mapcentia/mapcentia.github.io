@@ -4,6 +4,11 @@
         {"id": "osm", "name": "OSM"},
         {"id": "stamenToner", "name": "Stamen Toner"}
     ],
+     "extensionConfig": {
+    "naturparklillebaelt": {
+        "youtubeId": "UCs256_gIEb1mRzCxD2hTTxw"
+    }
+  },
     "brandName": "Naturpark Lillebælt",
     "enabledExtensions": [],
     "template": "default.tmpl",
