@@ -1,3 +1,6 @@
 {
-  "enabledPrints": ["geofyn","test"]
+  "enabledExtensions": [
+                "coordinates",
+                "streetView"
+        ]
 }
