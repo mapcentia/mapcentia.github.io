@@ -1,5 +1,6 @@
 {
   "enabledExtensions": [
+                "conflictSearch",
                 "coordinates",
                 "streetView"
         ]
