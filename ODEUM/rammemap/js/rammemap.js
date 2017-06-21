@@ -12,7 +12,7 @@ mapcentia_rammemap = (function () {
     document.write("<script src='http://mapcentia.github.io/ODEUM/templates/templates.js'><\/script>");
     //document.write("<script src='../templates/templates.js'><\/script>");
     var i, init = function (config) {
-        $('<link/>').attr({ rel: 'stylesheet', type: 'text/css', href: 'http://mapcentia.github.io/ODEUM/districtmap/css/bootstrap-buttons.css' }).appendTo('head');
+        $('<link/>').attr({rel: 'stylesheet', type: 'text/css', href: 'http://mapcentia.github.io/ODEUM/districtmap/css/bootstrap-buttons.css'}).appendTo('head');
         var defaults = {
                 planid: null,
                 db: null,
@@ -20,6 +20,7 @@ mapcentia_rammemap = (function () {
                 width: "500px",
                 height: "500px",
                 layers: null,
+                baseLayer: "osm",
                 table: "kommuneplan.kpplandk2_view",
                 rules: {
                     rules: [
@@ -188,8 +189,8 @@ mapcentia_rammemap = (function () {
                 lifetime: 0
             }
         );
-        map.addBaseLayer("osm");
-        map.setBaseLayer("osm");
+        map.addBaseLayer(defaults.baseLayer);
+        map.setBaseLayer(defaults.baseLayer);
         map.addGeoJsonStore(store);
         store.sql = "SELECT anvgen,the_geom FROM " + defaults.table + " WHERE planid = '" + encodeURIComponent(defaults.planid) + "'";
         store.load();
