@@ -2,6 +2,7 @@
   "enabledExtensions": [
                 "conflictSearch",
                 "coordinates",
-                "streetView"
+                "streetView",
+                "isochrone"
         ]
 }
