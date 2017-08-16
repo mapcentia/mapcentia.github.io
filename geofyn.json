@@ -3,6 +3,7 @@
                 "conflictSearch",
                 "coordinates",
                 "streetView",
-                "isochrone"
+                "isochrone",
+                "layerSearch"
         ]
 }
