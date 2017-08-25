@@ -1,9 +1,7 @@
 {
-  "baseLayers": [
-        {"id": "osm", "name": "OSM"},
-        {"id": "stamenToner", "name": "Stamen Toner"}
-    ],
-    "brandName": "Martin Høgh",
-    "enabledExtensions": ["conflictSearch"],
-    "enabledPrints": ["print", "print2"]
+  "schemata":[
+    "01883a62-f74a-11e6-b832-0e05a8b3e3d7"
+  ],
+ 
+ "brandName": "Martin Høgh"
 }
