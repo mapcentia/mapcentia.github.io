@@ -1,6 +1,8 @@
 {
      "enabledExtensions": [
-        "geokon"
+          "streetView",
+          "coordinates",
+          "geokon"
     ],
    "brandName": "Geokon A/S"
 }
