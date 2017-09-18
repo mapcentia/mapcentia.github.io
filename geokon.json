@@ -1,6 +1,6 @@
 {
-     enabledExtensions: [
+     "enabledExtensions": [
         "geokon"
     ],
-    brandName: "Geokon A/S"
+   "brandName": "Geokon A/S"
 }
