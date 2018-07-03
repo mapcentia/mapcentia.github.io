@@ -136,7 +136,7 @@ mapcentia_lokalplaner = (function () {
                         grid.grid.getSelectionModel().each(function (rec) {
                             feature = rec.get('feature');
                         });
-                        var link = defaults.host + "/apps/custom/planurl/public/index.php/api/v1/url/" + conf.db + "/" + conf.table + "/" + feature.attributes.planid;
+                        var link = feature.attributes.doklink;
                         var record = grid.grid.getSelectionModel().getSelected();
                         window.open(link);
                     }
