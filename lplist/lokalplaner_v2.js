@@ -100,8 +100,8 @@ mapcentia_lokalplaner = (function () {
             }
 
             cloud.addGeoJsonStore(store);
-            store.sql = "select planid,komnr,objektkode,plantype,plannr,plannavn,anvendelsegenerel as anvgen,anvspec,datoforsl,(case when planstatus = 'V' then 'Vedtaget' else 'Forslag' END) as planstatus,zonestatus,the_geom from planer.lokalplan_vedtaget where komnr=" + conf.komnr +
-            " union select planid,komnr,objektkode,plantype,plannr,plannavn,anvendelsegenerel as anvgen,anvspec,datoforsl,(case when planstatus = 'V' then 'Vedtaget' else 'Forslag' END) as planstatus, zonestatus, the_geom from planer.lokalplan_forslag where komnr=" + conf.komnr + " order by planid desc";
+            store.sql = "select planid,komnr,objektkode,plantype,plannr,plannavn,anvendelsegenerel as anvgen,anvspec1,datoforsl,(case when planstatus = 'V' then 'Vedtaget' else 'Forslag' END) as planstatus,zonestatus,the_geom from plandatadk.pdk_lokalplan_vedtaget_v where komnr=" + conf.komnr +
+            " union select planid,komnr,objektkode,plantype,plannr,plannavn,anvendelsegenerel as anvgen,anvspec1,datoforsl,(case when planstatus = 'V' then 'Vedtaget' else 'Forslag' END) as planstatus, zonestatus, the_geom from plandatadk.pdk_lokalplan_forslag_v where komnr=" + conf.komnr + " order by planid desc";
             store.load();
             store.onLoad = function () {
                 cloud.zoomToExtentOfgeoJsonStore(store);

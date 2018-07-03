@@ -1,15 +1,15 @@
 <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script type="text/javascript" src="https://eu1.mapcentia.com/api/v1/js/api.js"></script>
-<script type="text/javascript" src="https://eu1.mapcentia.com/api/v3/js/geocloud.js"></script>
+<script type="text/javascript" src="https://gc2.io/api/v1/js/api.js"></script>
+<script type="text/javascript" src="https://gc2.io/api/v3/js/geocloud.js"></script>
 
 <!--<script src='lpsearch.js'></script>-->
 <script src='https://mapcentia.github.io/lpsearch/lpsearch.js'></script>
 
-<script src="https://eu1.mapcentia.com/js/bootstrap/js/bootstrap.min.js"></script>
-<script src="https://eu1.mapcentia.com/js/underscore/underscore-min.js"></script>
+<script src="https://gc2.io/js/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://gc2.io/js/underscore/underscore-min.js"></script>
 
 
-<link rel="StyleSheet" href="https://eu1.mapcentia.com/js/bootstrap/css/bootstrap_buttonandicons.css" type="text/css">
+<link rel="StyleSheet" href="https://gc2.io/js/bootstrap/css/bootstrap_buttonandicons.css" type="text/css">
 <link rel="StyleSheet" href="https://mapcentia.github.io/css/type-a-head.css" type="text/css"/>
 <style>
     .search-field {
@@ -46,7 +46,7 @@
     };
     new cowiLpSearch.init_search(conf);
 </script>
-<link rel='stylesheet' type='text/css' href='https://eu1.mapcentia.com/js/ext/resources/css/ext-all.css'/>
+<link rel='stylesheet' type='text/css' href='https://gc2.io/js/ext/resources/css/ext-all.css'/>
 <link rel="StyleSheet" href="https://mapcentia.github.io/css/type-a-head.css" type="text/css"/>
 
 <style>
@@ -89,16 +89,17 @@
     </div>
 </div>
 <div id="grid" style="width: 100%;height: 200px"></div>
-<script type="text/javascript" src="https://eu1.mapcentia.com/js/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="https://eu1.mapcentia.com/js/underscore/underscore-min.js"></script>
+<script type="text/javascript" src="https://gc2.io/js/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://gc2.io/js/underscore/underscore-min.js"></script>
 <script type="text/javascript" src="https://mapcentia.github.io/lplist/search.js"></script>
 <script type="text/javascript" src="https://mapcentia.github.io/lplist/lokalplaner_v2.js"></script>
+<!--<script type="text/javascript" src="/mapcentia.github.io/lplist/lokalplaner_v2.js"></script>-->
 <script>
     var mapObj = new mapcentia_lokalplaner.init({
         komnr: 849,
         table: null,
-        db: "jammerbugt",
-        host: "http://plandk2.mapcentia.com",
+        db: "dk",
+        host: "https://gc2.io",
         gridHeight: 200,
         baseLayer: "osm",
         cm: [
