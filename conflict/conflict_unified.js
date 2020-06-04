@@ -34,7 +34,7 @@ var cowi = (function () {
             } else {
                 var storeBorder = new geocloud.geoJsonStore({
                     db: "dk",
-                    sql: "select * from admin.kommuner where komkode='0" + komKode + "'",
+                    sql: "select * from dagi.dagi_kommune2000 where cpr_noegle=" + komKode,
                     styleMap: new OpenLayers.StyleMap({
                         "default": new OpenLayers.Style({
                                 fillColor: "#000000",
